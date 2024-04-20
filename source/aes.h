@@ -1,0 +1,23 @@
+/*
+ * Last Updated: 2024-04-20
+ */
+
+#ifndef AES_H
+#define AES_H
+
+#include <stdint.h>
+#include <stddef.h>
+#include <string.h>
+
+typedef enum
+{
+  AES_128 = 4,
+  AES_192 = 6,
+  AES_256 = 8
+} ksize_t;
+
+extern int aes_encrypt(void* result, const void* message, size_t size, const char* key, ksize_t ksize);
+
+extern int aes_decrypt(void* result, const void* message, size_t size, const char* key, ksize_t ksize);
+
+#endif // AES_H

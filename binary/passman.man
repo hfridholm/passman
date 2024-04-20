@@ -1,0 +1,15 @@
+.TH PASSMAN 1 2024-04-20 Linux
+
+.SH NAME
+passman - offline password manager
+
+.SH SYNOPSIS
+.B passman
+[\fIOPTION\fR]... [\fIFILE\fR]...
+
+.SH DESCRIPTION
+...
+
+.SH OPTIONS
+.TP
+.BR 
