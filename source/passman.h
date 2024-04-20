@@ -38,4 +38,23 @@ typedef struct
 #define DBSIZE     sizeof(database_t)
 #define DBSIZE_ENC (DBSIZE + 16 - (DBSIZE % 16))
 
+typedef struct
+{
+  WINDOW* window;
+  int xmax;
+  char* buffer;
+  int length;
+  int cursor;
+} inpwin_t;
+
+typedef struct
+{
+  WINDOW* window;
+  int ymax;
+  int xmax;
+  int index;      // Which database the user hovers over
+  char** dbases;  // The names of the available databases
+  int amount;     // The amount of databases
+} dbswin_t;
+
 #endif // PASSMAN_H
