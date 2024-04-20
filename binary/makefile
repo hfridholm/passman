@@ -8,7 +8,7 @@ DELETE_CMD := rm
 # This is the compiler and the compile flags you want to use
 COMPILER := gcc
 COMPILE_FLAGS := -Wall -Werror -g -Og -std=gnu99 -oFast
-LINKER_FLAGS := -lm -lgmp
+LINKER_FLAGS := -lm -lgmp -lncursesw
 
 SOURCE_DIR := ../source
 OBJECT_DIR := ../object

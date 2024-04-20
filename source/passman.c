@@ -1,5 +1,8 @@
 #include "passman.h"
 
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#define MIN(a, b) (((a) > (b)) ? (b) : (a))
+
 ksize_t encrypt = AES_256;
 
 char dbfile[256];
@@ -23,8 +26,6 @@ void opt_wrong(void)
   else
     fprintf(stderr, "Unknown option character `\\x%x'.\n", optopt);
 }
-
-#define MIN(a, b) (((a) > (b)) ? (b) : (a))
 
 void opt_open(void)
 {
@@ -255,6 +256,143 @@ int pwfile_read(void)
 }
 
 /*
+ * Create a window in the center of the screen
+ */
+WINDOW* window_center_create(WINDOW* parent, int height, int width)
+{
+  int ymax, xmax;
+  getmaxyx(parent, ymax, xmax);
+
+  int y = (ymax - height) / 2 - 1;
+  int x = (xmax - width) / 2 - 1;
+
+  return newwin(height, width, y, x);
+}
+
+/*
+ * Print a title in the center top of a window
+ */
+void window_title_center_print(WINDOW* window, const char* title)
+{
+  int xmax = getmaxx(window);
+
+  size_t length = strlen(title);
+
+  int x = (xmax - length) / 2 - 1;
+
+  mvwprintw(window, 0, x, "%s", title);
+}
+
+void menu_databases(void)
+{
+
+}
+
+/*
+ * Input text from inside a specified window
+ *
+ * Don't let the user input more text than specified,
+ * or what the window can hold
+ */
+void window_input(char* buffer, size_t size, WINDOW* window, bool secret)
+{
+  int ymax = getmaxy(window);
+  int xmax = getmaxx(window);
+
+  keypad(window, TRUE);
+
+  int x = 1;
+  int y = 1;
+
+  wmove(window, y, x);
+
+  int index = 0;
+  char key;
+
+  while((key = wgetch(window)) && index < size)
+  {
+    if(key == 10) break;
+
+    if(key == 7 && index > 0)
+    {
+      buffer[--index] = '\0';
+
+      if(x <= 1 && y > 1)
+      {
+        x = xmax - 2;
+        y--;
+      }
+      x--;
+      wmove(window, y, x);
+      waddch(window, ' ');
+      wmove(window, y, x);
+    }
+
+    if(key >= 32 && key <= 126)
+    {
+      if(x >= xmax - 2)
+      {
+        if(y >= ymax - 2) continue;
+
+        x = 1;
+        y++;
+
+        wmove(window, y, x);
+      }
+      else x++;
+
+      waddch(window, secret ? '*' : key);
+
+      buffer[index++] = key;
+    }
+  }
+}
+
+/*
+ * Input password from a popup window prompting you
+ */
+void password_window_input(char* password, size_t size)
+{
+  int xmax = getmaxx(stdscr);
+
+  int width = MIN(32, xmax - 6);
+
+  WINDOW* window = window_center_create(stdscr, 3, width);
+  box(window, 0, 0);
+
+  window_title_center_print(window, "Password");
+
+  refresh();
+  wrefresh(window);
+
+  window_input(password, size, window, true);
+}
+
+/*
+ * The menu to authenticate a database using password
+ */
+void menu_password(void)
+{
+  char password[32];
+
+  password_window_input(password, sizeof(password));
+
+  printw("%s", password);
+
+  getch();
+}
+
+void menu_database(void)
+{
+
+}
+
+void menu_account(void)
+{
+
+}
+
+/*
  * RETURN (int status)
  * - 0 | Success!
  * - 1 | Failed to parse arguments
@@ -263,10 +401,10 @@ int main(int argc, char* argv[])
 {
   if(args_parse(argc, argv) != 0) return 1;
 
+  /*
   if(strlen(dbfile) == 0) dbfile_input();
 
   if(strlen(pwfile) > 0) pwfile_read();
-
 
   if(argnew)
   {
@@ -284,6 +422,16 @@ int main(int argc, char* argv[])
   if(strlen(password) == 0) password_input();
 
   database_write();
+  */
+
+  initscr();
+  cbreak();
+  noecho();
+  curs_set(0);
+
+  menu_password();
+
+  endwin();
 
   return 0; // Success!
 }

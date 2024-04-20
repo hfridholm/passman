@@ -12,6 +12,8 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include <ncurses.h>
+
 typedef struct
 {
   char account[64];
