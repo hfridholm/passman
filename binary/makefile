@@ -20,6 +20,12 @@ AES_DIR := $(SOURCE_DIR)/aes
 AES_SOURCE_FILES := $(wildcard $(AES_DIR)/*.c)
 AES_OBJECT_FILES := $(addprefix $(OBJECT_DIR)/, $(notdir $(AES_SOURCE_FILES:.c=.o)))
 
+# These are the source files and object files for the HASH library
+HASH_DIR := $(SOURCE_DIR)/hash
+
+HASH_SOURCE_FILES := $(wildcard $(HASH_DIR)/*.c)
+HASH_OBJECT_FILES := $(addprefix $(OBJECT_DIR)/, $(notdir $(HASH_SOURCE_FILES:.c=.o)))
+
 # These are the source files and object files for the FILE library
 FILE_DIR := $(SOURCE_DIR)/file
 
@@ -28,8 +34,8 @@ FILE_OBJECT_FILES := $(addprefix $(OBJECT_DIR)/, $(notdir $(FILE_SOURCE_FILES:.c
 
 all: passman
 
-passman: %: $(OBJECT_DIR)/%.o $(SOURCE_DIR)/%.c $(AES_OBJECT_FILES) $(AES_SOURCE_FILES) $(FILE_OBJECT_FILES) $(FILE_SOURCE_FILES)
-	$(COMPILER) $(OBJECT_DIR)/$@.o $(AES_OBJECT_FILES) $(FILE_OBJECT_FILES) $(LINKER_FLAGS) -o $(BINARY_DIR)/$@
+passman: %: $(OBJECT_DIR)/%.o $(SOURCE_DIR)/%.c $(AES_OBJECT_FILES) $(AES_SOURCE_FILES) $(FILE_OBJECT_FILES) $(FILE_SOURCE_FILES) $(HASH_OBJECT_FILES) $(HASH_SOURCE_FILES)
+	$(COMPILER) $(OBJECT_DIR)/$@.o $(AES_OBJECT_FILES) $(FILE_OBJECT_FILES) $(HASH_OBJECT_FILES) $(LINKER_FLAGS) -o $(BINARY_DIR)/$@
 
 # These are rules for compiling object files out of source files
 $(OBJECT_DIR)/%.o: $(SOURCE_DIR)/*/%.c 
