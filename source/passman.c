@@ -283,9 +283,95 @@ void window_title_center_print(WINDOW* window, const char* title)
   mvwprintw(window, 0, x, "%s", title);
 }
 
-void menu_databases(void)
+void window_inside_clear(WINDOW* window)
 {
+  int ymax = getmaxy(window);
+  int xmax = getmaxx(window);
 
+  for(int y = 1; y < ymax - 1; y++)
+  {
+    wmove(window, y, 1);
+
+    for(int x = 1; x < xmax - 1; x++)
+    {
+      waddch(window, ' ');
+    }
+  }
+}
+
+typedef struct
+{
+  WINDOW* window;
+  int xmax;
+  char* buffer;
+  int length;
+  int cursor;
+} inpwin_t;
+
+/*
+ * Refresh the content of the buffer being shown
+ */
+void inpwin_refresh(inpwin_t* inpwin, bool hidden)
+{
+  wmove(inpwin->window, 1, 1);
+
+  for(int index = 0; index < inpwin->length; index++)
+  {
+    if(index > inpwin->xmax - 2) break;
+
+    char symbol = (hidden ? '*' : inpwin->buffer[index]);
+
+    if(symbol == '\0') symbol = ' ';
+
+    waddch(inpwin->window, symbol);
+  }
+
+  wmove(inpwin->window, 1, 1 + inpwin->cursor);
+
+  wrefresh(inpwin->window);
+}
+
+/*
+ * RETURN (int status)
+ * - 0 | Success!
+ * - 1 | Symbol not supported
+ * - 2 | Buffer is full
+ */
+int inpwin_symbol_add(inpwin_t* inpwin, char symbol)
+{
+  if(symbol < 32 || symbol > 126) return 1;
+
+  if(inpwin->length >= inpwin->xmax - 2) return 2;
+
+  for(int index = inpwin->length + 1; index-- > inpwin->cursor;)
+  {
+    inpwin->buffer[index] = inpwin->buffer[index - 1];
+  }
+
+  inpwin->buffer[inpwin->cursor++] = symbol;
+
+  inpwin->length++;
+
+  return 0; // Success!
+}
+
+int inpwin_symbol_del(inpwin_t* inpwin)
+{
+  if(inpwin->cursor <= 0) return 1;
+
+  for(int index = inpwin->cursor; index < inpwin->length; index++)
+  {
+    inpwin->buffer[index] = inpwin->buffer[index + 1];
+  }
+
+  wmove(inpwin->window, 1, inpwin->cursor);
+  waddch(inpwin->window, ' ');
+
+  inpwin->buffer[--inpwin->cursor] = '\0';
+
+  inpwin->length--;
+
+  return 0; // Success!
 }
 
 /*
@@ -294,58 +380,70 @@ void menu_databases(void)
  * Don't let the user input more text than specified,
  * or what the window can hold
  */
-void window_input(char* buffer, size_t size, WINDOW* window, bool secret)
+void inpwin_input(inpwin_t* inpwin, bool hidden)
 {
-  int ymax = getmaxy(window);
-  int xmax = getmaxx(window);
+  curs_set(1);
 
-  keypad(window, TRUE);
+  inpwin_refresh(inpwin, hidden);
 
-  int x = 1;
-  int y = 1;
-
-  wmove(window, y, x);
-
-  int index = 0;
-  char key;
-
-  while((key = wgetch(window)) && index < size)
+  int key;
+  while((key = wgetch(inpwin->window)))
   {
     if(key == 10) break;
 
-    if(key == 7 && index > 0)
+    switch(key)
     {
-      buffer[--index] = '\0';
+      case KEY_RIGHT:
+        inpwin->cursor = MIN(inpwin->cursor + 1, inpwin->length);
+        break;
 
-      if(x <= 1 && y > 1)
-      {
-        x = xmax - 2;
-        y--;
-      }
-      x--;
-      wmove(window, y, x);
-      waddch(window, ' ');
-      wmove(window, y, x);
+      case KEY_LEFT:
+        inpwin->cursor = MAX(inpwin->cursor - 1, 0);
+        break;
+
+      case KEY_BACKSPACE:
+        inpwin_symbol_del(inpwin);
+        break;
+      
+      default:
+        inpwin_symbol_add(inpwin, key);
+        break;
     }
-
-    if(key >= 32 && key <= 126)
-    {
-      if(x >= xmax - 2)
-      {
-        if(y >= ymax - 2) continue;
-
-        x = 1;
-        y++;
-
-        wmove(window, y, x);
-      }
-      else x++;
-
-      waddch(window, secret ? '*' : key);
-
-      buffer[index++] = key;
-    }
+  
+    inpwin_refresh(inpwin, hidden);
   }
+  curs_set(0);
+}
+
+inpwin_t* inpwin_create(int h, int w, int y, int x)
+{
+  inpwin_t* inpwin = malloc(sizeof(inpwin_t));
+
+  inpwin->window = newwin(h, w, y, x);
+
+  inpwin->xmax = getmaxx(inpwin->window);
+
+  keypad(inpwin->window, TRUE);
+
+  inpwin->buffer = malloc(sizeof(char) * inpwin->xmax - 1);
+  memset(inpwin->buffer, '\0', inpwin->xmax - 1);
+
+  box(inpwin->window, 0, 0);
+
+  return inpwin;
+}
+
+void inpwin_free(inpwin_t* inpwin)
+{
+  wclear(inpwin->window);
+
+  wrefresh(inpwin->window);
+
+  delwin(inpwin->window);
+
+  free(inpwin->buffer);
+
+  free(inpwin);
 }
 
 /*
@@ -353,19 +451,22 @@ void window_input(char* buffer, size_t size, WINDOW* window, bool secret)
  */
 void password_window_input(char* password, size_t size)
 {
-  int xmax = getmaxx(stdscr);
+  // int xmax = getmaxx(stdscr);
 
-  int width = MIN(32, xmax - 6);
+  // int width = MIN(32, xmax - 6);
 
-  WINDOW* window = window_center_create(stdscr, 3, width);
-  box(window, 0, 0);
+  inpwin_t* inpwin = inpwin_create(3, 25, 3, 3);
 
-  window_title_center_print(window, "Password");
+  window_title_center_print(inpwin->window, "Password");
 
   refresh();
-  wrefresh(window);
+  wrefresh(inpwin->window);
 
-  window_input(password, size, window, true);
+  inpwin_input(inpwin, true);
+
+  memcpy(password, inpwin->buffer, MIN(inpwin->length, size));
+
+  inpwin_free(inpwin);
 }
 
 /*
@@ -374,12 +475,123 @@ void password_window_input(char* password, size_t size)
 void menu_password(void)
 {
   char password[32];
+  memset(password, '\0', sizeof(password));
 
   password_window_input(password, sizeof(password));
+
+  refresh();
 
   printw("%s", password);
 
   getch();
+}
+
+WINDOW* window_edges_create(WINDOW* parent, int top, int bottom, int left, int right)
+{
+  int ymax = getmaxy(parent);
+  int xmax = getmaxx(parent);
+
+  int height  = ymax - top - bottom;
+  int width = xmax - left - right;
+
+  if(height < 0 || width < 0) return NULL;
+
+  return newwin(height, width, top, left);
+}
+
+void window_databases_print(WINDOW* window, char* names[], int amount, int hover)
+{
+  for(int index = 0; index < amount; index++)
+  {
+    if(index == hover) wattron(window, A_REVERSE);
+
+    mvwprintw(window, index + 1, 1, "%s", names[index]);
+
+    wattroff(window, A_REVERSE);
+  }
+  wrefresh(window);
+}
+
+void menu_databases(void)
+{
+  inpwin_t* textwin = inpwin_create(3, 20, 5, 5);
+
+  WINDOW* window = window_edges_create(stdscr, 10, 5, 5, 5);
+  box(window, 0, 0);
+
+  keypad(window, TRUE);
+
+  refresh();
+  wrefresh(window);
+
+  inpwin_refresh(textwin, false);
+
+  char* names[] = {"Bob", "Alice", "Clara"};
+  int amount = 3;
+
+  int input = 0;
+  int hover = 0;
+
+  do
+  {
+    if(input == 10) break;
+
+    move(0, 0);
+    printw("input: %04d", input);
+    refresh();
+
+    switch(input)
+    {
+      case KEY_DOWN:
+        hover = MIN(hover + 1, amount - 1);
+        break;
+
+      case KEY_UP:
+        hover = MAX(hover - 1, 0);
+        break;
+
+      case 'd':
+        move(0, 0);
+        printw("delete");
+        refresh();
+        break;
+
+      case 'n':
+        move(0, 0);
+        printw("new");
+        refresh();
+        break;
+
+      case 'o':
+        move(0, 0);
+        printw("open");
+        refresh();
+        break;
+
+      case 'r':
+        move(0, 0);
+        printw("rename");
+        refresh();
+        break;
+
+      case 9:
+        move(0, 0);
+        printw("tab");
+        refresh();
+
+        inpwin_input(textwin, false);
+        break;
+
+      default:
+        break;
+    }
+
+    window_databases_print(window, names, amount, hover);
+  }
+  while((input = wgetch(window)));
+
+  delwin(window);
+  inpwin_free(textwin);
 }
 
 void menu_database(void)
@@ -429,7 +641,7 @@ int main(int argc, char* argv[])
   noecho();
   curs_set(0);
 
-  menu_password();
+  menu_databases();
 
   endwin();
 
