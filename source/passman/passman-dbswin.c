@@ -1,27 +1,27 @@
 #include "../passman.h"
 #include "passman-intern.h"
 
-dbswin_t* dbswin_create(int h, int w, int y, int x, char** dbases, int amount)
+void dbswin_resize(dbswin_t* dbswin, int x, int y, int w, int h)
 {
-  int ymax = getmaxy(stdscr);
+  window_resize(dbswin->window, x, y, w, h);
 
-  if((y + h) > ymax) return NULL; 
+  dbswin->ymax = h;
+  dbswin->xmax = w;
+}
 
-
+dbswin_t* dbswin_create(int x, int y, int w, int h, char** dbases, int amount)
+{
   dbswin_t* dbswin = malloc(sizeof(dbswin_t));
 
-  dbswin->window = newwin(h, w, y, x);
+  dbswin->window = window_create(x, y, w, h);
 
-
-  dbswin->ymax = ymax;
-  dbswin->xmax = getmaxx(dbswin->window);
+  dbswin->ymax = h;
+  dbswin->xmax = w;
 
   keypad(dbswin->window, TRUE);
 
-
-  dbswin->dbases = dbases; // Copy the memory instead
+  dbswin->dbases = dbases;
   dbswin->amount = amount;
-
 
   return dbswin;
 }
@@ -35,21 +35,10 @@ void dbswin_free(dbswin_t* dbswin)
   free(dbswin);
 }
 
-dbswin_t* dbswin_center_create(window_t* parent, int h, int y, int x, char** dbases, int amount)
-{
-  int ymax = getmaxy(parent);
-  int xmax = getmaxx(parent);
-
-  int w = xmax - x - x;
-  if(w <= 0) return NULL;
-
-  if((y + h) > ymax) return NULL;
-
-  return dbswin_create(h, w, y, x, dbases, amount);
-}
-
 void dbswin_refresh(dbswin_t* dbswin)
 {
+  window_clean(dbswin->window);
+
   for(int index = 0; index < dbswin->amount; index++)
   {
     if(index == dbswin->index) wattron(dbswin->window, A_REVERSE);

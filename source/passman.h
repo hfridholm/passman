@@ -47,6 +47,8 @@ extern database_t database;
 
 typedef WINDOW window_t;
 
+#include "passman/passman-cnfwin.h"
+
 typedef struct
 {
   window_t* window;
@@ -87,30 +89,23 @@ typedef struct
   char* text;     // The text / information
 } infwin_t;       // Info Window
 
-typedef struct
-{
-  window_t* window;
-  int ymax;
-  int xmax;
-  char* prompt;   // The question to answer
-  char* ytext;    // The text for answering yes
-  char* ntext;    // The text for answering no
-  bool answer;    // The answer (yes or no)
-} cnfwin_t;       // Confirm Window
-
 extern void string_input(char* string, size_t size, const char* prompt, bool hidden);
 
-extern inpwin_t* inpwin_center_create(window_t* parent, int y, int x, char* buffer, int size);
+extern inpwin_t* inpwin_create(int x, int y, int w, char* buffer, size_t size);
+
+extern void inpwin_resize(inpwin_t* inpwin, int x, int y, int w);
 
 extern void inpwin_free(inpwin_t* inpwin);
 
-extern void inpwin_input(inpwin_t* inpwin, bool hidden);
+extern void inpwin_key_handler(inpwin_t* inpwin, int key);
 
 extern void inpwin_refresh(inpwin_t* inpwin, bool hidden);
 
 extern void dbswin_free(dbswin_t* dbswin);
 
-extern dbswin_t* dbswin_center_create(window_t* parent, int h, int y, int x, char** dbases, int amount);
+extern dbswin_t* dbswin_create(int x, int y, int w, int h, char** dbases, int amount);
+
+extern void dbswin_resize(dbswin_t* dbswin, int x, int y, int w, int h);
 
 extern void dbswin_refresh(dbswin_t* dbswin);
 
@@ -119,7 +114,5 @@ extern void acswin_free(acswin_t* acswin);
 extern acswin_t* acswin_center_create(window_t* parent, int h, int y, int x);
 
 extern void acswin_refresh(acswin_t* acswin);
-
-extern void confirm_input(bool* answer, char* prompt, char* ytext, char* ntext);
 
 #endif // PASSMAN_H

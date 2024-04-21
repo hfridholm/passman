@@ -45,6 +45,8 @@ acswin_t* acswin_center_create(window_t* parent, int h, int y, int x)
 
 void acswin_refresh(acswin_t* acswin)
 {
+  window_clean(acswin->window);
+
   for(int index = 0; index < database.amount; index++)
   {
     if(index == acswin->index) wattron(acswin->window, A_REVERSE);

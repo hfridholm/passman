@@ -1,16 +1,24 @@
 #include "../passman.h"
 #include "passman-intern.h"
 
-cnfwin_t* cnfwin_create(int h, int w, int y, int x, char* prompt, char* ytext, char* ntext)
+/*
+ * PARAMS
+ * - int x | x-value center of window
+ * - int y | y-value center of window
+ * - int w | width of window
+ */
+cnfwin_t* cnfwin_create(int x, int y, int w, char* prompt, char* ytext, char* ntext)
 {
   cnfwin_t* cnfwin = malloc(sizeof(cnfwin_t));
 
-  cnfwin->window = newwin(h, w, y, x);
+  int h = (strlen(prompt) / (w - 2)) + 5;
+
+  cnfwin->window = window_create(x, y, w, h);
 
   keypad(cnfwin->window, TRUE);
 
-  cnfwin->ymax = getmaxy(cnfwin->window);
-  cnfwin->xmax = getmaxx(cnfwin->window);
+  cnfwin->ymax = h;
+  cnfwin->xmax = w;
 
   cnfwin->prompt = prompt;
   cnfwin->ytext  = ytext;
@@ -19,30 +27,19 @@ cnfwin_t* cnfwin_create(int h, int w, int y, int x, char* prompt, char* ytext, c
   return cnfwin;
 }
 
-cnfwin_t* cnfwin_center_create(window_t* parent, int w, char* prompt, char* ytext, char* ntext)
-{
-  int ymax = getmaxy(parent);
-  int xmax = getmaxx(parent);
-
-  int length = strlen(prompt);
-
-  int h = (length / (w - 2)) + 5;
-
-  int y = (ymax - h) / 2;
-  int x = (xmax - w) / 2;
-
-  return cnfwin_create(h, w, y, x, prompt, ytext, ntext);
-}
-
 void cnfwin_free(cnfwin_t* cnfwin)
 {
   if(cnfwin == NULL) return;
 
   window_free(cnfwin->window);
+
+  free(cnfwin);
 }
 
 void cnfwin_refresh(cnfwin_t* cnfwin)
 {
+  window_clean(cnfwin->window);
+
   curs_set(0);
 
   box(cnfwin->window, 0, 0);
@@ -97,39 +94,16 @@ void cnfwin_refresh(cnfwin_t* cnfwin)
   wrefresh(cnfwin->window);
 }
 
-void cnfwin_input(cnfwin_t* cnfwin)
+void cnfwin_key_handler(cnfwin_t* cnfwin, int key)
 {
-  cnfwin_refresh(cnfwin);
-
-  int key;
-  while((key = wgetch(cnfwin->window)))
+  switch(key)
   {
-    if(key == 10) break;
+    case KEY_RIGHT:
+      cnfwin->answer = false;
+      break;
 
-    switch(key)
-    {
-      case KEY_RIGHT:
-        cnfwin->answer = false;
-        break;
-
-      case KEY_LEFT:
-        cnfwin->answer = true;
-        break;
-    }
-  
-    cnfwin_refresh(cnfwin);
+    case KEY_LEFT:
+      cnfwin->answer = true;
+      break;
   }
-}
-
-void confirm_input(bool* answer, char* prompt, char* ytext, char* ntext)
-{
-  cnfwin_t* cnfwin = cnfwin_center_create(stdscr, 30, prompt, ytext, ntext);
-
-  refresh();
-
-  cnfwin_input(cnfwin);
-
-  *answer = cnfwin->answer;
-
-  cnfwin_free(cnfwin);
 }

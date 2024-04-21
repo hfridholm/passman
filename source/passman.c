@@ -239,11 +239,44 @@ int pwfile_read(void)
   return file_read(password, size, sizeof(char), pwfile);
 }
 
+void menu_password_inpwin_input()
+{
+  /*
+  int xmax = getmaxx(stdscr);
+  int ymax = getmaxy(stdscr);
+
+  inpwin_t* inpwin = inpwin_create(xmax / 2, ymax / 2, 20, string, size);
+  if(inpwin == NULL) return;
+
+  window_title_center_print(inpwin->window, prompt);
+
+  refresh();
+
+  curs_set(1);
+
+  inpwin_refresh(inpwin, hidden);
+
+  int key;
+  while((key = wgetch(inpwin->window)))
+  {
+    if(key == 10) break;
+
+    inpwin_key_handler();
+  
+    inpwin_refresh(inpwin, hidden);
+  }
+  curs_set(0);
+
+  inpwin_free(inpwin);
+  */
+}
+
 /*
  * The menu to authenticate a database using password
  */
 void menu_password(void)
 {
+  /*
   char password[32];
   memset(password, '\0', sizeof(password));
 
@@ -254,102 +287,230 @@ void menu_password(void)
   printw("%s", password);
 
   getch();
+  */
+}
+
+void menu_databases_resize(dbswin_t* dbswin, inpwin_t* inpwin)
+{
+  int xmax = getmaxx(stdscr);
+  int ymax = getmaxy(stdscr);
+
+  int x = xmax / 2;
+  int w = xmax - 12;
+
+  inpwin_resize(inpwin, x, 5, w);
+
+  dbswin_resize(dbswin, x, (ymax / 2) + 2, w, ymax - 10);
+}
+
+void menu_databases_refresh(dbswin_t* dbswin, inpwin_t* inpwin)
+{
+  refresh();
+
+  dbswin_refresh(dbswin);
+
+  inpwin_refresh(inpwin, false);
+}
+
+typedef struct
+{
+  dbswin_t* dbases;
+  inpwin_t* search;
+  cnfwin_t* delete;
+} menu_dbases_t;
+
+void menu_databases_inpwin_input(dbswin_t* dbswin, inpwin_t* inpwin)
+{
+  curs_set(1);
+
+  menu_databases_refresh(dbswin, inpwin);
+
+  int key;
+  while((key = wgetch(inpwin->window)))
+  {
+    if(key == 10) break;
+
+    inpwin_key_handler(inpwin, key);
+
+    if(key == KEY_RESIZE) menu_databases_resize(dbswin, inpwin);
+  
+    menu_databases_refresh(dbswin, inpwin);
+  }
+  curs_set(0);
+}
+
+void menu_databases_delete_input(bool* answer, dbswin_t* dbswin, inpwin_t* inpwin)
+{
+  cnfwin_t* cnfwin = cnfwin_create(1, 1, 1, "Why?", "Yes", "No");
+
+  menu_databases_refresh(dbswin, inpwin);
+
+  int key;
+  while((key = wgetch(cnfwin->window)))
+  {
+    if(key == 10) break;
+
+    cnfwin_key_handler(cnfwin, key);
+
+    if(key == KEY_RESIZE) menu_databases_resize(dbswin, inpwin);
+  
+    menu_databases_refresh(dbswin, inpwin);
+  }
+
+  cnfwin_free(cnfwin);
+}
+
+void dbswin_key_handler(dbswin_t* dbswin, int key, inpwin_t* inpwin)
+{
+  switch(key)
+  {
+    case 'j':
+      dbswin->index = MIN(dbswin->index + 1, dbswin->amount - 1);
+      break;
+
+    case 'k':
+      dbswin->index = MAX(dbswin->index - 1, 0);
+      break;
+
+    case 'd':
+      move(0, 0);
+      printw("delete");
+      refresh();
+      break;
+
+    case 'n':
+      move(0, 0);
+      printw("new");
+      refresh();
+      break;
+
+    case 'o':
+      move(0, 0);
+      printw("open");
+      refresh();
+
+      // memcpy(dbfile, dbswin->dbases[dbswin->index],
+      //   MIN(sizeof(dbfile), strlen(dbswin->dbases[dbswin->index]));
+      break;
+
+    case 'r':
+      move(0, 0);
+      printw("rename");
+      refresh();
+
+      /*
+      char string[64];
+
+      string_input(string, sizeof(string), "Name", false);
+
+      printw("string: %s", string);
+      */
+
+      break;
+
+    case '/':
+      move(0, 0);
+      printw("search");
+      refresh();
+
+      menu_databases_inpwin_input(dbswin, inpwin);
+
+      break;
+
+    case KEY_RESIZE:
+      menu_databases_resize(dbswin, inpwin);
+      break;
+
+    default:
+      break;
+  }
 }
 
 void menu_databases(void)
 {
   char text[64];
-  inpwin_t* inpwin = inpwin_center_create(stdscr, 5, 5, text, sizeof(text));
-
-  int ymax = getmaxy(stdscr);
+  inpwin_t* inpwin = inpwin_create(1, 1, 1, text, sizeof(text));
 
   char* dbases[] = {"Secret", "Home", "School"};
   int amount = 3;
 
-  dbswin_t* dbswin = dbswin_center_create(stdscr, ymax - 10, 8, 5, dbases, amount);
+  dbswin_t* dbswin = dbswin_create(1, 1, 1, 1, dbases, amount);
 
-  wborder(inpwin->window, 0, 0, 0, 0, 0, 0, ACS_VLINE, ACS_VLINE);
-  wborder(dbswin->window, 0, 0, 0, 0, ACS_VLINE, ACS_VLINE, 0, 0);
+  menu_databases_resize(dbswin, inpwin);
 
   refresh();
 
-  inpwin_refresh(inpwin, false);
-  dbswin_refresh(dbswin);
+  menu_databases_refresh(dbswin, inpwin);
 
   int key;
   while((key = wgetch(dbswin->window)))
   {
     if(key == 10) break;
 
-    switch(key)
-    {
-      case 'j':
-        dbswin->index = MIN(dbswin->index + 1, amount - 1);
-        break;
+    dbswin_key_handler(dbswin, key, inpwin);
 
-      case 'k':
-        dbswin->index = MAX(dbswin->index - 1, 0);
-        break;
+    move(1, 0);
+    printw("%03d", key);
+    refresh();
 
-      case 'd':
-        move(0, 0);
-        printw("delete");
-        refresh();
-        bool answer = false;
-        confirm_input(&answer, "Delete Database?", "Yes", "No");
-        break;
-
-      case 'n':
-        move(0, 0);
-        printw("new");
-        refresh();
-        break;
-
-      case 'o':
-        move(0, 0);
-        printw("open");
-        refresh();
-
-        // memcpy(dbfile, dbswin->dbases[dbswin->index],
-        //   MIN(sizeof(dbfile), strlen(dbswin->dbases[dbswin->index]));
-        break;
-
-      case 'r':
-        move(0, 0);
-        printw("rename");
-        refresh();
-
-        char string[64];
-
-        string_input(string, sizeof(string), "Name", false);
-
-        printw("string: %s", string);
-
-        break;
-
-      case '/':
-        move(0, 0);
-        printw("search");
-        refresh();
-
-        inpwin_input(inpwin, false);
-        break;
-
-      default:
-        break;
-    }
-
-    dbswin_refresh(dbswin);
+    menu_databases_refresh(dbswin, inpwin);
   }
 
   dbswin_free(dbswin);
   inpwin_free(inpwin);
 }
 
+void acswin_key_handler(acswin_t* acswin, int key, inpwin_t* inpwin)
+{
+  switch(key)
+  {
+    case 'j':
+      acswin->index = MIN(acswin->index + 1, database.amount - 1);
+      break;
+
+    case 'k':
+      acswin->index = MAX(acswin->index - 1, 0);
+      break;
+
+    case 'd':
+      move(0, 0);
+      printw("delete");
+      refresh();
+      break;
+
+    case 'n':
+      move(0, 0);
+      printw("new");
+      refresh();
+      break;
+
+    case 'c':
+      move(0, 0);
+      printw("copy");
+      refresh();
+      break;
+
+    case 's':
+      move(0, 0);
+      printw("show");
+      refresh();
+      break;
+
+    case '/':
+      move(0, 0);
+      printw("search");
+      refresh();
+      break;
+
+    default:
+      break;
+  }
+}
+
 void menu_database(void)
 {
   char text[64];
-  inpwin_t* inpwin = inpwin_center_create(stdscr, 5, 5, text, sizeof(text));
+  inpwin_t* inpwin = inpwin_create(1, 1, 1, text, sizeof(text));
 
   int ymax = getmaxy(stdscr);
 
@@ -368,51 +529,6 @@ void menu_database(void)
   {
     if(key == 10) break;
 
-    switch(key)
-    {
-      case 'j':
-        acswin->index = MIN(acswin->index + 1, database.amount - 1);
-        break;
-
-      case 'k':
-        acswin->index = MAX(acswin->index - 1, 0);
-        break;
-
-      case 'd':
-        move(0, 0);
-        printw("delete");
-        refresh();
-        break;
-
-      case 'n':
-        move(0, 0);
-        printw("new");
-        refresh();
-        break;
-
-      case 'c':
-        move(0, 0);
-        printw("copy");
-        refresh();
-        break;
-
-      case 's':
-        move(0, 0);
-        printw("show");
-        refresh();
-        break;
-
-      case '/':
-        move(0, 0);
-        printw("search");
-        refresh();
-
-        inpwin_input(inpwin, false);
-        break;
-
-      default:
-        break;
-    }
 
     acswin_refresh(acswin);
   }
@@ -423,6 +539,7 @@ void menu_database(void)
 
 void menu_account(void)
 {
+  /*
   char string[64];
 
   string_input(string, sizeof(string), "Name", false);
@@ -430,6 +547,7 @@ void menu_account(void)
   printw("string: %s", string);
 
   getch();
+  */
 }
 
 void screen_init(void)

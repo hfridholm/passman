@@ -21,6 +21,8 @@ void infwin_free(infwin_t* infwin)
   if(infwin == NULL) return;
 
   window_free(infwin->window);
+
+  free(infwin);
 }
 
 infwin_t* infwin_center_create(window_t* parent, int w, char* title, char* text)
@@ -40,6 +42,8 @@ infwin_t* infwin_center_create(window_t* parent, int w, char* title, char* text)
 
 void infwin_refresh(infwin_t* infwin)
 {
+  window_clean(infwin->window);
+
   curs_set(0);
 
   box(infwin->window, 0, 0);

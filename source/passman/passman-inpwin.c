@@ -1,18 +1,32 @@
 #include "../passman.h"
 #include "passman-intern.h"
 
-inpwin_t* inpwin_create(int w, int y, int x, char* buffer, size_t size)
+/*
+ * PARAMS
+ * - int x | x-value center of window
+ * - int y | y-value center of window
+ * - int w | width of window
+ */
+void inpwin_resize(inpwin_t* inpwin, int x, int y, int w)
 {
-  int ymax = getmaxy(stdscr);
+  window_resize(inpwin->window, x, y, w, 3);
 
-  if((y + 3) > ymax) return NULL; 
+  inpwin->xmax = w;
+}
 
-
+/*
+ * PARAMS
+ * - int x | x-value center of window
+ * - int y | y-value center of window
+ * - int w | width of window
+ */
+inpwin_t* inpwin_create(int x, int y, int w, char* buffer, size_t size)
+{
   inpwin_t* inpwin = malloc(sizeof(inpwin_t));
 
-  inpwin->window = newwin(3, w, y, x);
+  inpwin->window = window_create(x, y, w, 3);
 
-  inpwin->xmax = getmaxx(inpwin->window);
+  inpwin->xmax = w;
 
   keypad(inpwin->window, TRUE);
 
@@ -31,21 +45,13 @@ void inpwin_free(inpwin_t* inpwin)
   free(inpwin);
 }
 
-inpwin_t* inpwin_center_create(window_t* parent, int y, int x, char* buffer, int size)
-{
-  int xmax = getmaxx(parent);
-
-  int w = (xmax - x - x);
-  if(w <= 0) return NULL;
-
-  return inpwin_create(w, y, x, buffer, size);
-}
-
 /*
  * Refresh the content of the buffer being shown
  */
 void inpwin_refresh(inpwin_t* inpwin, bool hidden)
 {
+  window_clean(inpwin->window);
+
   wmove(inpwin->window, 1, 1);
 
   // The amount of characters to print
@@ -127,75 +133,40 @@ int inpwin_symbol_del(inpwin_t* inpwin)
 }
 
 /*
- * Input text from inside a specified window
  *
- * Don't let the user input more text than specified,
- * or what the window can hold
  */
-void inpwin_input(inpwin_t* inpwin, bool hidden)
+void inpwin_key_handler(inpwin_t* inpwin, int key)
 {
-  curs_set(1);
-
-  inpwin_refresh(inpwin, hidden);
-
-  int key;
-  while((key = wgetch(inpwin->window)))
+  switch(key)
   {
-    if(key == 10) break;
+    case KEY_RIGHT:
+      // The cursor can not be further than the text itself
+      inpwin->cursor = MIN(inpwin->cursor + 1, inpwin->length);
 
-    switch(key)
-    {
-      case KEY_RIGHT:
-        // The cursor can not be further than the text itself
-        inpwin->cursor = MIN(inpwin->cursor + 1, inpwin->length);
+      // The cursor is at the end of the input window
+      if((inpwin->cursor - inpwin->scroll) >= inpwin->xmax - 2)
+      {
+        inpwin->scroll++; // Scroll one more character
+      }
+      break;
 
-        // The cursor is at the end of the input window
-        if((inpwin->cursor - inpwin->scroll) >= inpwin->xmax - 2)
-        {
-          inpwin->scroll++; // Scroll one more character
-        }
-        break;
+    case KEY_LEFT:
+      // The cursor is at the end of the input window
+      if(inpwin->cursor <= inpwin->scroll && inpwin->scroll > 0)
+      {
+        inpwin->scroll--; // Scroll back one character
+      }
 
-      case KEY_LEFT:
-        // The cursor is at the end of the input window
-        if(inpwin->cursor <= inpwin->scroll && inpwin->scroll > 0)
-        {
-          inpwin->scroll--; // Scroll back one character
-        }
+      inpwin->cursor = MAX(inpwin->cursor - 1, 0);
 
-        inpwin->cursor = MAX(inpwin->cursor - 1, 0);
+      break;
 
-        break;
-
-      case KEY_BACKSPACE:
-        inpwin_symbol_del(inpwin);
-        break;
-      
-      default:
-        inpwin_symbol_add(inpwin, key);
-        break;
-    }
-  
-    inpwin_refresh(inpwin, hidden);
+    case KEY_BACKSPACE:
+      inpwin_symbol_del(inpwin);
+      break;
+    
+    default:
+      inpwin_symbol_add(inpwin, key);
+      break;
   }
-  curs_set(0);
-}
-
-/*
- * Input password from a popup window prompting you
- */
-void string_input(char* string, size_t size, const char* prompt, bool hidden)
-{
-  int ymax = getmaxy(stdscr);
-
-  inpwin_t* inpwin = inpwin_center_create(stdscr, (ymax / 2) - 2, 10, string, size);
-  if(inpwin == NULL) return;
-
-  window_title_center_print(inpwin->window, prompt);
-
-  refresh();
-
-  inpwin_input(inpwin, hidden);
-
-  inpwin_free(inpwin);
 }
