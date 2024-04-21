@@ -32,4 +32,11 @@ typedef WINDOW window_t;
 #include "passman/p-menpsw.h"
 #include "passman/p-menact.h"
 
+#include "passman/p-popups.h"
+#include "passman/p-screen.h"
+
+void screen_init(void);
+
+void screen_free(void);
+
 #endif // PASSMAN_H

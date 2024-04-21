@@ -8,9 +8,6 @@ typedef struct
   char password[64];
 } menpsw_t;
 
-extern menpsw_t menpsw;
-
-
 extern void menpsw_init(void);
 
 extern void menpsw_input(void);

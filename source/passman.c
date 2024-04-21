@@ -3,9 +3,6 @@
 bool argnew = false;
 bool argopen = false;
 
-mendbs_t mendbs;
-menpsw_t menpsw;
-
 /*
  * Output text when something is wrong with an option
  */
@@ -173,25 +170,6 @@ int pwfile_read(void)
   return file_read(password, size, sizeof(char), pwfile);
 }
 
-void screen_init(void)
-{
-  initscr();
-  cbreak();
-  noecho();
-  curs_set(0);
-
-  mendbs_init();
-  menpsw_init();
-}
-
-void screen_free(void)
-{
-  mendbs_free();
-  menpsw_free();
-
-  endwin();
-}
-
 /*
  * RETURN (int status)
  * - 0 | Success!
@@ -234,7 +212,7 @@ int main(int argc, char* argv[])
 
   screen_init();
 
-  menpsw_input();
+  mendbs_input();
 
   screen_free();
 

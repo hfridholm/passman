@@ -1,46 +1,24 @@
 #include "../passman.h"
 
-void mendbs_resize(void)
-{
-  int xmax = getmaxx(stdscr);
-  int ymax = getmaxy(stdscr);
+char* dbases[] = {"Secret", "Home", "School"};
 
+void mendbs_refresh(void)
+{
+  dbswin_refresh(mendbs.dbases);
+
+  inpwin_refresh(mendbs.search, false);
+}
+
+void mendbs_resize(int xmax, int ymax)
+{
   int x = xmax / 2;
+  int y = ymax / 2;
   int w = xmax - 12;
 
   inpwin_resize(mendbs.search, x, 5, w);
 
-  dbswin_resize(mendbs.dbases, x, (ymax / 2) + 2, w, ymax - 10);
-
-  cnfwin_resize(mendbs.delete, x, (ymax / 2), 30);
-
-  inpwin_resize(mendbs.pswwin, x, (ymax / 2), 40);
+  dbswin_resize(mendbs.dbases, x, y + 2, w, ymax - 10);
 }
-
-void mendbs_refresh(void)
-{
-  refresh();
-
-  dbswin_refresh(mendbs.dbases);
-
-  inpwin_refresh(mendbs.search, false);
-
-  switch(mendbs.popup)
-  {
-    case MENDBS_POPUP_DELETE:
-      cnfwin_refresh(mendbs.delete);
-      break;
-    
-    case MENDBS_POPUP_OPEN:
-      inpwin_refresh(mendbs.pswwin, true);
-      break;
-
-    default:
-      break;
-  }
-}
-
-char* dbases[] = {"Secret", "Home", "School"};
 
 void mendbs_init(void)
 {
@@ -49,14 +27,6 @@ void mendbs_init(void)
 
   mendbs.search = inpwin_create(1, 1, 1,
     mendbs.buffer, sizeof(mendbs.buffer));
-
-  mendbs.delete = cnfwin_create(1, 1, 1,
-    "Delete Database?", "Yes", "No");
-
-  mendbs.pswwin = inpwin_create(1, 1, 1,
-    mendbs.password, sizeof(mendbs.password));
-
-  mendbs_resize();
 }
 
 void mendbs_free(void)
@@ -64,72 +34,27 @@ void mendbs_free(void)
   dbswin_free(mendbs.dbases);
 
   inpwin_free(mendbs.search);
-
-  cnfwin_free(mendbs.delete);
-
-  inpwin_free(mendbs.pswwin);
 }
 
 void mendbs_search_input(void)
 {
   curs_set(1);
 
-  mendbs_refresh();
+  screen_refresh();
 
   int key;
-  while((key = wgetch(mendbs.search->window)))
+  while(running && (key = wgetch(mendbs.search->window)))
   {
     if(key == 10) break;
+
+    screen_key_handler(key);
 
     inpwin_key_handler(mendbs.search, key);
 
-    if(key == KEY_RESIZE) mendbs_resize();
-  
-    mendbs_refresh();
+    screen_refresh();
   }
+
   curs_set(0);
-}
-
-void mendbs_delete_input(void)
-{
-  mendbs.popup = MENDBS_POPUP_DELETE;
-
-  mendbs_refresh();
-
-  int key;
-  while((key = wgetch(mendbs.delete->window)))
-  {
-    if(key == 10) break;
-
-    cnfwin_key_handler(mendbs.delete, key);
-
-    if(key == KEY_RESIZE) mendbs_resize();
-  
-    mendbs_refresh();
-  }
-
-  mendbs.popup = MENDBS_POPUP_NONE;
-}
-
-void mendbs_pswwin_input(void)
-{
-  mendbs.popup = MENDBS_POPUP_OPEN;
-  
-  mendbs_refresh();
-
-  int key;
-  while((key = wgetch(mendbs.pswwin->window)))
-  {
-    if(key == 10) break;
-
-    inpwin_key_handler(mendbs.pswwin, key);
-
-    if(key == KEY_RESIZE) mendbs_resize();
-  
-    mendbs_refresh();
-  }
-
-  mendbs.popup = MENDBS_POPUP_NONE;
 }
 
 void mendbs_dbases_key_handler(int key)
@@ -141,7 +66,7 @@ void mendbs_dbases_key_handler(int key)
       printw("delete");
       refresh();
 
-      mendbs_delete_input();
+      delpop_input();
 
       break;
 
@@ -153,10 +78,10 @@ void mendbs_dbases_key_handler(int key)
 
     case 'o':
       move(0, 0);
-      printw("open pswwin->window: %p", mendbs.pswwin->window);
+      printw("open pswpop->window: %p", pswpop->window);
       refresh();
 
-      mendbs_pswwin_input();
+      pswpop_input();
 
       break;
 
@@ -166,7 +91,7 @@ void mendbs_dbases_key_handler(int key)
       refresh();
       break;
 
-    case '/':
+    case 9:
       move(0, 0);
       printw("search");
       refresh();
@@ -175,29 +100,32 @@ void mendbs_dbases_key_handler(int key)
 
       break;
 
-    case KEY_RESIZE:
-      mendbs_resize();
+    default:
       break;
   }
 }
 
 void mendbs_input(void)
 {
-  mendbs_refresh();
+  menu = MENU_DATABASES;
+
+  screen_refresh();
 
   int key;
-  while((key = wgetch(mendbs.dbases->window)))
+  while(running && (key = wgetch(mendbs.dbases->window)))
   {
+    move(1, 0);
+    printw("%03d", key);
+    refresh();
+
     if(key == 10) break;
+
+    screen_key_handler(key);
 
     dbswin_key_handler(mendbs.dbases, key);
 
     mendbs_dbases_key_handler(key);
 
-    move(1, 0);
-    printw("%03d", key);
-    refresh();
-
-    mendbs_refresh();
+    screen_refresh();
   }
 }

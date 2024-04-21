@@ -6,7 +6,7 @@ char dbfile[256];
 char pwfile[256];
 
 database_t database;
-char password[64];
+char       password[64];
 
 /*
  * RETURN (int status)

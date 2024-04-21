@@ -56,10 +56,10 @@ void menpsw_input(void)
   {
     if(key == 10) break;
 
+    screen_key_handler(key);
+
     inpwin_key_handler(menpsw.pswwin, key);
 
-    if(key == KEY_RESIZE) menpsw_resize();
-  
     menpsw_refresh();
   }
 }
