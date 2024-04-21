@@ -216,5 +216,7 @@ int main(int argc, char* argv[])
 
   screen_free();
 
+  printf("Exited Successfully!\n");
+
   return 0; // Success!
 }

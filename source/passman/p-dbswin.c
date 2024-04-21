@@ -1,5 +1,4 @@
 #include "../passman.h"
-#include "passman-intern.h"
 
 void dbswin_resize(dbswin_t* dbswin, int x, int y, int w, int h)
 {

@@ -1,5 +1,4 @@
 #include "../passman.h"
-#include "passman-intern.h"
 
 infwin_t* infwin_create(int h, int w, int y, int x, char* title, char* text)
 {

@@ -1,5 +1,4 @@
 #include "../passman.h"
-#include "passman-intern.h"
 
 acswin_t* acswin_create(int h, int w, int y, int x)
 {

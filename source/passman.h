@@ -17,21 +17,22 @@
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 #define MIN(a, b) (((a) > (b)) ? (b) : (a))
 
-#include "passman/passman-database.h"
+#include "passman/p-database.h"
 
 typedef WINDOW window_t;
 
-#include "passman/passman-cnfwin.h"
-#include "passman/passman-inpwin.h"
-#include "passman/passman-infwin.h"
-#include "passman/passman-dbswin.h"
-#include "passman/passman-acswin.h"
+#include "passman/p-cnfwin.h"
+#include "passman/p-inpwin.h"
+#include "passman/p-infwin.h"
+#include "passman/p-dbswin.h"
+#include "passman/p-acswin.h"
 
 #include "passman/p-mendbs.h"
 #include "passman/p-mendbe.h"
 #include "passman/p-menpsw.h"
 #include "passman/p-menact.h"
 
+#include "passman/p-window.h"
 #include "passman/p-popups.h"
 #include "passman/p-screen.h"
 

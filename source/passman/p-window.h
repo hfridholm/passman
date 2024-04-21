@@ -1,5 +1,5 @@
-#ifndef PASSMAN_INTERN_H
-#define PASSMAN_INTERN_H
+#ifndef P_WINDOW_H
+#define P_WINDOW_H
 
 extern void window_title_center_print(window_t* window, const char* title);
 

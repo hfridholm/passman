@@ -1,5 +1,4 @@
 #include "../passman.h"
-#include "passman-intern.h"
 
 /*
  * PARAMS
