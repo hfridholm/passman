@@ -4,8 +4,6 @@
 typedef struct
 {
   inpwin_t* pswwin;
-
-  char password[64];
 } menpsw_t;
 
 extern void menpsw_init(void);
@@ -13,5 +11,9 @@ extern void menpsw_init(void);
 extern void menpsw_input(void);
 
 extern void menpsw_free(void);
+
+extern void menpsw_resize(int xmax, int ymax);
+
+extern void menpsw_refresh(void);
 
 #endif // P_MENPSW_H

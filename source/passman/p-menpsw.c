@@ -1,75 +1,37 @@
 #include "../passman.h"
 
-void menu_password_inpwin_input()
-{
-  /*
-  int xmax = getmaxx(stdscr);
-  int ymax = getmaxy(stdscr);
-
-  inpwin_t* inpwin = inpwin_create(xmax / 2, ymax / 2, 20, string, size);
-  if(inpwin == NULL) return;
-
-  window_title_center_print(inpwin->window, prompt);
-
-  refresh();
-
-  curs_set(1);
-
-  inpwin_refresh(inpwin, hidden);
-
-  int key;
-  while((key = wgetch(inpwin->window)))
-  {
-    if(key == 10) break;
-
-    inpwin_key_handler();
-  
-    inpwin_refresh(inpwin, hidden);
-  }
-  curs_set(0);
-
-  inpwin_free(inpwin);
-  */
-}
-
 void menpsw_refresh(void)
 {
-  refresh();
-
   inpwin_refresh(menpsw.pswwin, true);
 }
 
-void menpsw_resize(void)
+void menpsw_resize(int xmax, int ymax)
 {
-  int xmax = getmaxx(stdscr);
-  int ymax = getmaxy(stdscr);
-
   inpwin_resize(menpsw.pswwin, xmax / 2, ymax / 2, 50);
 }
 
 void menpsw_input(void)
 {
-  menpsw_refresh();
+  menu = MENU_PASSWORD;
+
+  screen_refresh();
 
   int key;
-  while((key = wgetch(menpsw.pswwin->window)))
+  while(running && (key = wgetch(menpsw.pswwin->window)))
   {
-    if(key == 10) break;
+    if(key == KEY_ENTR) break;
 
     screen_key_handler(key);
 
     inpwin_key_handler(menpsw.pswwin, key);
 
-    menpsw_refresh();
+    screen_refresh();
   }
 }
 
 void menpsw_init(void)
 {
-  menpsw.pswwin = inpwin_create(1, 1, 1,
-    menpsw.password, sizeof(menpsw.password));
-
-  menpsw_resize();
+  menpsw.pswwin = inpwin_create(1, 1, 1, password, sizeof(password));
 }
 
 void menpsw_free(void)

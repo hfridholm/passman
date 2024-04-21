@@ -9,7 +9,7 @@ void delpop_input(void)
   int key;
   while(running && (key = wgetch(delpop->window)))
   {
-    if(key == 10) break;
+    if(key == KEY_ENTR) break;
 
     screen_key_handler(key);
 
@@ -30,7 +30,7 @@ void pswpop_input(void)
   int key;
   while(running && (key = wgetch(pswpop->window)))
   {
-    if(key == 10) break;
+    if(key == KEY_ENTR) break;
 
     screen_key_handler(key);
 
@@ -51,7 +51,7 @@ void extpop_input(void)
   int key;
   while(running && (key = wgetch(extpop->window)))
   {
-    if(key == 10) break;
+    if(key == KEY_ENTR) break;
 
     screen_key_handler(key);
 

@@ -45,7 +45,7 @@ void mendbs_search_input(void)
   int key;
   while(running && (key = wgetch(mendbs.search->window)))
   {
-    if(key == 10) break;
+    if(key == KEY_ENTR) break;
 
     screen_key_handler(key);
 
@@ -74,15 +74,6 @@ void mendbs_dbases_key_handler(int key)
       move(0, 0);
       printw("new");
       refresh();
-      break;
-
-    case 'o':
-      move(0, 0);
-      printw("open pswpop->window: %p", pswpop->window);
-      refresh();
-
-      pswpop_input();
-
       break;
 
     case 'r':
@@ -118,7 +109,18 @@ void mendbs_input(void)
     printw("%03d", key);
     refresh();
 
-    if(key == 10) break;
+    if(key == KEY_ENTR)
+    {
+      // pswpop_input();
+
+      move(1, 0);
+      printw("Opening database: %d", mendbs.dbases->index);
+
+      move(2, 0);
+      printw("Filepath: %s", mendbs.dbases->items[mendbs.dbases->index]);
+
+      menpsw_input();
+    }
 
     screen_key_handler(key);
 

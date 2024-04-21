@@ -19,6 +19,9 @@
 
 #include "passman/p-database.h"
 
+#define KEY_CTRLC 3
+#define KEY_ENTR  10
+
 typedef WINDOW window_t;
 
 #include "passman/p-cnfwin.h"

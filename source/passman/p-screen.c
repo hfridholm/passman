@@ -12,16 +12,16 @@ inpwin_t* pswpop; // Password popup window
 popup_t popup;
 menu_t  menu;
 
-
-#define KEY_CTRLC 3
-
-
 static void menu_refresh(void)
 {
   switch(menu)
   {
     case MENU_DATABASES:
       mendbs_refresh();
+      break;
+
+    case MENU_PASSWORD:
+      menpsw_refresh();
       break;
 
     default:
@@ -52,7 +52,8 @@ static void popup_refresh(void)
 
 void screen_refresh(void)
 {
-  refresh();
+  clear();        // Clear the screen
+  refresh();      // Refreshes the textures
 
   menu_refresh();
 
@@ -71,6 +72,8 @@ static void popups_resize(int xmax, int ymax)
 static void menus_resize(int xmax, int ymax)
 {
   mendbs_resize(xmax, ymax);
+
+  menpsw_resize(xmax, ymax);
 }
 
 void screen_resize(void)
@@ -86,11 +89,15 @@ void screen_resize(void)
 static void menus_init(void)
 {
   mendbs_init();
+
+  menpsw_init();
 }
 
 static void menus_free(void)
 {
   mendbs_free();
+
+  menpsw_free();
 }
 
 static void popups_init(void)
@@ -108,6 +115,10 @@ static void popups_init(void)
 static void popups_free(void)
 {
   cnfwin_free(extpop);
+
+  cnfwin_free(delpop);
+
+  inpwin_free(pswpop);
 }
 
 void screen_init(void)
@@ -118,7 +129,6 @@ void screen_init(void)
   raw();
 
   menus_init();
-
   popups_init();
 
   screen_resize();
@@ -127,7 +137,6 @@ void screen_init(void)
 void screen_free(void)
 {
   menus_free();
-
   popups_free();
 
   endwin();

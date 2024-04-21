@@ -212,7 +212,7 @@ int main(int argc, char* argv[])
 
   screen_init();
 
-  mendbs_input();
+  menpsw_input();
 
   screen_free();
 
