@@ -27,4 +27,6 @@ typedef WINDOW window_t;
 #include "passman/passman-dbswin.h"
 #include "passman/passman-acswin.h"
 
+#include "passman/p-mendbs.h"
+
 #endif // PASSMAN_H

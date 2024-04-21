@@ -7,11 +7,27 @@
  * - int y | y-value center of window
  * - int w | width of window
  */
+void cnfwin_resize(cnfwin_t* cnfwin, int x, int y, int w)
+{
+  int h = (strlen(cnfwin->prompt) / (w - 2)) + 5;
+
+  window_resize(cnfwin->window, x, y, w, h);
+
+  cnfwin->ymax = h;
+  cnfwin->xmax = w;
+}
+
+/*
+ * PARAMS
+ * - int x | x-value center of window
+ * - int y | y-value center of window
+ * - int w | width of window
+ */
 cnfwin_t* cnfwin_create(int x, int y, int w, char* prompt, char* ytext, char* ntext)
 {
   cnfwin_t* cnfwin = malloc(sizeof(cnfwin_t));
 
-  int h = (strlen(prompt) / (w - 2)) + 5;
+  int h = MIN((strlen(prompt) / (w - 2)) + 5, 0);
 
   cnfwin->window = window_create(x, y, w, h);
 
@@ -98,11 +114,11 @@ void cnfwin_key_handler(cnfwin_t* cnfwin, int key)
 {
   switch(key)
   {
-    case KEY_RIGHT:
+    case 'l':
       cnfwin->answer = false;
       break;
 
-    case KEY_LEFT:
+    case 'h':
       cnfwin->answer = true;
       break;
   }

@@ -52,3 +52,17 @@ void dbswin_refresh(dbswin_t* dbswin)
 
   wrefresh(dbswin->window);
 }
+
+void dbswin_key_handler(dbswin_t* dbswin, int key)
+{
+  switch(key)
+  {
+    case 'j':
+      dbswin->index = MIN(dbswin->index + 1, dbswin->amount - 1);
+      break;
+
+    case 'k':
+      dbswin->index = MAX(dbswin->index - 1, 0);
+      break;
+  }
+}

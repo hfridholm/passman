@@ -20,4 +20,6 @@ extern void dbswin_resize(dbswin_t* dbswin, int x, int y, int w, int h);
 
 extern void dbswin_refresh(dbswin_t* dbswin);
 
+extern void dbswin_key_handler(dbswin_t* dbswin, int key);
+
 #endif // PASSMAN_DBSWIN_H

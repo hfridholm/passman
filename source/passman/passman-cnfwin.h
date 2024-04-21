@@ -22,4 +22,6 @@ extern void cnfwin_refresh(cnfwin_t* cnfwin);
 
 extern void cnfwin_key_handler(cnfwin_t* cnfwin, int key);
 
+extern void cnfwin_resize(cnfwin_t* cnfwin, int x, int y, int w);
+
 #endif // PASSMAN_CNFWIN_H
