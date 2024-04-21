@@ -1,8 +1,5 @@
 #include "passman.h"
 
-#define MAX(a, b) (((a) > (b)) ? (a) : (b))
-#define MIN(a, b) (((a) > (b)) ? (b) : (a))
-
 ksize_t encrypt = AES_256;
 
 char dbfile[256];
@@ -227,19 +224,6 @@ int database_read_log(void)
   return status;
 }
 
-void database_print(void)
-{
-  printf("Created : %.16s\n", database.cdate);
-  printf("Updated : %.16s\n", database.udate);
-
-  printf("Email   : %.64s\n", database.email);
-
-  for(uint8_t index = 0; index < database.amount; index++)
-  {
-    printf("- %.64s\n", database.accounts[index].account);
-  }
-}
-
 /*
  * RETURN (same as file_read)
  * - 0  | Error
@@ -256,212 +240,6 @@ int pwfile_read(void)
 }
 
 /*
- * Print a title in the center top of a window
- */
-void window_title_center_print(WINDOW* window, const char* title)
-{
-  int xmax = getmaxx(window);
-
-  size_t length = strlen(title);
-
-  int x = (xmax - length) / 2 - 1;
-
-  mvwprintw(window, 0, x, "%s", title);
-}
-
-void window_inside_clear(WINDOW* window)
-{
-  int ymax = getmaxy(window);
-  int xmax = getmaxx(window);
-
-  for(int y = 1; y < ymax - 1; y++)
-  {
-    wmove(window, y, 1);
-
-    for(int x = 1; x < xmax - 1; x++)
-    {
-      waddch(window, ' ');
-    }
-  }
-}
-
-/*
- * Refresh the content of the buffer being shown
- */
-void inpwin_refresh(inpwin_t* inpwin, bool hidden)
-{
-  wmove(inpwin->window, 1, 1);
-
-  for(int index = 0; index < inpwin->length; index++)
-  {
-    if(index > inpwin->xmax - 2) break;
-
-    char symbol = (hidden ? '*' : inpwin->buffer[index]);
-
-    if(symbol == '\0') symbol = ' ';
-
-    waddch(inpwin->window, symbol);
-  }
-
-  wmove(inpwin->window, 1, 1 + inpwin->cursor);
-
-  wrefresh(inpwin->window);
-}
-
-/*
- * RETURN (int status)
- * - 0 | Success!
- * - 1 | Symbol not supported
- * - 2 | Buffer is full
- */
-int inpwin_symbol_add(inpwin_t* inpwin, char symbol)
-{
-  if(symbol < 32 || symbol > 126) return 1;
-
-  if(inpwin->length >= inpwin->xmax - 2) return 2;
-
-  for(int index = inpwin->length + 1; index-- > inpwin->cursor;)
-  {
-    inpwin->buffer[index] = inpwin->buffer[index - 1];
-  }
-
-  inpwin->buffer[inpwin->cursor++] = symbol;
-
-  inpwin->length++;
-
-  return 0; // Success!
-}
-
-int inpwin_symbol_del(inpwin_t* inpwin)
-{
-  if(inpwin->cursor <= 0) return 1;
-
-  for(int index = inpwin->cursor; index < inpwin->length; index++)
-  {
-    inpwin->buffer[index] = inpwin->buffer[index + 1];
-  }
-
-  wmove(inpwin->window, 1, inpwin->cursor);
-  waddch(inpwin->window, ' ');
-
-  inpwin->buffer[--inpwin->cursor] = '\0';
-
-  inpwin->length--;
-
-  return 0; // Success!
-}
-
-/*
- * Input text from inside a specified window
- *
- * Don't let the user input more text than specified,
- * or what the window can hold
- */
-void inpwin_input(inpwin_t* inpwin, bool hidden)
-{
-  curs_set(1);
-
-  inpwin_refresh(inpwin, hidden);
-
-  int key;
-  while((key = wgetch(inpwin->window)))
-  {
-    if(key == 10) break;
-
-    switch(key)
-    {
-      case KEY_RIGHT:
-        inpwin->cursor = MIN(inpwin->cursor + 1, inpwin->length);
-        break;
-
-      case KEY_LEFT:
-        inpwin->cursor = MAX(inpwin->cursor - 1, 0);
-        break;
-
-      case KEY_BACKSPACE:
-        inpwin_symbol_del(inpwin);
-        break;
-      
-      default:
-        inpwin_symbol_add(inpwin, key);
-        break;
-    }
-  
-    inpwin_refresh(inpwin, hidden);
-  }
-  curs_set(0);
-}
-
-inpwin_t* inpwin_create(int w, int y, int x)
-{
-  int ymax = getmaxy(stdscr);
-
-  if((y + 3) > ymax) return NULL; 
-
-
-  inpwin_t* inpwin = malloc(sizeof(inpwin_t));
-
-  inpwin->window = newwin(3, w, y, x);
-
-  inpwin->xmax = getmaxx(inpwin->window);
-
-  keypad(inpwin->window, TRUE);
-
-  inpwin->buffer = malloc(sizeof(char) * inpwin->xmax - 1);
-  memset(inpwin->buffer, '\0', inpwin->xmax - 1);
-
-  box(inpwin->window, 0, 0);
-
-  return inpwin;
-}
-
-void inpwin_free(inpwin_t* inpwin)
-{
-  wclear(inpwin->window);
-
-  wrefresh(inpwin->window);
-
-  delwin(inpwin->window);
-
-  free(inpwin->buffer);
-
-  free(inpwin);
-}
-
-inpwin_t* inpwin_center_create(WINDOW* parent, int y, int x)
-{
-  int xmax = getmaxx(parent);
-
-  int w = (xmax - x - x);
-  if(w <= 0) return NULL;
-
-  return inpwin_create(w, y, x);
-}
-
-/*
- * Input password from a popup window prompting you
- */
-void password_window_input(char* password, size_t size)
-{
-  // int xmax = getmaxx(stdscr);
-
-  // int width = MIN(32, xmax - 6);
-
-  inpwin_t* inpwin = inpwin_center_create(stdscr, 3, 3);
-
-  window_title_center_print(inpwin->window, "Password");
-
-  refresh();
-  wrefresh(inpwin->window);
-
-  inpwin_input(inpwin, true);
-
-  memcpy(password, inpwin->buffer, MIN(inpwin->length, size));
-
-  inpwin_free(inpwin);
-}
-
-/*
  * The menu to authenticate a database using password
  */
 void menu_password(void)
@@ -469,7 +247,7 @@ void menu_password(void)
   char password[32];
   memset(password, '\0', sizeof(password));
 
-  password_window_input(password, sizeof(password));
+  string_input(password, sizeof(password), "Password", true);
 
   refresh();
 
@@ -478,79 +256,17 @@ void menu_password(void)
   getch();
 }
 
-dbswin_t* dbswin_create(int h, int w, int y, int x, char** dbases, int amount)
-{
-  int ymax = getmaxy(stdscr);
-
-  if((y + h) > ymax) return NULL; 
-
-
-  dbswin_t* dbswin = malloc(sizeof(dbswin_t));
-
-  dbswin->window = newwin(h, w, y, x);
-
-
-  dbswin->ymax = ymax;
-  dbswin->xmax = getmaxx(dbswin->window);
-
-  keypad(dbswin->window, TRUE);
-
-
-  dbswin->dbases = dbases; // Copy the memory instead
-  dbswin->amount = amount;
-
-
-  box(dbswin->window, 0, 0);
-
-  return dbswin;
-}
-
-void dbswin_free(dbswin_t* dbswin)
-{
-  if(dbswin == NULL) return;
-
-  delwin(dbswin->window);
-
-  free(dbswin);
-}
-
-dbswin_t* dbswin_center_create(WINDOW* parent, int h, int y, int x, char** dbases, int amount)
-{
-  int ymax = getmaxy(parent);
-  int xmax = getmaxx(parent);
-
-  int w = xmax - x - x;
-  if(w <= 0) return NULL;
-
-  if((y + h) > ymax) return NULL;
-
-  return dbswin_create(h, w, y, x, dbases, amount);
-}
-
-void dbswin_refresh(dbswin_t* dbswin)
-{
-  for(int index = 0; index < dbswin->amount; index++)
-  {
-    if(index == dbswin->index) wattron(dbswin->window, A_REVERSE);
-
-    mvwprintw(dbswin->window, index + 1, 1, "%s", dbswin->dbases[index]);
-
-    wattroff(dbswin->window, A_REVERSE);
-  }
-
-  wrefresh(dbswin->window);
-}
-
 void menu_databases(void)
 {
-  inpwin_t* inpwin = inpwin_center_create(stdscr, 5, 5);
+  char text[64];
+  inpwin_t* inpwin = inpwin_center_create(stdscr, 5, 5, text, sizeof(text));
 
   int ymax = getmaxy(stdscr);
 
   char* dbases[] = {"Secret", "Home", "School"};
   int amount = 3;
 
-  dbswin_t* dbswin = dbswin_center_create(stdscr, ymax - 10, 7, 5, dbases, amount);
+  dbswin_t* dbswin = dbswin_center_create(stdscr, ymax - 10, 8, 5, dbases, amount);
 
   wborder(inpwin->window, 0, 0, 0, 0, 0, 0, ACS_VLINE, ACS_VLINE);
   wborder(dbswin->window, 0, 0, 0, 0, ACS_VLINE, ACS_VLINE, 0, 0);
@@ -567,11 +283,11 @@ void menu_databases(void)
 
     switch(key)
     {
-      case KEY_DOWN:
+      case 'j':
         dbswin->index = MIN(dbswin->index + 1, amount - 1);
         break;
 
-      case KEY_UP:
+      case 'k':
         dbswin->index = MAX(dbswin->index - 1, 0);
         break;
 
@@ -579,6 +295,8 @@ void menu_databases(void)
         move(0, 0);
         printw("delete");
         refresh();
+        bool answer = false;
+        confirm_input(&answer, "Delete Database?", "Yes", "No");
         break;
 
       case 'n':
@@ -600,6 +318,13 @@ void menu_databases(void)
         move(0, 0);
         printw("rename");
         refresh();
+
+        char string[64];
+
+        string_input(string, sizeof(string), "Name", false);
+
+        printw("string: %s", string);
+
         break;
 
       case '/':
@@ -623,12 +348,104 @@ void menu_databases(void)
 
 void menu_database(void)
 {
+  char text[64];
+  inpwin_t* inpwin = inpwin_center_create(stdscr, 5, 5, text, sizeof(text));
 
+  int ymax = getmaxy(stdscr);
+
+  acswin_t* acswin = acswin_center_create(stdscr, ymax - 10, 7, 5);
+
+  wborder(inpwin->window, 0, 0, 0, 0, 0, 0, ACS_VLINE, ACS_VLINE);
+  wborder(acswin->window, 0, 0, 0, 0, ACS_VLINE, ACS_VLINE, 0, 0);
+
+  refresh();
+
+  inpwin_refresh(inpwin, false);
+  acswin_refresh(acswin);
+
+  int key;
+  while((key = wgetch(acswin->window)))
+  {
+    if(key == 10) break;
+
+    switch(key)
+    {
+      case 'j':
+        acswin->index = MIN(acswin->index + 1, database.amount - 1);
+        break;
+
+      case 'k':
+        acswin->index = MAX(acswin->index - 1, 0);
+        break;
+
+      case 'd':
+        move(0, 0);
+        printw("delete");
+        refresh();
+        break;
+
+      case 'n':
+        move(0, 0);
+        printw("new");
+        refresh();
+        break;
+
+      case 'c':
+        move(0, 0);
+        printw("copy");
+        refresh();
+        break;
+
+      case 's':
+        move(0, 0);
+        printw("show");
+        refresh();
+        break;
+
+      case '/':
+        move(0, 0);
+        printw("search");
+        refresh();
+
+        inpwin_input(inpwin, false);
+        break;
+
+      default:
+        break;
+    }
+
+    acswin_refresh(acswin);
+  }
+
+  acswin_free(acswin);
+  inpwin_free(inpwin);
 }
 
 void menu_account(void)
 {
+  char string[64];
 
+  string_input(string, sizeof(string), "Name", false);
+
+  printw("string: %s", string);
+
+  getch();
+}
+
+void screen_init(void)
+{
+  initscr();
+
+  cbreak();
+
+  noecho();
+
+  curs_set(0);
+}
+
+void screen_free(void)
+{
+  endwin();
 }
 
 /*
@@ -655,7 +472,9 @@ int main(int argc, char* argv[])
 
     if(database_read_log() != 0) return 2;
   }
+  */
 
+  /*
   database_print();
 
   if(strlen(password) == 0) password_input();
@@ -663,14 +482,16 @@ int main(int argc, char* argv[])
   database_write();
   */
 
-  initscr();
-  cbreak();
-  noecho();
-  curs_set(0);
+  screen_init();
+
+  database.amount = 1;
+  database.accounts[0] = (account_t) {
+    .account = "google.com"
+  };
 
   menu_databases();
 
-  endwin();
+  screen_free();
 
   return 0; // Success!
 }
