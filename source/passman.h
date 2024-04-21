@@ -25,7 +25,6 @@ typedef WINDOW window_t;
 #include "passman/p-inpwin.h"
 #include "passman/p-infwin.h"
 #include "passman/p-lstwin.h"
-#include "passman/p-acswin.h"
 
 #include "passman/p-mendbs.h"
 #include "passman/p-mendbe.h"

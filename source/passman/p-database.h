@@ -1,5 +1,5 @@
-#ifndef PASSMAN_DATABASE_H
-#define PASSMAN_DATABASE_H
+#ifndef P_DATABASE_H
+#define P_DATABASE_H
 
 typedef struct
 {
@@ -33,4 +33,4 @@ extern ksize_t encrypt;
 extern char dbfile[256];
 extern char pwfile[256];
 
-#endif // PASSMAN_DATABASE_H
+#endif // P_DATABASE_H

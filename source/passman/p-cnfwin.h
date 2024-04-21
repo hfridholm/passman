@@ -1,5 +1,5 @@
-#ifndef PASSMAN_CNFWIN_H
-#define PASSMAN_CNFWIN_H
+#ifndef P_CNFWIN_H
+#define P_CNFWIN_H
 
 #include "../passman.h"
 
@@ -24,4 +24,4 @@ extern void cnfwin_key_handler(cnfwin_t* cnfwin, int key);
 
 extern void cnfwin_resize(cnfwin_t* cnfwin, int x, int y, int w);
 
-#endif // PASSMAN_CNFWIN_H
+#endif // P_CNFWIN_H

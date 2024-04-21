@@ -8,7 +8,7 @@ void lstwin_resize(lstwin_t* lstwin, int x, int y, int w, int h)
   lstwin->xmax = w;
 }
 
-lstwin_t* lstwin_create(int x, int y, int w, int h, char** dbases, int amount)
+lstwin_t* lstwin_create(int x, int y, int w, int h, char** items, int amount)
 {
   lstwin_t* lstwin = malloc(sizeof(lstwin_t));
 
@@ -19,7 +19,7 @@ lstwin_t* lstwin_create(int x, int y, int w, int h, char** dbases, int amount)
 
   keypad(lstwin->window, TRUE);
 
-  lstwin->dbases = dbases;
+  lstwin->items = items;
   lstwin->amount = amount;
 
   return lstwin;
@@ -42,7 +42,7 @@ void lstwin_refresh(lstwin_t* lstwin)
   {
     if(index == lstwin->index) wattron(lstwin->window, A_REVERSE);
 
-    mvwprintw(lstwin->window, index + 1, 1, "%s", lstwin->dbases[index]);
+    mvwprintw(lstwin->window, index + 1, 1, "%s", lstwin->items[index]);
 
     wattroff(lstwin->window, A_REVERSE);
   }

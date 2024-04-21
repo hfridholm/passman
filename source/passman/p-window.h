@@ -11,4 +11,4 @@ extern window_t* window_create(int x, int y, int w, int h);
 
 extern void window_resize(window_t* window, int x, int y, int w, int h);
 
-#endif
+#endif // P_WINDOW_H
