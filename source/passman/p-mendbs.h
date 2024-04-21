@@ -6,7 +6,8 @@ typedef enum
   MENDBS_POPUP_NONE,
   MENDBS_POPUP_DELETE,
   MENDBS_POPUP_RENAME,
-  MENDBS_POPUP_NEW
+  MENDBS_POPUP_NEW,
+  MENDBS_POPUP_OPEN
 } mendbs_popup_t;
 
 typedef struct
@@ -14,7 +15,9 @@ typedef struct
   dbswin_t* dbases;
   inpwin_t* search;
   cnfwin_t* delete;
+  inpwin_t* pswwin;
 
+  char password[64];
   char buffer[64];
 
   mendbs_popup_t popup; // Visable popup

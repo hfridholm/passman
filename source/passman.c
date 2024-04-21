@@ -4,6 +4,7 @@ bool argnew = false;
 bool argopen = false;
 
 mendbs_t mendbs;
+menpsw_t menpsw;
 
 /*
  * Output text when something is wrong with an option
@@ -172,160 +173,22 @@ int pwfile_read(void)
   return file_read(password, size, sizeof(char), pwfile);
 }
 
-void menu_password_inpwin_input()
-{
-  /*
-  int xmax = getmaxx(stdscr);
-  int ymax = getmaxy(stdscr);
-
-  inpwin_t* inpwin = inpwin_create(xmax / 2, ymax / 2, 20, string, size);
-  if(inpwin == NULL) return;
-
-  window_title_center_print(inpwin->window, prompt);
-
-  refresh();
-
-  curs_set(1);
-
-  inpwin_refresh(inpwin, hidden);
-
-  int key;
-  while((key = wgetch(inpwin->window)))
-  {
-    if(key == 10) break;
-
-    inpwin_key_handler();
-  
-    inpwin_refresh(inpwin, hidden);
-  }
-  curs_set(0);
-
-  inpwin_free(inpwin);
-  */
-}
-
-/*
- * The menu to authenticate a database using password
- */
-void menu_password(void)
-{
-  /*
-  char password[32];
-  memset(password, '\0', sizeof(password));
-
-  string_input(password, sizeof(password), "Password", true);
-
-  refresh();
-
-  printw("%s", password);
-
-  getch();
-  */
-}
-
-void acswin_key_handler(acswin_t* acswin, int key, inpwin_t* inpwin)
-{
-  switch(key)
-  {
-    case 'j':
-      acswin->index = MIN(acswin->index + 1, database.amount - 1);
-      break;
-
-    case 'k':
-      acswin->index = MAX(acswin->index - 1, 0);
-      break;
-
-    case 'd':
-      move(0, 0);
-      printw("delete");
-      refresh();
-      break;
-
-    case 'n':
-      move(0, 0);
-      printw("new");
-      refresh();
-      break;
-
-    case 'c':
-      move(0, 0);
-      printw("copy");
-      refresh();
-      break;
-
-    case 's':
-      move(0, 0);
-      printw("show");
-      refresh();
-      break;
-
-    case '/':
-      move(0, 0);
-      printw("search");
-      refresh();
-      break;
-
-    default:
-      break;
-  }
-}
-
-void menu_database(void)
-{
-  char text[64];
-  inpwin_t* inpwin = inpwin_create(1, 1, 1, text, sizeof(text));
-
-  int ymax = getmaxy(stdscr);
-
-  acswin_t* acswin = acswin_center_create(stdscr, ymax - 10, 7, 5);
-
-  wborder(inpwin->window, 0, 0, 0, 0, 0, 0, ACS_VLINE, ACS_VLINE);
-  wborder(acswin->window, 0, 0, 0, 0, ACS_VLINE, ACS_VLINE, 0, 0);
-
-  refresh();
-
-  inpwin_refresh(inpwin, false);
-  acswin_refresh(acswin);
-
-  int key;
-  while((key = wgetch(acswin->window)))
-  {
-    if(key == 10) break;
-
-
-    acswin_refresh(acswin);
-  }
-
-  acswin_free(acswin);
-  inpwin_free(inpwin);
-}
-
-void menu_account(void)
-{
-  /*
-  char string[64];
-
-  string_input(string, sizeof(string), "Name", false);
-
-  printw("string: %s", string);
-
-  getch();
-  */
-}
-
 void screen_init(void)
 {
   initscr();
-
   cbreak();
-
   noecho();
-
   curs_set(0);
+
+  mendbs_init();
+  menpsw_init();
 }
 
 void screen_free(void)
 {
+  mendbs_free();
+  menpsw_free();
+
   endwin();
 }
 
@@ -363,18 +226,15 @@ int main(int argc, char* argv[])
   database_write();
   */
 
-  screen_init();
-
   database.amount = 1;
   database.accounts[0] = (account_t) {
     .account = "google.com"
   };
 
-  mendbs_init();
 
-  mendbs_input();
+  screen_init();
 
-  mendbs_free();
+  menpsw_input();
 
   screen_free();
 

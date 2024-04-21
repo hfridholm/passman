@@ -12,7 +12,9 @@ void mendbs_resize(void)
 
   dbswin_resize(mendbs.dbases, x, (ymax / 2) + 2, w, ymax - 10);
 
-  cnfwin_resize(mendbs.delete, x, (ymax / 2), 20);
+  cnfwin_resize(mendbs.delete, x, (ymax / 2), 30);
+
+  inpwin_resize(mendbs.pswwin, x, (ymax / 2), 40);
 }
 
 void mendbs_refresh(void)
@@ -23,9 +25,18 @@ void mendbs_refresh(void)
 
   inpwin_refresh(mendbs.search, false);
 
-  if(mendbs.popup == MENDBS_POPUP_DELETE)
+  switch(mendbs.popup)
   {
-    cnfwin_refresh(mendbs.delete);
+    case MENDBS_POPUP_DELETE:
+      cnfwin_refresh(mendbs.delete);
+      break;
+    
+    case MENDBS_POPUP_OPEN:
+      inpwin_refresh(mendbs.pswwin, true);
+      break;
+
+    default:
+      break;
   }
 }
 
@@ -42,6 +53,9 @@ void mendbs_init(void)
   mendbs.delete = cnfwin_create(1, 1, 1,
     "Delete Database?", "Yes", "No");
 
+  mendbs.pswwin = inpwin_create(1, 1, 1,
+    mendbs.password, sizeof(mendbs.password));
+
   mendbs_resize();
 }
 
@@ -52,6 +66,8 @@ void mendbs_free(void)
   inpwin_free(mendbs.search);
 
   cnfwin_free(mendbs.delete);
+
+  inpwin_free(mendbs.pswwin);
 }
 
 void mendbs_search_input(void)
@@ -76,16 +92,13 @@ void mendbs_search_input(void)
 
 void mendbs_delete_input(void)
 {
+  mendbs.popup = MENDBS_POPUP_DELETE;
+
   mendbs_refresh();
-  cnfwin_refresh(mendbs.delete);
 
   int key;
   while((key = wgetch(mendbs.delete->window)))
   {
-    move(1, 0);
-    printw("%03d", key);
-    refresh();
-
     if(key == 10) break;
 
     cnfwin_key_handler(mendbs.delete, key);
@@ -93,8 +106,30 @@ void mendbs_delete_input(void)
     if(key == KEY_RESIZE) mendbs_resize();
   
     mendbs_refresh();
-    cnfwin_refresh(mendbs.delete);
   }
+
+  mendbs.popup = MENDBS_POPUP_NONE;
+}
+
+void mendbs_pswwin_input(void)
+{
+  mendbs.popup = MENDBS_POPUP_OPEN;
+  
+  mendbs_refresh();
+
+  int key;
+  while((key = wgetch(mendbs.pswwin->window)))
+  {
+    if(key == 10) break;
+
+    inpwin_key_handler(mendbs.pswwin, key);
+
+    if(key == KEY_RESIZE) mendbs_resize();
+  
+    mendbs_refresh();
+  }
+
+  mendbs.popup = MENDBS_POPUP_NONE;
 }
 
 void mendbs_dbases_key_handler(int key)
@@ -118,8 +153,11 @@ void mendbs_dbases_key_handler(int key)
 
     case 'o':
       move(0, 0);
-      printw("open");
+      printw("open pswwin->window: %p", mendbs.pswwin->window);
       refresh();
+
+      mendbs_pswwin_input();
+
       break;
 
     case 'r':
