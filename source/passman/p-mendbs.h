@@ -3,7 +3,7 @@
 
 typedef struct
 {
-  dbswin_t* dbases;
+  lstwin_t* dbases;
   inpwin_t* search;
 
   char buffer[64];

@@ -4,7 +4,7 @@ char* dbases[] = {"Secret", "Home", "School"};
 
 void mendbs_refresh(void)
 {
-  dbswin_refresh(mendbs.dbases);
+  lstwin_refresh(mendbs.dbases);
 
   inpwin_refresh(mendbs.search, false);
 }
@@ -17,12 +17,12 @@ void mendbs_resize(int xmax, int ymax)
 
   inpwin_resize(mendbs.search, x, 5, w);
 
-  dbswin_resize(mendbs.dbases, x, y + 2, w, ymax - 10);
+  lstwin_resize(mendbs.dbases, x, y + 2, w, ymax - 10);
 }
 
 void mendbs_init(void)
 {
-  mendbs.dbases = dbswin_create(1, 1, 1, 1,
+  mendbs.dbases = lstwin_create(1, 1, 1, 1,
     dbases, 3);
 
   mendbs.search = inpwin_create(1, 1, 1,
@@ -31,7 +31,7 @@ void mendbs_init(void)
 
 void mendbs_free(void)
 {
-  dbswin_free(mendbs.dbases);
+  lstwin_free(mendbs.dbases);
 
   inpwin_free(mendbs.search);
 }
@@ -122,7 +122,7 @@ void mendbs_input(void)
 
     screen_key_handler(key);
 
-    dbswin_key_handler(mendbs.dbases, key);
+    lstwin_key_handler(mendbs.dbases, key);
 
     mendbs_dbases_key_handler(key);
 
