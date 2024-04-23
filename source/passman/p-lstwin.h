@@ -4,8 +4,6 @@
 typedef struct
 {
   window_t* window;
-  int ymax;
-  int xmax;
   int index;       // Which item the user hovers over
   char** items;    // The items in the list
   int amount;      // The amount of items

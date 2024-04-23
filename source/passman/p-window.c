@@ -2,16 +2,22 @@
 
 /*
  * PARAMS
- * - int x | x-value center of window
- * - int y | y-value center of window
- * - int w | width of window
- * - int h | height of window
+ * - window_t* window |
+ * - int x            | x-value center of window
+ * - int y            | y-value center of window
+ * - int w            | width of window
+ * - int h            | height of window
+ *
+ * Note: Maybe return window_t* window
  */
 void window_resize(window_t* window, int x, int y, int w, int h)
 {
-  wresize(window, h, w);
+  wresize(window->window, h, w);
 
-  mvwin(window, y - (h / 2), x - (w / 2));
+  mvwin(window->window, y - (h / 2), x - (w / 2));
+
+  window->ymax = h;
+  window->xmax = w;
 }
 
 /*
@@ -20,10 +26,22 @@ void window_resize(window_t* window, int x, int y, int w, int h)
  * - int y | y-value center of window
  * - int w | width of window
  * - int h | height of window
+ *
+ * RETURN (window_t* window)
  */
 window_t* window_create(int x, int y, int w, int h)
 {
-  return newwin(h, w, y - (h / 2), x - (w / 2));
+  window_t* window = malloc(sizeof(window_t));
+
+  window->window = newwin(1, 1, 1, 1);
+
+  keypad(window->window, TRUE);
+
+  window->active = true;
+
+  window_resize(window, x, y, w, h);
+
+  return window;
 }
 
 /*
@@ -31,27 +49,22 @@ window_t* window_create(int x, int y, int w, int h)
  */
 void window_title_center_print(window_t* window, const char* title)
 {
-  int xmax = getmaxx(window);
-
   size_t length = strlen(title);
 
-  int x = (xmax - length) / 2 - 1;
+  int x = (window->xmax - length) / 2 - 1;
 
-  mvwprintw(window, 0, x, "%s", title);
+  mvwprintw(window->window, 0, x, "%s", title);
 }
 
 void window_clean(window_t* window)
 {
-  int ymax = getmaxy(window);
-  int xmax = getmaxx(window);
-
-  for(int y = 0; y < ymax; y++)
+  for(int y = 0; y < window->ymax; y++)
   {
-    wmove(window, y, 0);
+    wmove(window->window, y, 0);
 
-    for(int x = 0; x < xmax; x++)
+    for(int x = 0; x < window->xmax; x++)
     {
-      waddch(window, ' ');
+      waddch(window->window, ' ');
     }
   }
 }
@@ -60,10 +73,12 @@ void window_free(window_t* window)
 {
   if(window == NULL) return;
 
-  wclear(window);
+  wclear(window->window);
 
-  wrefresh(window);
+  wrefresh(window->window);
 
-  delwin(window);
+  delwin(window->window);
+
+  free(window);
 }
 

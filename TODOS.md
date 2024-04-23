@@ -6,5 +6,11 @@
 - add prompt to input (top left corner of box)
 - delete infwin_center_create and fix infwin_create
 - add "active" attribute to window_t (refresh only the active windows)
-- move ymax and xmax to window_t
-- add individual popups to each menu (delete, rename, new, usw)
+- add individual popups to each menu struct (delete, rename, new, usw)
+- fix scroll + resize in inpwin_t
+
+## Maybe
+- Why is windows allocated on the heap?
+  Can't you just pass the address to the window?
+  (It is easier for the API to use pointers, 
+   instead of the user having to pass by reference)

@@ -21,9 +21,6 @@ void lstwin_resize(lstwin_t* lstwin, int x, int y, int w, int h)
   {
     lstwin->scroll = MAX(0, lstwin->amount - (h - 2));
   }
-
-  lstwin->ymax = h;
-  lstwin->xmax = w;
 }
 
 lstwin_t* lstwin_create(int x, int y, int w, int h, char** items, int amount)
@@ -31,11 +28,6 @@ lstwin_t* lstwin_create(int x, int y, int w, int h, char** items, int amount)
   lstwin_t* lstwin = malloc(sizeof(lstwin_t));
 
   lstwin->window = window_create(x, y, w, h);
-
-  lstwin->ymax = h;
-  lstwin->xmax = w;
-
-  keypad(lstwin->window, TRUE);
 
   lstwin->items = items;
   lstwin->amount = amount;
@@ -56,29 +48,35 @@ void lstwin_refresh(lstwin_t* lstwin)
 {
   window_clean(lstwin->window);
 
-  int amount = MIN(lstwin->amount, lstwin->ymax - 2);
+  WINDOW* window = lstwin->window->window;
+
+  int ymax = lstwin->window->ymax;
+
+  int amount = MIN(lstwin->amount, ymax - 2);
 
   for(int index = 0; index < amount; index++)
   {
     int pindex = index + lstwin->scroll;
 
-    if(pindex == lstwin->index) wattron(lstwin->window, A_REVERSE);
+    if(pindex == lstwin->index) wattron(window, A_REVERSE);
 
-    mvwprintw(lstwin->window, index + 1, 1, "%s", lstwin->items[pindex]);
+    mvwprintw(window, index + 1, 1, "%s", lstwin->items[pindex]);
 
-    wattroff(lstwin->window, A_REVERSE);
+    wattroff(window, A_REVERSE);
   }
 
-  box(lstwin->window, 0, 0);
+  box(window, 0, 0);
 
-  wrefresh(lstwin->window);
+  wrefresh(window);
 }
 
 int lstwin_scroll_down(lstwin_t* lstwin)
 {
+  int ymax = lstwin->window->ymax;
+
   if(lstwin->index >= lstwin->amount - 1) return 1;
 
-  if((lstwin->index - lstwin->scroll) >= (lstwin->ymax - 3))
+  if((lstwin->index - lstwin->scroll) >= (ymax - 3))
   {
     lstwin->scroll++;
   }
@@ -123,8 +121,10 @@ void lstwin_input(lstwin_t* lstwin, void (*key_handler)(int))
 {
   screen_refresh();
 
+  WINDOW* window = lstwin->window->window;
+
   int key;
-  while(running && (key = wgetch(lstwin->window)))
+  while(running && (key = wgetch(window)))
   {
     screen_key_handler(key);
 

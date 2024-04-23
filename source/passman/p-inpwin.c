@@ -9,8 +9,6 @@
 void inpwin_resize(inpwin_t* inpwin, int x, int y, int w)
 {
   window_resize(inpwin->window, x, y, w, 3);
-
-  inpwin->xmax = w;
 }
 
 /*
@@ -24,10 +22,6 @@ inpwin_t* inpwin_create(int x, int y, int w, char* buffer, size_t size)
   inpwin_t* inpwin = malloc(sizeof(inpwin_t));
 
   inpwin->window = window_create(x, y, w, 3);
-
-  inpwin->xmax = w;
-
-  keypad(inpwin->window, TRUE);
 
   inpwin->buffer = buffer;
   inpwin->msize  = size;
@@ -51,10 +45,14 @@ void inpwin_refresh(inpwin_t* inpwin, bool hidden)
 {
   window_clean(inpwin->window);
 
-  wmove(inpwin->window, 1, 1);
+  WINDOW* window = inpwin->window->window;
+
+  int xmax = inpwin->window->xmax;
+
+  wmove(window, 1, 1);
 
   // The amount of characters to print
-  int amount = MIN(inpwin->length, inpwin->xmax - 3);
+  int amount = MIN(inpwin->length, xmax - 3);
 
   for(int index = 0; index < amount; index++)
   {
@@ -64,23 +62,23 @@ void inpwin_refresh(inpwin_t* inpwin, bool hidden)
 
     if(symbol == '\0') symbol = ' ';
 
-    waddch(inpwin->window, symbol);
+    waddch(window, symbol);
   }
 
   // Fill in the rest with empty space
-  for(int index = amount; index < inpwin->xmax - 3; index++)
+  for(int index = amount; index < xmax - 3; index++)
   {
-    waddch(inpwin->window, ' ');
+    waddch(window, ' ');
   }
 
-  box(inpwin->window, 0, 0);
+  box(window, 0, 0);
 
-  mvwprintw(inpwin->window, 2, inpwin->xmax - 8, "%03d/%03d",
+  mvwprintw(window, 2, xmax - 8, "%03d/%03d",
             inpwin->length, inpwin->msize);
 
-  wmove(inpwin->window, 1, 1 + (inpwin->cursor - inpwin->scroll));
+  wmove(window, 1, 1 + (inpwin->cursor - inpwin->scroll));
 
-  wrefresh(inpwin->window);
+  wrefresh(window);
 }
 
 /*
@@ -95,6 +93,8 @@ int inpwin_symbol_add(inpwin_t* inpwin, char symbol)
 
   if(inpwin->length >= inpwin->msize) return 2;
 
+  int xmax = inpwin->window->xmax;
+
   // Shift characters forward to make room for new character
   for(int index = inpwin->length + 1; index-- > inpwin->cursor;)
   {
@@ -106,7 +106,7 @@ int inpwin_symbol_add(inpwin_t* inpwin, char symbol)
   inpwin->length++;
 
   // The cursor is at the end of the input window
-  if((inpwin->cursor - inpwin->scroll) >= inpwin->xmax - 2)
+  if((inpwin->cursor - inpwin->scroll) >= xmax - 2)
   {
     inpwin->scroll++; // Scroll one more character
   }
@@ -131,6 +131,31 @@ int inpwin_symbol_del(inpwin_t* inpwin)
   return 0; // Success!
 }
 
+static void inpwin_scroll_right(inpwin_t* inpwin)
+{
+  int xmax = inpwin->window->xmax;
+
+  // The cursor can not be further than the text itself
+  inpwin->cursor = MIN(inpwin->cursor + 1, inpwin->length);
+
+  // The cursor is at the end of the input window
+  if((inpwin->cursor - inpwin->scroll) >= xmax - 2)
+  {
+    inpwin->scroll++; // Scroll one more character
+  }
+}
+
+static void inpwin_scroll_left(inpwin_t* inpwin)
+{
+  // The cursor is at the end of the input window
+  if(inpwin->cursor <= inpwin->scroll && inpwin->scroll > 0)
+  {
+    inpwin->scroll--; // Scroll back one character
+  }
+
+  inpwin->cursor = MAX(inpwin->cursor - 1, 0);
+}
+
 /*
  *
  */
@@ -139,25 +164,11 @@ void inpwin_key_handler(inpwin_t* inpwin, int key)
   switch(key)
   {
     case KEY_RIGHT:
-      // The cursor can not be further than the text itself
-      inpwin->cursor = MIN(inpwin->cursor + 1, inpwin->length);
-
-      // The cursor is at the end of the input window
-      if((inpwin->cursor - inpwin->scroll) >= inpwin->xmax - 2)
-      {
-        inpwin->scroll++; // Scroll one more character
-      }
+      inpwin_scroll_right(inpwin);
       break;
 
     case KEY_LEFT:
-      // The cursor is at the end of the input window
-      if(inpwin->cursor <= inpwin->scroll && inpwin->scroll > 0)
-      {
-        inpwin->scroll--; // Scroll back one character
-      }
-
-      inpwin->cursor = MAX(inpwin->cursor - 1, 0);
-
+      inpwin_scroll_left(inpwin);
       break;
 
     case KEY_BACKSPACE:
@@ -179,8 +190,10 @@ void inpwin_input(inpwin_t* inpwin, void (*key_handler)(int))
 {
   screen_refresh();
 
+  WINDOW* window = inpwin->window->window;
+
   int key;
-  while(running && (key = wgetch(inpwin->window)))
+  while(running && (key = wgetch(window)))
   {
     screen_key_handler(key);
 

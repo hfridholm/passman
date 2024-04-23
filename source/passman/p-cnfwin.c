@@ -11,9 +11,6 @@ void cnfwin_resize(cnfwin_t* cnfwin, int x, int y, int w)
   int h = (strlen(cnfwin->prompt) / (w - 2)) + 5;
 
   window_resize(cnfwin->window, x, y, w, h);
-
-  cnfwin->ymax = h;
-  cnfwin->xmax = w;
 }
 
 /*
@@ -29,11 +26,6 @@ cnfwin_t* cnfwin_create(int x, int y, int w, char* prompt, char* ytext, char* nt
   int h = MIN((strlen(prompt) / (w - 2)) + 5, 0);
 
   cnfwin->window = window_create(x, y, w, h);
-
-  keypad(cnfwin->window, TRUE);
-
-  cnfwin->ymax = h;
-  cnfwin->xmax = w;
 
   cnfwin->prompt = prompt;
   cnfwin->ytext  = ytext;
@@ -57,29 +49,34 @@ void cnfwin_refresh(cnfwin_t* cnfwin)
 
   curs_set(0);
 
-  box(cnfwin->window, 0, 0);
+  WINDOW* window = cnfwin->window->window;
+
+  int ymax = cnfwin->window->ymax;
+  int xmax = cnfwin->window->xmax;
+
+  box(window, 0, 0);
 
   int length = strlen(cnfwin->prompt);
   int index = 0;
 
-  for(int height = 0; height < cnfwin->ymax - 4; height++)
+  for(int height = 0; height < ymax - 4; height++)
   {
-    if(height >= cnfwin->ymax - 5)
+    if(height >= ymax - 5)
     {
       int rlength = strlen(cnfwin->prompt + index);
-      int cshift = (cnfwin->xmax - rlength) / 2;
+      int cshift = (xmax - rlength) / 2;
 
-      wmove(cnfwin->window, 1 + height, cshift);
+      wmove(window, 1 + height, cshift);
     }
-    else wmove(cnfwin->window, 1 + height, 1);
+    else wmove(window, 1 + height, 1);
 
-    for(int width = 0; width < cnfwin->xmax - 2; width++)
+    for(int width = 0; width < xmax - 2; width++)
     {
-      index = (height * (cnfwin->xmax - 2) + width);
+      index = (height * (xmax - 2) + width);
 
       if(index >= length) break; 
 
-      waddch(cnfwin->window, cnfwin->prompt[index]);
+      waddch(window, cnfwin->prompt[index]);
     }
   }
 
@@ -88,25 +85,25 @@ void cnfwin_refresh(cnfwin_t* cnfwin)
 
   int alength = ylength + 1 + nlength;
 
-  int ashift = (cnfwin->xmax - alength) / 2;
+  int ashift = (xmax - alength) / 2;
 
-  if(cnfwin->answer == true) wattron(cnfwin->window, A_REVERSE);
+  if(cnfwin->answer == true) wattron(window, A_REVERSE);
 
-  wmove(cnfwin->window, cnfwin->ymax - 2, ashift);
+  wmove(window, ymax - 2, ashift);
 
-  wprintw(cnfwin->window, "%s", cnfwin->ytext);
+  wprintw(window, "%s", cnfwin->ytext);
   
-  wattroff(cnfwin->window, A_REVERSE);
+  wattroff(window, A_REVERSE);
 
-  waddch(cnfwin->window, ' ');
+  waddch(window, ' ');
 
-  if(cnfwin->answer == false) wattron(cnfwin->window, A_REVERSE);
+  if(cnfwin->answer == false) wattron(window, A_REVERSE);
 
-  wprintw(cnfwin->window, "%s", cnfwin->ntext);
+  wprintw(window, "%s", cnfwin->ntext);
 
-  wattroff(cnfwin->window, A_REVERSE);
+  wattroff(window, A_REVERSE);
 
-  wrefresh(cnfwin->window);
+  wrefresh(window);
 }
 
 void cnfwin_key_handler(cnfwin_t* cnfwin, int key)
@@ -132,8 +129,10 @@ void cnfwin_input(cnfwin_t* cnfwin, void (*key_handler)(int))
 {
   screen_refresh();
 
+  WINDOW* window = cnfwin->window->window;
+
   int key;
-  while(running && (key = wgetch(cnfwin->window)))
+  while(running && (key = wgetch(window)))
   {
     screen_key_handler(key);
 

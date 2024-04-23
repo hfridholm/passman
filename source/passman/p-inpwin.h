@@ -6,7 +6,6 @@
 typedef struct
 {
   window_t* window;
-  int xmax;
   char* buffer;     // The inputted string
   int msize;        // Max size of buffer
   int length;       // The length of the string

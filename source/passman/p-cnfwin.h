@@ -6,8 +6,6 @@
 typedef struct
 {
   window_t* window;
-  int ymax;
-  int xmax;
   char* prompt;   // The question to answer
   char* ytext;    // The text for answering yes
   char* ntext;    // The text for answering no

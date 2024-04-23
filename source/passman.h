@@ -23,7 +23,7 @@
 #define KEY_ENTR  10
 #define KEY_TAB   9
 
-typedef WINDOW window_t;
+#include "passman/p-window.h"
 
 #include "passman/p-cnfwin.h"
 #include "passman/p-inpwin.h"
@@ -35,7 +35,6 @@ typedef WINDOW window_t;
 #include "passman/p-menpsw.h"
 #include "passman/p-menact.h"
 
-#include "passman/p-window.h"
 #include "passman/p-popups.h"
 #include "passman/p-screen.h"
 
