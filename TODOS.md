@@ -8,7 +8,6 @@
 - add "active" attribute to window_t (refresh only the active windows)
 - add individual popups to each menu struct (delete, rename, new, usw)
 - fix scroll + resize in inpwin_t
-- add "hidden" attribute to inpwin_t (can toggle with C-H)
 
 ## Maybe
 - Why is windows allocated on the heap?

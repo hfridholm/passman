@@ -20,6 +20,7 @@
 #include "passman/p-database.h"
 
 #define KEY_CTRLC 3
+#define KEY_CTRLH 8
 #define KEY_ENTR  10
 #define KEY_TAB   9
 

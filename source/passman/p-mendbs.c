@@ -6,7 +6,7 @@ void mendbs_refresh(void)
 {
   lstwin_refresh(mendbs.dbases);
 
-  inpwin_refresh(mendbs.search, false);
+  inpwin_refresh(mendbs.search);
 }
 
 void mendbs_resize(int xmax, int ymax)
@@ -26,7 +26,7 @@ void mendbs_init(void)
     dbases, 8);
 
   mendbs.search = inpwin_create(1, 1, 1,
-    mendbs.buffer, sizeof(mendbs.buffer));
+    mendbs.buffer, sizeof(mendbs.buffer), false);
 }
 
 void mendbs_free(void)

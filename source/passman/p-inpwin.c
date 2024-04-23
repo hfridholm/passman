@@ -19,7 +19,7 @@ void inpwin_resize(inpwin_t* inpwin, int x, int y, int w)
  *
  * RETURN (inpwin_t* inpwin)
  */
-inpwin_t* inpwin_create(int x, int y, int w, char* buffer, size_t size)
+inpwin_t* inpwin_create(int x, int y, int w, char* buffer, size_t size, bool secret)
 {
   inpwin_t* inpwin = malloc(sizeof(inpwin_t));
 
@@ -27,6 +27,9 @@ inpwin_t* inpwin_create(int x, int y, int w, char* buffer, size_t size)
 
   inpwin->buffer = buffer;
   inpwin->msize  = size;
+
+  inpwin->secret = secret;
+  inpwin->hidden = secret;
 
   return inpwin;
 }
@@ -43,7 +46,7 @@ void inpwin_free(inpwin_t* inpwin)
 /*
  * Refresh the content of the buffer being shown
  */
-void inpwin_refresh(inpwin_t* inpwin, bool hidden)
+void inpwin_refresh(inpwin_t* inpwin)
 {
   window_clean(inpwin->window);
 
@@ -59,6 +62,8 @@ void inpwin_refresh(inpwin_t* inpwin, bool hidden)
   for(int index = 0; index < amount; index++)
   {
     int pindex = inpwin->scroll + index;
+
+    bool hidden = (inpwin->hidden && inpwin->secret);
 
     char symbol = (hidden ? '*' : inpwin->buffer[pindex]);
 
@@ -165,6 +170,10 @@ void inpwin_key_handler(inpwin_t* inpwin, int key)
 {
   switch(key)
   {
+    case KEY_CTRLH:
+      if(inpwin->secret) inpwin->hidden = !inpwin->hidden;
+      break;
+
     case KEY_RIGHT:
       inpwin_scroll_right(inpwin);
       break;

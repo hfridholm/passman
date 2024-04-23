@@ -38,7 +38,7 @@ static void popup_refresh(void)
       break;
     
     case POPUP_OPEN:
-      inpwin_refresh(pswpop, true);
+      inpwin_refresh(pswpop);
       break;
 
     case POPUP_EXIT:
@@ -106,7 +106,7 @@ static void popups_init(void)
     "Delete Database?", "Yes", "No");
 
   pswpop = inpwin_create(1, 1, 1,
-    password, sizeof(password));
+    password, sizeof(password), true);
 
   extpop = cnfwin_create(1, 1, 1,
     "Do you want to exit?", "Yes", "No");
