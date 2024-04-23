@@ -169,3 +169,27 @@ void inpwin_key_handler(inpwin_t* inpwin, int key)
       break;
   }
 }
+
+/*
+ * PARAMS
+ * - inpwin_t* inpwin         | The input window to input to
+ * - void (*key_handler)(int) | A possible custom key handler
+ */
+void inpwin_input(inpwin_t* inpwin, void (*key_handler)(int))
+{
+  screen_refresh();
+
+  int key;
+  while(running && (key = wgetch(inpwin->window)))
+  {
+    screen_key_handler(key);
+
+    inpwin_key_handler(inpwin, key);
+
+    if(key_handler) key_handler(key);
+    
+    else if(key == KEY_ENTR) break;
+
+    screen_refresh();
+  }
+}

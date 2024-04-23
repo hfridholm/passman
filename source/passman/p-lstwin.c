@@ -113,3 +113,27 @@ void lstwin_key_handler(lstwin_t* lstwin, int key)
       break;
   }
 }
+
+/*
+ * PARAMS
+ * - lstwin_t* lstwin         | The list window to input to
+ * - void (*key_handler)(int) | A possible custom key handler
+ */
+void lstwin_input(lstwin_t* lstwin, void (*key_handler)(int))
+{
+  screen_refresh();
+
+  int key;
+  while(running && (key = wgetch(lstwin->window)))
+  {
+    screen_key_handler(key);
+
+    lstwin_key_handler(lstwin, key);
+
+    if(key_handler) key_handler(key);
+    
+    else if(key == KEY_ENTR) break;
+
+    screen_refresh();
+  }
+}

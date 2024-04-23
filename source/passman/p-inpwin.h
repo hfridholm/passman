@@ -14,16 +14,14 @@ typedef struct
   int scroll;       // How many characters that is scrolled
 } inpwin_t;         // Input window
 
-extern void string_input(char* string, size_t size, const char* prompt, bool hidden);
-
 extern inpwin_t* inpwin_create(int x, int y, int w, char* buffer, size_t size);
 
 extern void inpwin_resize(inpwin_t* inpwin, int x, int y, int w);
 
 extern void inpwin_free(inpwin_t* inpwin);
 
-extern void inpwin_key_handler(inpwin_t* inpwin, int key);
-
 extern void inpwin_refresh(inpwin_t* inpwin, bool hidden);
+
+extern void inpwin_input(inpwin_t* inpwin, void (*key_handler)(int));
 
 #endif // P_INPWIN_H

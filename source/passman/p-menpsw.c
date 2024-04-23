@@ -14,19 +14,7 @@ void menpsw_input(void)
 {
   menu = MENU_PASSWORD;
 
-  screen_refresh();
-
-  int key;
-  while(running && (key = wgetch(menpsw.pswwin->window)))
-  {
-    if(key == KEY_ENTR) break;
-
-    screen_key_handler(key);
-
-    inpwin_key_handler(menpsw.pswwin, key);
-
-    screen_refresh();
-  }
+  inpwin_input(menpsw.pswwin, NULL);
 }
 
 void menpsw_init(void)

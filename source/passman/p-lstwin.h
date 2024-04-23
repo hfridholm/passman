@@ -20,6 +20,6 @@ extern void lstwin_resize(lstwin_t* lstwin, int x, int y, int w, int h);
 
 extern void lstwin_refresh(lstwin_t* lstwin);
 
-extern void lstwin_key_handler(lstwin_t* lstwin, int key);
+extern void lstwin_input(lstwin_t* lstwin, void (*key_handler)(int));
 
 #endif // P_LSTWIN_H

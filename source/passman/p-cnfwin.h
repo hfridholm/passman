@@ -20,8 +20,8 @@ extern void cnfwin_free(cnfwin_t* cnfwin);
 
 extern void cnfwin_refresh(cnfwin_t* cnfwin);
 
-extern void cnfwin_key_handler(cnfwin_t* cnfwin, int key);
-
 extern void cnfwin_resize(cnfwin_t* cnfwin, int x, int y, int w);
+
+extern void cnfwin_input(cnfwin_t* cnfwin, void (*key_handler)(int));
 
 #endif // P_CNFWIN_H

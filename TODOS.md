@@ -4,13 +4,7 @@
 - press TAB to switch between windows in menu
 - link database values to inpwin_t buffer
 - add prompt to input (top left corner of box)
-
-## Funderar på
-- one of each window type as popups
-  (only change title and text for different purposes)
-  (Ex: inppop as "new", "rename")
-  (Ex: cnfpop as "Delete ****?")
-  (Ex: infpop as "*** has been renamed", "*** has been created")
-
-- string_input function that links string to inppop (global variable)
-- use delch to shift chars in inpwin_symbol_del
+- delete infwin_center_create and fix infwin_create
+- add "active" attribute to window_t (refresh only the active windows)
+- move ymax and xmax to window_t
+- add individual popups to each menu (delete, rename, new, usw)

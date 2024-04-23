@@ -40,19 +40,7 @@ void mendbs_search_input(void)
 {
   curs_set(1);
 
-  screen_refresh();
-
-  int key;
-  while(running && (key = wgetch(mendbs.search->window)))
-  {
-    if(key == KEY_ENTR) break;
-
-    screen_key_handler(key);
-
-    inpwin_key_handler(mendbs.search, key);
-
-    screen_refresh();
-  }
+  inpwin_input(mendbs.search, NULL);
 
   curs_set(0);
 }
@@ -61,6 +49,20 @@ void mendbs_dbases_key_handler(int key)
 {
   switch(key)
   {
+    case KEY_ENTR:
+      // pswpop_input();
+
+      move(1, 0);
+      printw("Opening database: %d", mendbs.dbases->index);
+
+      move(2, 0);
+      printw("Filepath: %s", mendbs.dbases->items[mendbs.dbases->index]);
+
+      menpsw_input();
+
+      menu = MENU_DATABASES;
+      break;
+
     case 'd':
       delpop_input();
       break;
@@ -88,36 +90,5 @@ void mendbs_input(void)
 {
   menu = MENU_DATABASES;
 
-  screen_refresh();
-
-  int key;
-  while(running && (key = wgetch(mendbs.dbases->window)))
-  {
-    if(key == KEY_ENTR)
-    {
-      // pswpop_input();
-
-      move(1, 0);
-      printw("Opening database: %d", mendbs.dbases->index);
-
-      move(2, 0);
-      printw("Filepath: %s", mendbs.dbases->items[mendbs.dbases->index]);
-
-      menpsw_input();
-
-      menu = MENU_DATABASES;
-    }
-
-    screen_key_handler(key);
-
-    lstwin_key_handler(mendbs.dbases, key);
-
-    mendbs_dbases_key_handler(key);
-
-    screen_refresh();
-
-    move(0, 0);
-    printw("%03d", key);
-    refresh();
-  }
+  lstwin_input(mendbs.dbases, &mendbs_dbases_key_handler);
 }

@@ -122,3 +122,27 @@ void cnfwin_key_handler(cnfwin_t* cnfwin, int key)
       break;
   }
 }
+
+/*
+ * PARAMS
+ * - cnfwin_t* cnfwin         | The confirm window to input to
+ * - void (*key_handler)(int) | A possible custom key handler
+ */
+void cnfwin_input(cnfwin_t* cnfwin, void (*key_handler)(int))
+{
+  screen_refresh();
+
+  int key;
+  while(running && (key = wgetch(cnfwin->window)))
+  {
+    screen_key_handler(key);
+
+    cnfwin_key_handler(cnfwin, key);
+
+    if(key_handler) key_handler(key);
+    
+    else if(key == KEY_ENTR) break;
+
+    screen_refresh();
+  }
+}
