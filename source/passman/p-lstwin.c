@@ -1,5 +1,12 @@
 #include "../passman.h"
 
+/*
+ * PARAMS
+ * - int x | x-value center of window
+ * - int y | y-value center of window
+ * - int w | width of window
+ * - int h | height of window
+ */
 void lstwin_resize(lstwin_t* lstwin, int x, int y, int w, int h)
 {
   window_resize(lstwin->window, x, y, w, h);
@@ -23,6 +30,15 @@ void lstwin_resize(lstwin_t* lstwin, int x, int y, int w, int h)
   }
 }
 
+/*
+ * PARAMS
+ * - int x | x-value center of window
+ * - int y | y-value center of window
+ * - int w | width of window
+ * - int h | height of window
+ *
+ * RETURN (lstwin_t* lstwin)
+ */
 lstwin_t* lstwin_create(int x, int y, int w, int h, char** items, int amount)
 {
   lstwin_t* lstwin = malloc(sizeof(lstwin_t));

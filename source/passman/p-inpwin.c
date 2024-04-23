@@ -16,6 +16,8 @@ void inpwin_resize(inpwin_t* inpwin, int x, int y, int w)
  * - int x | x-value center of window
  * - int y | y-value center of window
  * - int w | width of window
+ *
+ * RETURN (inpwin_t* inpwin)
  */
 inpwin_t* inpwin_create(int x, int y, int w, char* buffer, size_t size)
 {
