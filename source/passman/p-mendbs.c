@@ -1,6 +1,6 @@
 #include "../passman.h"
 
-char* dbases[] = {"Secret", "Home", "School"};
+char* dbases[] = {"Secret", "Home", "School", "This", "That", "Sweden", "Hampus", "Nogger"};
 
 void mendbs_refresh(void)
 {
@@ -23,7 +23,7 @@ void mendbs_resize(int xmax, int ymax)
 void mendbs_init(void)
 {
   mendbs.dbases = lstwin_create(1, 1, 1, 1,
-    dbases, 3);
+    dbases, 8);
 
   mendbs.search = inpwin_create(1, 1, 1,
     mendbs.buffer, sizeof(mendbs.buffer));
@@ -62,33 +62,21 @@ void mendbs_dbases_key_handler(int key)
   switch(key)
   {
     case 'd':
-      move(0, 0);
-      printw("delete");
-      refresh();
-
       delpop_input();
-
       break;
 
     case 'n':
       move(0, 0);
       printw("new");
-      refresh();
       break;
 
     case 'r':
       move(0, 0);
       printw("rename");
-      refresh();
       break;
 
-    case 9:
-      move(0, 0);
-      printw("search");
-      refresh();
-
+    case KEY_TAB:
       mendbs_search_input();
-
       break;
 
     default:
@@ -105,10 +93,6 @@ void mendbs_input(void)
   int key;
   while(running && (key = wgetch(mendbs.dbases->window)))
   {
-    move(1, 0);
-    printw("%03d", key);
-    refresh();
-
     if(key == KEY_ENTR)
     {
       // pswpop_input();
@@ -120,6 +104,8 @@ void mendbs_input(void)
       printw("Filepath: %s", mendbs.dbases->items[mendbs.dbases->index]);
 
       menpsw_input();
+
+      menu = MENU_DATABASES;
     }
 
     screen_key_handler(key);
@@ -129,5 +115,9 @@ void mendbs_input(void)
     mendbs_dbases_key_handler(key);
 
     screen_refresh();
+
+    move(0, 0);
+    printw("%03d", key);
+    refresh();
   }
 }

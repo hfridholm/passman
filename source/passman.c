@@ -209,10 +209,9 @@ int main(int argc, char* argv[])
     .account = "google.com"
   };
 
-
   screen_init();
 
-  menpsw_input();
+  mendbs_input();
 
   screen_free();
 

@@ -21,6 +21,7 @@
 
 #define KEY_CTRLC 3
 #define KEY_ENTR  10
+#define KEY_TAB   9
 
 typedef WINDOW window_t;
 
