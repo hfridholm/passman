@@ -62,6 +62,8 @@ void lstwin_free(lstwin_t* lstwin)
 
 void lstwin_refresh(lstwin_t* lstwin)
 {
+  if(!lstwin->window->active) return;
+
   window_clean(lstwin->window);
 
   WINDOW* window = lstwin->window->window;

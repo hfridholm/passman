@@ -47,6 +47,8 @@ void cnfwin_free(cnfwin_t* cnfwin)
 
 void cnfwin_refresh(cnfwin_t* cnfwin)
 {
+  if(!cnfwin->window->active) return;
+
   window_clean(cnfwin->window);
 
   curs_set(0);

@@ -46,6 +46,8 @@ void infwin_free(infwin_t* infwin)
 
 void infwin_refresh(infwin_t* infwin)
 {
+  if(!infwin->window->active) return;
+
   window_clean(infwin->window);
 
   WINDOW* window = infwin->window->window;

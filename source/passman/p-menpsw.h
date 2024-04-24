@@ -1,11 +1,6 @@
 #ifndef P_MENPSW_H
 #define P_MENPSW_H
 
-typedef struct
-{
-  inpwin_t* pswwin;
-} menpsw_t;
-
 extern void menpsw_init(void);
 
 extern void menpsw_input(void);

@@ -1,12 +1,17 @@
 #include "../passman.h"
 
-char* dbases[] = {"Secret", "Home", "School", "This", "That", "Sweden", "Hampus", "Nogger"};
+char* dbenms[] = {"Secret", "Home", "School", "This", "That", "Sweden", "Hampus", "Nogger"};
+
+lstwin_t* dbases;
+inpwin_t* search;
+
+char buffer[64];
 
 void mendbs_refresh(void)
 {
-  lstwin_refresh(mendbs.dbases);
+  lstwin_refresh(dbases);
 
-  inpwin_refresh(mendbs.search);
+  inpwin_refresh(search);
 }
 
 void mendbs_resize(int xmax, int ymax)
@@ -15,32 +20,30 @@ void mendbs_resize(int xmax, int ymax)
   int y = ymax / 2;
   int w = xmax - 12;
 
-  inpwin_resize(mendbs.search, x, 5, w);
+  inpwin_resize(search, x, 5, w);
 
-  lstwin_resize(mendbs.dbases, x, y + 2, w, ymax - 10);
+  lstwin_resize(dbases, x, y + 2, w, ymax - 10);
 }
 
 void mendbs_init(void)
 {
-  mendbs.dbases = lstwin_create(1, 1, 1, 1,
-    dbases, 8);
+  dbases = lstwin_create(1, 1, 1, 1, dbenms, 8);
 
-  mendbs.search = inpwin_create(1, 1, 1,
-    mendbs.buffer, sizeof(mendbs.buffer), false);
+  search = inpwin_create(1, 1, 1, buffer, sizeof(buffer), false);
 }
 
 void mendbs_free(void)
 {
-  lstwin_free(mendbs.dbases);
+  lstwin_free(dbases);
 
-  inpwin_free(mendbs.search);
+  inpwin_free(search);
 }
 
 void mendbs_search_input(void)
 {
   curs_set(1);
 
-  inpwin_input(mendbs.search, NULL);
+  inpwin_input(search, NULL);
 
   curs_set(0);
 }
@@ -52,12 +55,6 @@ void mendbs_dbases_key_handler(int key)
     case KEY_ENTR:
       // pswpop_input();
 
-      move(1, 0);
-      printw("Opening database: %d", mendbs.dbases->index);
-
-      move(2, 0);
-      printw("Filepath: %s", mendbs.dbases->items[mendbs.dbases->index]);
-
       menpsw_input();
 
       menu = MENU_DATABASES;
@@ -68,13 +65,9 @@ void mendbs_dbases_key_handler(int key)
       break;
 
     case 'n':
-      move(0, 0);
-      printw("new");
       break;
 
     case 'r':
-      move(0, 0);
-      printw("rename");
       break;
 
     case KEY_TAB:
@@ -90,5 +83,5 @@ void mendbs_input(void)
 {
   menu = MENU_DATABASES;
 
-  lstwin_input(mendbs.dbases, &mendbs_dbases_key_handler);
+  lstwin_input(dbases, &mendbs_dbases_key_handler);
 }

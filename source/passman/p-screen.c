@@ -2,9 +2,6 @@
 
 bool running = true;
 
-mendbs_t mendbs;
-menpsw_t menpsw;
-
 cnfwin_t* extpop; // Exit popup window
 cnfwin_t* delpop; // Delete popup window
 inpwin_t* pswpop; // Password popup window

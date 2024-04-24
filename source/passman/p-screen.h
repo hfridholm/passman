@@ -19,15 +19,11 @@ typedef enum
   POPUP_RENAME
 } popup_t;
 
-
 extern bool running;
 
 extern cnfwin_t* delpop;
 extern inpwin_t* pswpop;
 extern cnfwin_t* extpop;
-
-extern mendbs_t mendbs;
-extern menpsw_t menpsw;
 
 extern menu_t menu;
 extern popup_t popup;
