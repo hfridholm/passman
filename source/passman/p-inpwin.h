@@ -15,7 +15,7 @@ typedef struct
   bool secret;      // Only secret inputs can hide content
 } inpwin_t;         // Input window
 
-extern inpwin_t* inpwin_create(int x, int y, int w, char* buffer, size_t size, bool secret);
+extern inpwin_t* inpwin_create(int x, int y, int w, char* buffer, size_t size, bool secret, bool active);
 
 extern void inpwin_resize(inpwin_t* inpwin, int x, int y, int w);
 
@@ -24,5 +24,7 @@ extern void inpwin_free(inpwin_t* inpwin);
 extern void inpwin_refresh(inpwin_t* inpwin);
 
 extern void inpwin_input(inpwin_t* inpwin, void (*key_handler)(int));
+
+extern void inppop_input(inpwin_t* inppop, void (*key_handler)(int));
 
 #endif // P_INPWIN_H

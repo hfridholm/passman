@@ -12,7 +12,7 @@ extern void infwin_input(infwin_t* infwin, void (*key_handler)(int));
 
 extern void infwin_resize(infwin_t* infwin, int x, int y, int w);
 
-extern infwin_t* infwin_create(int x, int y, int w, char* title, char* text);
+extern infwin_t* infwin_create(int x, int y, int w, char* title, char* text, bool active);
 
 extern void infwin_free(infwin_t* infwin);
 

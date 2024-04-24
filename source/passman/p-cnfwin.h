@@ -12,7 +12,7 @@ typedef struct
   bool answer;    // The answer (yes or no)
 } cnfwin_t;       // Confirm Window
 
-extern cnfwin_t* cnfwin_create(int x, int y, int w, char* prompt, char* ytext, char* ntext);
+extern cnfwin_t* cnfwin_create(int x, int y, int w, char* prompt, char* ytext, char* ntext, bool active);
 
 extern void cnfwin_free(cnfwin_t* cnfwin);
 
@@ -21,5 +21,7 @@ extern void cnfwin_refresh(cnfwin_t* cnfwin);
 extern void cnfwin_resize(cnfwin_t* cnfwin, int x, int y, int w);
 
 extern void cnfwin_input(cnfwin_t* cnfwin, void (*key_handler)(int));
+
+extern void cnfpop_input(cnfwin_t* cnfpop, void (*key_handler)(int));
 
 #endif // P_CNFWIN_H

@@ -12,7 +12,7 @@ typedef struct
 
 extern void lstwin_free(lstwin_t* lstwin);
 
-extern lstwin_t* lstwin_create(int x, int y, int w, int h, char** dbases, int amount);
+extern lstwin_t* lstwin_create(int x, int y, int w, int h, char** dbases, int amount, bool active);
 
 extern void lstwin_resize(lstwin_t* lstwin, int x, int y, int w, int h);
 

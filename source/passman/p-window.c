@@ -29,7 +29,7 @@ void window_resize(window_t* window, int x, int y, int w, int h)
  *
  * RETURN (window_t* window)
  */
-window_t* window_create(int x, int y, int w, int h)
+window_t* window_create(int x, int y, int w, int h, bool active)
 {
   window_t* window = malloc(sizeof(window_t));
 
@@ -40,7 +40,7 @@ window_t* window_create(int x, int y, int w, int h)
 
   keypad(window->window, TRUE);
 
-  window->active = true;
+  window->active = active;
 
   return window;
 }

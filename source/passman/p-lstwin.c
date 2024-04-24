@@ -39,11 +39,11 @@ void lstwin_resize(lstwin_t* lstwin, int x, int y, int w, int h)
  *
  * RETURN (lstwin_t* lstwin)
  */
-lstwin_t* lstwin_create(int x, int y, int w, int h, char** items, int amount)
+lstwin_t* lstwin_create(int x, int y, int w, int h, char** items, int amount, bool active)
 {
   lstwin_t* lstwin = malloc(sizeof(lstwin_t));
 
-  lstwin->window = window_create(x, y, w, h);
+  lstwin->window = window_create(x, y, w, h, active);
 
   lstwin->items  = items;
   lstwin->amount = amount;
@@ -137,6 +137,8 @@ void lstwin_key_handler(lstwin_t* lstwin, int key)
  */
 void lstwin_input(lstwin_t* lstwin, void (*key_handler)(int))
 {
+  if(!lstwin->window->active) return;
+
   screen_refresh();
 
   WINDOW* window = lstwin->window->window;

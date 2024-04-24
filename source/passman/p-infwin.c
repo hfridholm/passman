@@ -35,13 +35,13 @@ void infwin_resize(infwin_t* infwin, int x, int y, int w)
  *
  * RETURN (infwin_t* infwin)
  */
-infwin_t* infwin_create(int x, int y, int w, char* title, char* text)
+infwin_t* infwin_create(int x, int y, int w, char* title, char* text, bool active)
 {
   infwin_t* infwin = malloc(sizeof(infwin_t));
 
   int h = infwin_height(text, w);
 
-  infwin->window = window_create(x, y, w, h);
+  infwin->window = window_create(x, y, w, h, active);
 
   infwin->title = title;
   infwin->text  = text;
@@ -68,8 +68,6 @@ void infwin_refresh(infwin_t* infwin)
 
   int ymax = infwin->window->ymax;
   int xmax = infwin->window->xmax;
-
-  curs_set(0);
 
   box(window, 0, 0);
 
@@ -103,6 +101,8 @@ void infwin_refresh(infwin_t* infwin)
  */
 void infwin_input(infwin_t* infwin, void (*key_handler)(int))
 {
+  if(!infwin->window->active) return;
+
   screen_refresh();
 
   WINDOW* window = infwin->window->window;

@@ -19,11 +19,11 @@ void inpwin_resize(inpwin_t* inpwin, int x, int y, int w)
  *
  * RETURN (inpwin_t* inpwin)
  */
-inpwin_t* inpwin_create(int x, int y, int w, char* buffer, size_t size, bool secret)
+inpwin_t* inpwin_create(int x, int y, int w, char* buffer, size_t size, bool secret, bool active)
 {
   inpwin_t* inpwin = malloc(sizeof(inpwin_t));
 
-  inpwin->window = window_create(x, y, w, 3);
+  inpwin->window = window_create(x, y, w, 3, active);
 
   inpwin->buffer = buffer;
   inpwin->msize  = size;
@@ -201,6 +201,10 @@ void inpwin_key_handler(inpwin_t* inpwin, int key)
  */
 void inpwin_input(inpwin_t* inpwin, void (*key_handler)(int))
 {
+  if(!inpwin->window->active) return;
+
+  curs_set(1);
+
   screen_refresh();
 
   WINDOW* window = inpwin->window->window;
@@ -208,6 +212,8 @@ void inpwin_input(inpwin_t* inpwin, void (*key_handler)(int))
   int key;
   while(running && (key = wgetch(window)))
   {
+    curs_set(0);
+
     screen_key_handler(key);
 
     inpwin_key_handler(inpwin, key);
@@ -216,6 +222,26 @@ void inpwin_input(inpwin_t* inpwin, void (*key_handler)(int))
     
     else if(key == KEY_ENTR) break;
 
+    curs_set(1);
+
     screen_refresh();
   }
+
+  curs_set(0);
+}
+
+/*
+ * Open a popup, input and then close the popup again
+ *
+ * PARAMS
+ * - inpwin_t* inppop         | The input popup to input to
+ * - void (*key_handler)(int) | A possible custom key handler
+ */
+void inppop_input(inpwin_t* inppop, void (*key_handler)(int))
+{
+  inppop->window->active = true;
+
+  inpwin_input(inppop, key_handler);
+
+  inppop->window->active = false;
 }

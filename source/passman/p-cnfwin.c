@@ -35,13 +35,13 @@ void cnfwin_resize(cnfwin_t* cnfwin, int x, int y, int w)
  *
  * RETURN (cnfwin_t* cnfwin)
  */
-cnfwin_t* cnfwin_create(int x, int y, int w, char* prompt, char* ytext, char* ntext)
+cnfwin_t* cnfwin_create(int x, int y, int w, char* prompt, char* ytext, char* ntext, bool active)
 {
   cnfwin_t* cnfwin = malloc(sizeof(cnfwin_t));
 
   int h = cnfwin_height(prompt, w);
 
-  cnfwin->window = window_create(x, y, w, h);
+  cnfwin->window = window_create(x, y, w, h, active);
 
   cnfwin->prompt = prompt;
   cnfwin->ytext  = ytext;
@@ -64,8 +64,6 @@ void cnfwin_refresh(cnfwin_t* cnfwin)
   if(!cnfwin->window->active) return;
 
   window_clean(cnfwin->window);
-
-  curs_set(0);
 
   WINDOW* window = cnfwin->window->window;
 
@@ -145,6 +143,8 @@ void cnfwin_key_handler(cnfwin_t* cnfwin, int key)
  */
 void cnfwin_input(cnfwin_t* cnfwin, void (*key_handler)(int))
 {
+  if(!cnfwin->window->active) return;
+
   screen_refresh();
 
   WINDOW* window = cnfwin->window->window;
@@ -162,4 +162,20 @@ void cnfwin_input(cnfwin_t* cnfwin, void (*key_handler)(int))
 
     screen_refresh();
   }
+}
+
+/*
+ * Open a popup, input and then close the popup again
+ *
+ * PARAMS
+ * - cnfwin_t* cnfpop         | The confirm popup to input to
+ * - void (*key_handler)(int) | A possible custom key handler
+ */
+void cnfpop_input(cnfwin_t* cnfpop, void (*key_handler)(int))
+{
+  cnfpop->window->active = true;
+
+  cnfwin_input(cnfpop, key_handler);
+
+  cnfpop->window->active = false;
 }

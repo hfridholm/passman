@@ -9,24 +9,11 @@ typedef enum
   MENU_DATABASE
 } menu_t;
 
-typedef enum
-{
-  POPUP_NONE,
-  POPUP_EXIT,
-  POPUP_OPEN,
-  POPUP_NEW,
-  POPUP_DELETE,
-  POPUP_RENAME
-} popup_t;
-
 extern bool running;
 
-extern cnfwin_t* delpop;
-extern inpwin_t* pswpop;
 extern cnfwin_t* extpop;
 
 extern menu_t menu;
-extern popup_t popup;
 
 extern void screen_key_handler(int key);
 
