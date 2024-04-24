@@ -45,7 +45,7 @@ lstwin_t* lstwin_create(int x, int y, int w, int h, char** items, int amount)
 
   lstwin->window = window_create(x, y, w, h);
 
-  lstwin->items = items;
+  lstwin->items  = items;
   lstwin->amount = amount;
 
   return lstwin;

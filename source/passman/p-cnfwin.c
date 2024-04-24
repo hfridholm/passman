@@ -1,6 +1,20 @@
 #include "../passman.h"
 
 /*
+ * Calculate the height of the window depending on prompt and width
+ *
+ * PARAMS
+ * - const char* prompt | The prompt inside the window
+ * - int w              | The width of the window
+ *
+ * RETURN (int h)
+ */
+static int cnfwin_height(const char* prompt, int w)
+{
+  return MAX((strlen(prompt) / (w - 2)) + 5, 0);
+}
+
+/*
  * PARAMS
  * - int x | x-value center of window
  * - int y | y-value center of window
@@ -8,7 +22,7 @@
  */
 void cnfwin_resize(cnfwin_t* cnfwin, int x, int y, int w)
 {
-  int h = MAX((strlen(cnfwin->prompt) / (w - 2)) + 5, 0);
+  int h = cnfwin_height(cnfwin->prompt, w);
 
   window_resize(cnfwin->window, x, y, w, h);
 }
@@ -25,13 +39,13 @@ cnfwin_t* cnfwin_create(int x, int y, int w, char* prompt, char* ytext, char* nt
 {
   cnfwin_t* cnfwin = malloc(sizeof(cnfwin_t));
 
-  cnfwin->window = window_create(1, 1, 1, 1);
+  int h = cnfwin_height(prompt, w);
+
+  cnfwin->window = window_create(x, y, w, h);
 
   cnfwin->prompt = prompt;
   cnfwin->ytext  = ytext;
   cnfwin->ntext  = ntext;
-
-  cnfwin_resize(cnfwin, x, y, w);
 
   return cnfwin;
 }

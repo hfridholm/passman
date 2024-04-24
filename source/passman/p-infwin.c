@@ -1,6 +1,20 @@
 #include "../passman.h"
 
 /*
+ * Calculate the height of the window depending on text and width
+ *
+ * PARAMS
+ * - const char* text | The text inside the window
+ * - int w            | The width of the window
+ *
+ * RETURN (int h)
+ */
+static int infwin_height(const char* text, int w)
+{
+  return MAX((strlen(text) / (w - 2)) + 3, 0);
+}
+
+/*
  * PARAMS
  * - int x | x-value center of window
  * - int y | y-value center of window
@@ -8,7 +22,7 @@
  */
 void infwin_resize(infwin_t* infwin, int x, int y, int w)
 {
-  int h = MAX((strlen(infwin->text) / (w - 2)) + 3, 0);
+  int h = infwin_height(infwin->text, w);
 
   window_resize(infwin->window, x, y, w, h);
 }
@@ -25,12 +39,12 @@ infwin_t* infwin_create(int x, int y, int w, char* title, char* text)
 {
   infwin_t* infwin = malloc(sizeof(infwin_t));
 
-  infwin->window = window_create(1, 1, 1, 1);
+  int h = infwin_height(text, w);
+
+  infwin->window = window_create(x, y, w, h);
 
   infwin->title = title;
   infwin->text  = text;
-
-  infwin_resize(infwin, x, y, w);
 
   return infwin;
 }

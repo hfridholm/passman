@@ -9,7 +9,11 @@ void menpsw_refresh(void)
 
 void menpsw_resize(int xmax, int ymax)
 {
-  inpwin_resize(pswwin, xmax / 2, ymax / 2, 50);
+  int x = xmax / 2;
+  int y = ymax / 2;
+  int w = 50;
+
+  inpwin_resize(pswwin, x, y, w);
 }
 
 void menpsw_input(void)
@@ -19,9 +23,13 @@ void menpsw_input(void)
   inpwin_input(pswwin, NULL);
 }
 
-void menpsw_init(void)
+void menpsw_init(int xmax, int ymax)
 {
-  pswwin = inpwin_create(1, 1, 1, password, sizeof(password), true);
+  int x = xmax / 2;
+  int y = ymax / 2;
+  int w = 50;
+
+  pswwin = inpwin_create(x, y, w, password, sizeof(password), true);
 }
 
 void menpsw_free(void)

@@ -59,11 +59,15 @@ void screen_refresh(void)
 
 static void popups_resize(int xmax, int ymax)
 {
-  cnfwin_resize(extpop, xmax / 2, ymax / 2, 30);
+  int x = xmax / 2;
+  int y = ymax / 2;
+  int w = 50;
 
-  cnfwin_resize(delpop, xmax / 2, ymax / 2, 30);
+  cnfwin_resize(extpop, x, y, w);
 
-  inpwin_resize(pswpop, xmax / 2, ymax / 2, 30);
+  cnfwin_resize(delpop, x, y, w);
+
+  inpwin_resize(pswpop, x, y, w);
 }
 
 static void menus_resize(int xmax, int ymax)
@@ -83,11 +87,11 @@ void screen_resize(void)
   popups_resize(xmax, ymax);
 }
 
-static void menus_init(void)
+static void menus_init(int xmax, int ymax)
 {
-  mendbs_init();
+  mendbs_init(xmax, ymax);
 
-  menpsw_init();
+  menpsw_init(xmax, ymax);
 }
 
 static void menus_free(void)
@@ -97,16 +101,17 @@ static void menus_free(void)
   menpsw_free();
 }
 
-static void popups_init(void)
+static void popups_init(int xmax, int ymax)
 {
-  delpop = cnfwin_create(1, 1, 1,
-    "Delete Database?", "Yes", "No");
+  int x = xmax / 2;
+  int y = ymax / 2;
+  int w = 50;
 
-  pswpop = inpwin_create(1, 1, 1,
-    password, sizeof(password), true);
+  delpop = cnfwin_create(x, y, w, "Delete Database?", "Yes", "No");
 
-  extpop = cnfwin_create(1, 1, 1,
-    "Do you want to exit?", "Yes", "No");
+  pswpop = inpwin_create(x, y, w, password, sizeof(password), true);
+
+  extpop = cnfwin_create(x, y, w, "Do you want to exit?", "Yes", "No");
 }
 
 static void popups_free(void)
@@ -125,10 +130,11 @@ void screen_init(void)
   curs_set(0);
   raw();
 
-  menus_init();
-  popups_init();
+  int xmax = getmaxx(stdscr);
+  int ymax = getmaxy(stdscr);
 
-  screen_resize();
+  menus_init(xmax, ymax);
+  popups_init(xmax, ymax);
 }
 
 void screen_free(void)

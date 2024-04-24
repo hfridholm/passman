@@ -17,19 +17,25 @@ void mendbs_refresh(void)
 void mendbs_resize(int xmax, int ymax)
 {
   int x = xmax / 2;
-  int y = ymax / 2;
+  int y = (ymax / 2) + 2;
   int w = xmax - 12;
+  int h = ymax - 10;
 
   inpwin_resize(search, x, 5, w);
 
-  lstwin_resize(dbases, x, y + 2, w, ymax - 10);
+  lstwin_resize(dbases, x, y, w, h);
 }
 
-void mendbs_init(void)
+void mendbs_init(int xmax, int ymax)
 {
-  dbases = lstwin_create(1, 1, 1, 1, dbenms, 8);
+  int x = xmax / 2;
+  int y = (ymax / 2) + 2;
+  int w = xmax - 12;
+  int h = ymax - 10;
 
-  search = inpwin_create(1, 1, 1, buffer, sizeof(buffer), false);
+  search = inpwin_create(x, 5, w, buffer, sizeof(buffer), false);
+  
+  dbases = lstwin_create(x, y, w, h, dbenms, 8);
 }
 
 void mendbs_free(void)

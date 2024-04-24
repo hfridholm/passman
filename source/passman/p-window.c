@@ -16,8 +16,8 @@ void window_resize(window_t* window, int x, int y, int w, int h)
 
   mvwin(window->window, y - (h / 2), x - (w / 2));
 
-  window->ymax = h;
   window->xmax = w;
+  window->ymax = h;
 }
 
 /*
@@ -33,13 +33,14 @@ window_t* window_create(int x, int y, int w, int h)
 {
   window_t* window = malloc(sizeof(window_t));
 
-  window->window = newwin(1, 1, 1, 1);
+  window->window = newwin(h, w, y - (h / 2), x - (w / 2));
+  
+  window->xmax = w;
+  window->ymax = h;
 
   keypad(window->window, TRUE);
 
   window->active = true;
-
-  window_resize(window, x, y, w, h);
 
   return window;
 }
