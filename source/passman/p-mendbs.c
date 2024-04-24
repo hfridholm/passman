@@ -1,6 +1,9 @@
 #include "../passman.h"
 
-char* dbenms[] = {"Secret", "Home", "School", "This", "That", "Sweden", "Hampus", "Nogger"};
+char* names[] = {"Secret", "Home", "School", "This", "That", "Sweden", "Hampus", "Nogger"};
+int dbeamt = 8;
+
+char** dbenms;
 
 lstwin_t* dbases;
 inpwin_t* search;
@@ -8,10 +11,31 @@ char srcbuf[64];
 
 cnfwin_t* delpop;
 inpwin_t* rnmpop;
-inpwin_t* newpop;
 inpwin_t* opnpop;
 
-char buffer[64];
+inpwin_t* newpop;
+char newbuf[64];
+
+static void mendbs_dbenms_create(void)
+{
+  dbenms = malloc(sizeof(char*) * dbeamt);
+
+  for(int index = 0; index < dbeamt; index++)
+  {
+    dbenms[index] = malloc(sizeof(char) * 64);
+
+    strcpy(dbenms[index], names[index]);
+  }
+}
+
+static void mendbs_dbenms_free(void)
+{
+  for(int index = 0; index < dbeamt; index++)
+  {
+    free(dbenms[index]);
+  }
+  free(dbenms);
+}
 
 void mendbs_refresh(void)
 {
@@ -22,17 +46,24 @@ void mendbs_refresh(void)
   cnfwin_refresh(delpop);
 
   inpwin_refresh(opnpop);
+
+  inpwin_refresh(newpop);
+
+  inpwin_refresh(rnmpop);
 }
 
 static void mendbs_popups_resize(int xmax, int ymax)
 {
   int x = xmax / 2;
   int y = ymax / 2;
-  int w = 50;
 
-  cnfwin_resize(delpop, x, y, w);
+  cnfwin_resize(delpop, x, y, 30);
 
-  inpwin_resize(opnpop, x, y, w);
+  inpwin_resize(opnpop, x, y, 50);
+
+  inpwin_resize(newpop, x, y, 50);
+
+  inpwin_resize(rnmpop, x, y, 50);
 }
 
 void mendbs_resize(int xmax, int ymax)
@@ -53,15 +84,20 @@ static void mendbs_popups_init(int xmax, int ymax)
 {
   int x = xmax / 2;
   int y = ymax / 2;
-  int w = 50;
 
-  delpop = cnfwin_create(x, y, w, "Delete Database?", "Yes", "No", false);
+  delpop = cnfwin_create(x, y, 30, "Delete Database?", "Yes", "No", false);
 
-  opnpop = inpwin_create(x, y, w, password, sizeof(password), true, false);
+  opnpop = inpwin_create(x, y, 50, password, sizeof(password), true, false);
+
+  newpop = inpwin_create(x, y, 50, newbuf, sizeof(newbuf), false, false);
+
+  rnmpop = inpwin_create(x, y, 50, NULL, 0, false, false);
 }
 
 void mendbs_init(int xmax, int ymax)
 {
+  mendbs_dbenms_create();
+
   int x = xmax / 2;
   int y = (ymax / 2) + 2;
   int w = xmax - 12;
@@ -69,7 +105,7 @@ void mendbs_init(int xmax, int ymax)
 
   search = inpwin_create(x, 5, w, srcbuf, sizeof(srcbuf), false, true);
   
-  dbases = lstwin_create(x, y, w, h, dbenms, 8, true);
+  dbases = lstwin_create(x, y, w, h, dbenms, dbeamt, true);
 
   mendbs_popups_init(xmax, ymax);
 }
@@ -83,10 +119,18 @@ void mendbs_free(void)
   cnfwin_free(delpop);
 
   inpwin_free(opnpop);
+
+  inpwin_free(newpop);
+
+  inpwin_free(rnmpop);
+
+  mendbs_dbenms_free();
 }
 
 static void mendbs_dbases_key_handler(int key)
 {
+  char* item = dbases->items[dbases->index];
+
   switch(key)
   {
     case KEY_ENTR:
@@ -94,13 +138,24 @@ static void mendbs_dbases_key_handler(int key)
       break;
 
     case 'd':
+      char prompt[64];
+  
+      sprintf(prompt, "Delete \"%s\"?", item);
+
+      delpop->prompt = prompt;
+      delpop->answer = false;
+
       cnfpop_input(delpop, NULL);
       break;
 
     case 'n':
+      inppop_input(newpop, NULL);
       break;
 
     case 'r':
+      inpwin_buffer_set(rnmpop, item, 64);
+
+      inppop_input(rnmpop, NULL);
       break;
 
     case KEY_TAB:

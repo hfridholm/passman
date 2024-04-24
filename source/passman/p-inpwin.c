@@ -12,6 +12,25 @@ void inpwin_resize(inpwin_t* inpwin, int x, int y, int w)
 }
 
 /*
+ * Sync the input window with a new buffer and update cursor
+ */
+void inpwin_buffer_set(inpwin_t* inpwin, char* buffer, size_t size)
+{
+  inpwin->buffer = buffer;
+
+  if(!buffer) return;
+
+  inpwin->msize  = size;
+
+  inpwin->length = strlen(buffer);
+  inpwin->cursor = inpwin->length;
+
+  int xmax = inpwin->window->xmax;
+
+  inpwin->scroll = MAX(0, inpwin->length - xmax + 3);
+}
+
+/*
  * PARAMS
  * - int x | x-value center of window
  * - int y | y-value center of window
@@ -25,8 +44,7 @@ inpwin_t* inpwin_create(int x, int y, int w, char* buffer, size_t size, bool sec
 
   inpwin->window = window_create(x, y, w, 3, active);
 
-  inpwin->buffer = buffer;
-  inpwin->msize  = size;
+  inpwin_buffer_set(inpwin, buffer, size);
 
   inpwin->secret = secret;
   inpwin->hidden = secret;
@@ -43,15 +61,8 @@ void inpwin_free(inpwin_t* inpwin)
   free(inpwin);
 }
 
-/*
- * Refresh the content of the buffer being shown
- */
-void inpwin_refresh(inpwin_t* inpwin)
+static void inpwin_buffer_refresh(inpwin_t* inpwin)
 {
-  if(!inpwin->window->active) return;
-
-  window_clean(inpwin->window);
-
   WINDOW* window = inpwin->window->window;
 
   int xmax = inpwin->window->xmax;
@@ -79,11 +90,27 @@ void inpwin_refresh(inpwin_t* inpwin)
   {
     waddch(window, ' ');
   }
+}
+
+/*
+ * Refresh the content of the buffer being shown
+ */
+void inpwin_refresh(inpwin_t* inpwin)
+{
+  if(!inpwin->window->active) return;
+
+  if(inpwin->buffer)
+  {
+    inpwin_buffer_refresh(inpwin);
+  }
+
+  WINDOW* window = inpwin->window->window;
+
+  int xmax = inpwin->window->xmax;
 
   box(window, 0, 0);
 
-  mvwprintw(window, 2, xmax - 8, "%03d/%03d",
-            inpwin->length, inpwin->msize);
+  mvwprintw(window, 2, xmax - 8, "%03d/%03d", inpwin->length, inpwin->msize);
 
   wmove(window, 1, 1 + (inpwin->cursor - inpwin->scroll));
 
@@ -166,10 +193,12 @@ static void inpwin_scroll_left(inpwin_t* inpwin)
 }
 
 /*
- *
+ * Note: If input window has no buffer, nothing should be done
  */
 void inpwin_key_handler(inpwin_t* inpwin, int key)
 {
+  if(!inpwin->buffer) return;
+
   switch(key)
   {
     case KEY_CTRLH:
