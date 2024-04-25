@@ -84,7 +84,7 @@ static void popups_init(int xmax, int ymax)
 
   extpop = cnfwin_create(x, y, 24, "Do you want to exit?", "Yes", "No", false);
 
-  szepop = infwin_create(x, y, 104, 26, "Info", "Resize the terminal to match this window", true);
+  szepop = infwin_create(x, y, 104, 26, "Info", "Resize the terminal to match this window", false);
 }
 
 static void popups_free(void)
@@ -123,9 +123,12 @@ void screen_key_handler(int key)
   switch(key)
   {
     case KEY_CTRLC:
-      cnfpop_input(extpop, NULL);
+      if(!extpop->window->active)
+      {
+        cnfpop_input(extpop, NULL);
 
-      if(extpop->answer) running = false;
+        if(extpop->answer) running = false;
+      }
       break;
 
     case KEY_RESIZE:

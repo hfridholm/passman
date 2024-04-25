@@ -9,6 +9,28 @@
 void inpwin_resize(inpwin_t* inpwin, int x, int y, int w)
 {
   window_resize(inpwin->window, x, y, w, 3);
+
+  // 1. Clamp the cursor to the end
+  if((inpwin->cursor - inpwin->scroll) >= (w - 2))
+  {
+    inpwin->scroll = (inpwin->cursor - (w - 2) + 1);
+  }
+
+  // 2. Clamp the marked item to the ceiling
+  if(inpwin->cursor < inpwin->scroll)
+  {
+    inpwin->scroll = inpwin->cursor;
+  }
+
+  // 3. Prevent empty space when text can occupy the space
+  if(inpwin->scroll + (w - 2) > inpwin->length)
+  {
+    if(inpwin->cursor == inpwin->length)
+    {
+      inpwin->scroll = MAX(0, inpwin->length - (w - 2) + 1);
+    }
+    else inpwin->scroll = MAX(0, inpwin->length - (w - 2));
+  }
 }
 
 /*
@@ -20,14 +42,14 @@ void inpwin_buffer_set(inpwin_t* inpwin, char* buffer, size_t size)
 
   if(!buffer) return;
 
-  inpwin->msize  = size;
+  inpwin->msize = size - 1;
 
   inpwin->length = strlen(buffer);
   inpwin->cursor = inpwin->length;
 
   int xmax = inpwin->window->xmax;
 
-  inpwin->scroll = MAX(0, inpwin->length - xmax + 3);
+  inpwin->scroll = MAX(0, inpwin->length - (xmax - 2) + 1);
 }
 
 /*
@@ -52,6 +74,9 @@ inpwin_t* inpwin_create(int x, int y, int w, char* buffer, size_t size, bool sec
   return inpwin;
 }
 
+/*
+ *
+ */
 void inpwin_free(inpwin_t* inpwin)
 {
   if(inpwin == NULL) return;
@@ -61,7 +86,10 @@ void inpwin_free(inpwin_t* inpwin)
   free(inpwin);
 }
 
-static void inpwin_buffer_refresh(inpwin_t* inpwin)
+/*
+ *
+ */
+static void inpwin_buffer_print(inpwin_t* inpwin)
 {
   WINDOW* window = inpwin->window->window;
 
@@ -70,7 +98,7 @@ static void inpwin_buffer_refresh(inpwin_t* inpwin)
   wmove(window, 1, 1);
 
   // The amount of characters to print
-  int amount = MIN(inpwin->length, xmax - 3);
+  int amount = MIN(inpwin->length, xmax - 2);
 
   for(int index = 0; index < amount; index++)
   {
@@ -84,12 +112,18 @@ static void inpwin_buffer_refresh(inpwin_t* inpwin)
 
     waddch(window, symbol);
   }
+}
 
-  // Fill in the rest with empty space
-  for(int index = amount; index < xmax - 3; index++)
-  {
-    waddch(window, ' ');
-  }
+/*
+ *
+ */
+static void inpwin_length_print(inpwin_t* inpwin)
+{
+  WINDOW* window = inpwin->window->window;
+
+  int xmax = inpwin->window->xmax;
+
+  mvwprintw(window, 2, xmax - 8, "%03d/%03d", inpwin->length, inpwin->msize);
 }
 
 /*
@@ -99,18 +133,18 @@ void inpwin_refresh(inpwin_t* inpwin)
 {
   if(!inpwin->window->active) return;
 
+  window_clean(inpwin->window);
+
   if(inpwin->buffer)
   {
-    inpwin_buffer_refresh(inpwin);
+    inpwin_buffer_print(inpwin);
   }
 
   WINDOW* window = inpwin->window->window;
 
-  int xmax = inpwin->window->xmax;
-
   box(window, 0, 0);
 
-  mvwprintw(window, 2, xmax - 8, "%03d/%03d", inpwin->length, inpwin->msize);
+  inpwin_length_print(inpwin);
 
   wmove(window, 1, 1 + (inpwin->cursor - inpwin->scroll));
 
@@ -123,7 +157,7 @@ void inpwin_refresh(inpwin_t* inpwin)
  * - 1 | Symbol not supported
  * - 2 | Buffer is full
  */
-int inpwin_symbol_add(inpwin_t* inpwin, char symbol)
+static int inpwin_symbol_add(inpwin_t* inpwin, char symbol)
 {
   if(symbol < 32 || symbol > 126) return 1;
 
@@ -137,12 +171,14 @@ int inpwin_symbol_add(inpwin_t* inpwin, char symbol)
     inpwin->buffer[index] = inpwin->buffer[index - 1];
   }
 
-  inpwin->buffer[inpwin->cursor++] = symbol;
+  inpwin->buffer[inpwin->cursor] = symbol;
 
   inpwin->length++;
 
+  inpwin->cursor = MIN(inpwin->cursor + 1, inpwin->length);
+
   // The cursor is at the end of the input window
-  if((inpwin->cursor - inpwin->scroll) >= xmax - 2)
+  if((inpwin->cursor - inpwin->scroll) >= (xmax - 2))
   {
     inpwin->scroll++; // Scroll one more character
   }
@@ -150,7 +186,12 @@ int inpwin_symbol_add(inpwin_t* inpwin, char symbol)
   return 0; // Success!
 }
 
-int inpwin_symbol_del(inpwin_t* inpwin)
+/*
+ * RETURN (int status)
+ * - 0 | Success!
+ * - 1 | No symbol to delete
+ */
+static int inpwin_symbol_del(inpwin_t* inpwin)
 {
   if(inpwin->cursor <= 0) return 1;
 
@@ -160,42 +201,51 @@ int inpwin_symbol_del(inpwin_t* inpwin)
     inpwin->buffer[index] = inpwin->buffer[index + 1];
   }
 
-  // Remove the last character in the buffer
-  inpwin->buffer[--inpwin->length] = '\0';
-  inpwin->cursor--;
+  inpwin->length = MAX(0, inpwin->length - 1);
+
+  inpwin->buffer[inpwin->length] = '\0';
+
+  inpwin->cursor = MIN(inpwin->cursor - 1, inpwin->length);
 
   return 0; // Success!
 }
 
+/*
+ *
+ */
 static void inpwin_scroll_right(inpwin_t* inpwin)
 {
+  // The cursor can not be further than the text itself
+  inpwin->cursor = MIN(inpwin->length, inpwin->cursor + 1);
+
   int xmax = inpwin->window->xmax;
 
-  // The cursor can not be further than the text itself
-  inpwin->cursor = MIN(inpwin->cursor + 1, inpwin->length);
-
   // The cursor is at the end of the input window
-  if((inpwin->cursor - inpwin->scroll) >= xmax - 2)
+  if((inpwin->cursor - inpwin->scroll) >= (xmax - 2))
   {
     inpwin->scroll++; // Scroll one more character
   }
 }
 
+/*
+ *
+ */
 static void inpwin_scroll_left(inpwin_t* inpwin)
 {
-  // The cursor is at the end of the input window
-  if(inpwin->cursor <= inpwin->scroll && inpwin->scroll > 0)
-  {
-    inpwin->scroll--; // Scroll back one character
-  }
+  inpwin->cursor = MAX(0, inpwin->cursor - 1);
 
-  inpwin->cursor = MAX(inpwin->cursor - 1, 0);
+  // If the cursor is to the left of the window,
+  // scroll to the start of the cursor
+  if(inpwin->cursor < inpwin->scroll)
+  {
+    inpwin->scroll = inpwin->cursor;
+  }
 }
 
 /*
  * Note: If input window has no buffer, nothing should be done
  */
-void inpwin_key_handler(inpwin_t* inpwin, int key)
+static void inpwin_key_handler(inpwin_t* inpwin, int key)
 {
   if(!inpwin->buffer) return;
 

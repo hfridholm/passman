@@ -50,6 +50,9 @@ cnfwin_t* cnfwin_create(int x, int y, int w, char* prompt, char* ytext, char* nt
   return cnfwin;
 }
 
+/*
+ *
+ */
 void cnfwin_free(cnfwin_t* cnfwin)
 {
   if(cnfwin == NULL) return;
@@ -59,6 +62,9 @@ void cnfwin_free(cnfwin_t* cnfwin)
   free(cnfwin);
 }
 
+/*
+ *
+ */
 void cnfwin_refresh(cnfwin_t* cnfwin)
 {
   if(!cnfwin->window->active) return;
@@ -123,6 +129,9 @@ void cnfwin_refresh(cnfwin_t* cnfwin)
   wrefresh(window);
 }
 
+/*
+ *
+ */
 void cnfwin_key_handler(cnfwin_t* cnfwin, int key)
 {
   switch(key)

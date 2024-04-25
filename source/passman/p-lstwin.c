@@ -11,19 +11,19 @@ void lstwin_resize(lstwin_t* lstwin, int x, int y, int w, int h)
 {
   window_resize(lstwin->window, x, y, w, h);
 
-  // Clamp the marked item to the floor
-  if(lstwin->index >= (lstwin->scroll + (h - 2)))
+  // 1. Clamp the marked item to the floor
+  if((lstwin->index - lstwin->scroll) >= (h - 2))
   {
-    lstwin->scroll = lstwin->index - (h - 2) + 1;
+    lstwin->scroll = (lstwin->index - (h - 2) + 1);
   }
 
-  // Clamp the marked item to the ceiling
+  // 2. Clamp the marked item to the ceiling
   if(lstwin->index < lstwin->scroll)
   {
     lstwin->scroll = lstwin->index;
   }
 
-  // Prevent empty space when items can occupy the space
+  // 3. Prevent empty space when items can occupy the space
   if(lstwin->scroll + (h - 2) > lstwin->amount)
   {
     lstwin->scroll = MAX(0, lstwin->amount - (h - 2));
@@ -88,35 +88,29 @@ void lstwin_refresh(lstwin_t* lstwin)
   wrefresh(window);
 }
 
-int lstwin_scroll_down(lstwin_t* lstwin)
+static void lstwin_scroll_down(lstwin_t* lstwin)
 {
+  lstwin->index = MIN(lstwin->amount - 1, lstwin->index + 1);
+
   int ymax = lstwin->window->ymax;
 
-  if(lstwin->index >= lstwin->amount - 1) return 1;
-
-  if((lstwin->index - lstwin->scroll) >= (ymax - 3))
+  if((lstwin->index - lstwin->scroll) >= (ymax - 2))
   {
-    lstwin->scroll++;
+    lstwin->scroll++; // Scroll down one more
   }
-
-  lstwin->index++;
-
-  return 0;
 }
 
-int lstwin_scroll_up(lstwin_t* lstwin)
+static void lstwin_scroll_up(lstwin_t* lstwin)
 {
-  if(lstwin->index <= lstwin->scroll && lstwin->scroll > 0)
+  lstwin->index = MAX(0, lstwin->index - 1);
+
+  if(lstwin->index < lstwin->scroll)
   {
-    lstwin->scroll--;
+    lstwin->scroll = lstwin->index;
   }
-
-  lstwin->index = MAX(lstwin->index - 1, 0);
-
-  return 0;
 }
 
-void lstwin_key_handler(lstwin_t* lstwin, int key)
+static void lstwin_key_handler(lstwin_t* lstwin, int key)
 {
   switch(key)
   {
