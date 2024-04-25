@@ -3,6 +3,7 @@
 bool running = true;
 
 cnfwin_t* extpop;
+infwin_t* szepop;
 
 menu_t  menu;
 
@@ -30,6 +31,8 @@ void screen_refresh(void)
 
   menu_refresh();
 
+  infwin_refresh(szepop);
+
   cnfwin_refresh(extpop);
 }
 
@@ -37,9 +40,10 @@ static void popups_resize(int xmax, int ymax)
 {
   int x = xmax / 2;
   int y = ymax / 2;
-  int w = 50;
 
-  cnfwin_resize(extpop, x, y, w);
+  cnfwin_resize(extpop, x, y, 24);
+
+  infwin_resize(szepop, x, y, 104, 26);
 }
 
 static void menus_resize(int xmax, int ymax)
@@ -77,14 +81,17 @@ static void popups_init(int xmax, int ymax)
 {
   int x = xmax / 2;
   int y = ymax / 2;
-  int w = 50;
 
-  extpop = cnfwin_create(x, y, w, "Do you want to exit?", "Yes", "No", false);
+  extpop = cnfwin_create(x, y, 24, "Do you want to exit?", "Yes", "No", false);
+
+  szepop = infwin_create(x, y, 104, 26, "Info", "Resize the terminal to match this window", true);
 }
 
 static void popups_free(void)
 {
   cnfwin_free(extpop);
+
+  infwin_free(szepop);
 }
 
 void screen_init(void)
@@ -98,12 +105,14 @@ void screen_init(void)
   int ymax = getmaxy(stdscr);
 
   menus_init(xmax, ymax);
+
   popups_init(xmax, ymax);
 }
 
 void screen_free(void)
 {
   menus_free();
+
   popups_free();
 
   endwin();

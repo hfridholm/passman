@@ -80,6 +80,7 @@ void cnfwin_refresh(cnfwin_t* cnfwin)
     if(height >= ymax - 5)
     {
       int rlength = strlen(cnfwin->prompt + index);
+
       int cshift = (xmax - rlength) / 2;
 
       wmove(window, 1 + height, cshift);

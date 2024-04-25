@@ -38,8 +38,10 @@
 
 #include "passman/p-screen.h"
 
-void screen_init(void);
+extern void screen_init(void);
 
-void screen_free(void);
+extern void screen_free(void);
+
+extern infwin_t* szepop;
 
 #endif // PASSMAN_H

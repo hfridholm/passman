@@ -211,6 +211,8 @@ int main(int argc, char* argv[])
 
   screen_init();
 
+  infpop_input(szepop, NULL);
+
   mendbs_input();
 
   screen_free();

@@ -5,11 +5,12 @@
 - fix scroll + resize in inpwin_t
 - limit header files to the scripts that need them
 - implement status codes for _refresh and _input
+- infwin_t attribute for either press enter or just render
+- fix inpwin_t resize bug
+- check if database name is valid after rename, if not,
+  change back to previous name
+- fix bug that the user can hit CTRL-C in extpop
+- ability to change database password in mendbe
 
 ## Maybe
-- Why is windows allocated on the heap?
-  Can't you just pass the address to the window?
-  (It is easier for the API to use pointers, 
-   instead of the user having to pass by reference)
-- add "show cursor" attribute to inpwin_t struct
 - rename inpwin scroll to shift?
