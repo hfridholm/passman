@@ -1,7 +1,6 @@
 # Todos
 - press TAB to switch between windows in menu
 - link database values to inpwin_t buffer
-- add prompt to input (top left corner of box)
 - limit header files to the scripts that need them
 - implement status codes for _refresh and _input
 - check if database name is valid after rename, if not,

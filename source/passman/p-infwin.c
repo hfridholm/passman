@@ -4,14 +4,14 @@
  * Calculate the height of the window depending on text and width
  *
  * PARAMS
- * - const char* text | The text inside the window
- * - int w            | The width of the window
+ * - int txtlen | Length of text
+ * - int w      | The width of the window
  *
  * RETURN (int h)
  */
-static int infwin_height(const char* text, int w)
+static int infwin_height(int txtlen, int w)
 {
-  return MAX((strlen(text) / (w - 2)) + 3, 0);
+  return MAX((txtlen / (w - 2)) + 3, 0);
 }
 
 /*
@@ -25,7 +25,7 @@ static int infwin_height(const char* text, int w)
  */
 void infwin_resize(infwin_t* infwin, int x, int y, int w, int h)
 {
-  if(h <= 0) h = infwin_height(infwin->text, w);
+  if(h <= 0) h = infwin_height(infwin->txtlen, w);
 
   window_resize(infwin->window, x, y, w, h);
 }
@@ -45,15 +45,15 @@ infwin_t* infwin_create(int x, int y, int w, int h, char* title, char* text, boo
 {
   infwin_t* infwin = malloc(sizeof(infwin_t));
 
-  if(h <= 0) h = infwin_height(text, w);
-
-  infwin->window = window_create(x, y, w, h, active);
-
   infwin->title  = title;
-  infwin->ttllen = strlen(title);
+  infwin->ttllen = (title ? strlen(title) : 0);
 
   infwin->text   = text;
-  infwin->txtlen = strlen(text);
+  infwin->txtlen = (text ? strlen(text) : 0);
+
+  if(h <= 0) h = infwin_height(infwin->txtlen, w);
+
+  infwin->window = window_create(x, y, w, h, active);
 
   return infwin;
 }

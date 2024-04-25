@@ -60,7 +60,7 @@ void inpwin_buffer_set(inpwin_t* inpwin, char* buffer, size_t size)
  *
  * RETURN (inpwin_t* inpwin)
  */
-inpwin_t* inpwin_create(int x, int y, int w, char* buffer, size_t size, bool secret, bool active)
+inpwin_t* inpwin_create(int x, int y, int w, char* buffer, size_t size, char* title, bool secret, bool active)
 {
   inpwin_t* inpwin = malloc(sizeof(inpwin_t));
 
@@ -70,6 +70,9 @@ inpwin_t* inpwin_create(int x, int y, int w, char* buffer, size_t size, bool sec
 
   inpwin->secret = secret;
   inpwin->hidden = secret;
+
+  inpwin->title  = title;
+  inpwin->ttllen = (title ? strlen(title) : 0);
 
   return inpwin;
 }
@@ -127,6 +130,22 @@ static void inpwin_length_print(inpwin_t* inpwin)
 }
 
 /*
+ * Print the title of the info window
+ */
+static void inpwin_title_print(inpwin_t* inpwin)
+{
+  if(!inpwin->title || !inpwin->ttllen) return;
+
+  WINDOW* window = inpwin->window->window;
+
+  int xmax = inpwin->window->xmax;
+
+  int shift = (xmax - inpwin->ttllen) / 2;
+
+  mvwprintw(window, 0, shift, "%s", inpwin->title);
+}
+
+/*
  * Refresh the content of the buffer being shown
  */
 void inpwin_refresh(inpwin_t* inpwin)
@@ -143,6 +162,11 @@ void inpwin_refresh(inpwin_t* inpwin)
   WINDOW* window = inpwin->window->window;
 
   box(window, 0, 0);
+
+  if(inpwin->title)
+  {
+    inpwin_title_print(inpwin);
+  }
 
   inpwin_length_print(inpwin);
 

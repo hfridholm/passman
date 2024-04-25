@@ -6,11 +6,16 @@
 typedef struct
 {
   window_t* window;
-  char* prompt;   // The question to answer
-  char* ytext;    // The text for answering yes
-  char* ntext;    // The text for answering no
-  bool answer;    // The answer (yes or no)
-} cnfwin_t;       // Confirm Window
+  char*     prompt; // The question to answer
+  int       pmtlen;
+  char*     ytext;  // The text for answering yes
+  int       ytxlen;
+  char*     ntext;  // The text for answering no
+  int       ntxlen;
+  bool      answer; // The answer (yes or no)
+} cnfwin_t;
+
+extern void cnfwin_prompt_set(cnfwin_t* cnfwin, char* prompt);
 
 extern cnfwin_t* cnfwin_create(int x, int y, int w, char* prompt, char* ytext, char* ntext, bool active);
 

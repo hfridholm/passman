@@ -20,7 +20,7 @@ void menpsw_init(int xmax, int ymax)
   int x = xmax / 2;
   int y = ymax / 2;
 
-  pswwin = inpwin_create(x, y, xmax - 10, password, sizeof(password), false, true);
+  pswwin = inpwin_create(x, y, xmax - 10, password, sizeof(password), NULL, false, true);
 }
 
 void menpsw_free(void)

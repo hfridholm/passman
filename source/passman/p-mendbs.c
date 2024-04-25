@@ -87,11 +87,11 @@ static void mendbs_popups_init(int xmax, int ymax)
 
   delpop = cnfwin_create(x, y, 30, "Delete Database?", "Yes", "No", false);
 
-  opnpop = inpwin_create(x, y, 50, password, sizeof(password), true, false);
+  opnpop = inpwin_create(x, y, 50, password, sizeof(password), "Password", true, false);
 
-  newpop = inpwin_create(x, y, 50, newbuf, sizeof(newbuf), false, false);
+  newpop = inpwin_create(x, y, 50, newbuf, sizeof(newbuf), "New", false, false);
 
-  rnmpop = inpwin_create(x, y, 50, NULL, 0, false, false);
+  rnmpop = inpwin_create(x, y, 50, NULL, 0, "Rename", false, false);
 }
 
 void mendbs_init(int xmax, int ymax)
@@ -103,7 +103,7 @@ void mendbs_init(int xmax, int ymax)
   int w = xmax - 12;
   int h = ymax - 10;
 
-  search = inpwin_create(x, 5, w, srcbuf, sizeof(srcbuf), false, true);
+  search = inpwin_create(x, 5, w, srcbuf, sizeof(srcbuf), NULL, false, true);
   
   dbases = lstwin_create(x, y, w, h, dbenms, dbeamt, true);
 
@@ -142,7 +142,8 @@ static void mendbs_dbases_key_handler(int key)
   
       sprintf(prompt, "Delete \"%s\"?", item);
 
-      delpop->prompt = prompt;
+      cnfwin_prompt_set(delpop, prompt);
+
       delpop->answer = false;
 
       cnfpop_input(delpop, NULL);

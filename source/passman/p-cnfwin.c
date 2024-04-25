@@ -4,14 +4,14 @@
  * Calculate the height of the window depending on prompt and width
  *
  * PARAMS
- * - const char* prompt | The prompt inside the window
- * - int w              | The width of the window
+ * - int pmtlen | Length of prompt
+ * - int w      | The width of the window
  *
  * RETURN (int h)
  */
-static int cnfwin_height(const char* prompt, int w)
+static int cnfwin_height(int pmtlen, int w)
 {
-  return MAX((strlen(prompt) / (w - 2)) + 5, 0);
+  return MAX((pmtlen / (w - 2)) + 5, 0);
 }
 
 /*
@@ -22,9 +22,19 @@ static int cnfwin_height(const char* prompt, int w)
  */
 void cnfwin_resize(cnfwin_t* cnfwin, int x, int y, int w)
 {
-  int h = cnfwin_height(cnfwin->prompt, w);
+  int h = cnfwin_height(cnfwin->pmtlen, w);
 
   window_resize(cnfwin->window, x, y, w, h);
+}
+
+/*
+ *
+ */
+void cnfwin_prompt_set(cnfwin_t* cnfwin, char* prompt)
+{
+  cnfwin->prompt = prompt;
+
+  cnfwin->pmtlen = (prompt ? strlen(prompt) : 0);
 }
 
 /*
@@ -39,13 +49,17 @@ cnfwin_t* cnfwin_create(int x, int y, int w, char* prompt, char* ytext, char* nt
 {
   cnfwin_t* cnfwin = malloc(sizeof(cnfwin_t));
 
-  int h = cnfwin_height(prompt, w);
+  cnfwin_prompt_set(cnfwin, prompt);
+
+  cnfwin->ytext  = ytext;
+  cnfwin->ytxlen = (ytext ? strlen(ytext) : 0);
+
+  cnfwin->ntext  = ntext;
+  cnfwin->ntxlen = (ntext ? strlen(ntext) : 0);
+
+  int h = cnfwin_height(cnfwin->pmtlen, w);
 
   cnfwin->window = window_create(x, y, w, h, active);
-
-  cnfwin->prompt = prompt;
-  cnfwin->ytext  = ytext;
-  cnfwin->ntext  = ntext;
 
   return cnfwin;
 }
@@ -65,27 +79,21 @@ void cnfwin_free(cnfwin_t* cnfwin)
 /*
  *
  */
-void cnfwin_refresh(cnfwin_t* cnfwin)
+static void cnfwin_prompt_print(cnfwin_t* cnfwin)
 {
-  if(!cnfwin->window->active) return;
-
-  window_clean(cnfwin->window);
+  if(!cnfwin->prompt || !cnfwin->pmtlen) return;
 
   WINDOW* window = cnfwin->window->window;
 
   int ymax = cnfwin->window->ymax;
   int xmax = cnfwin->window->xmax;
 
-  box(window, 0, 0);
-
-  int length = strlen(cnfwin->prompt);
   int index = 0;
-
   for(int height = 0; height < ymax - 4; height++)
   {
     if(height >= ymax - 5)
     {
-      int rlength = strlen(cnfwin->prompt + index);
+      int rlength = cnfwin->pmtlen - index;
 
       int cshift = (xmax - rlength) / 2;
 
@@ -97,16 +105,28 @@ void cnfwin_refresh(cnfwin_t* cnfwin)
     {
       index = (height * (xmax - 2) + width);
 
-      if(index >= length) break; 
+      if(index >= cnfwin->pmtlen) break; 
 
       waddch(window, cnfwin->prompt[index]);
     }
   }
+}
 
-  int ylength = strlen(cnfwin->ytext);
-  int nlength = strlen(cnfwin->ntext);
+/*
+ *
+ */
+static void cnfwin_yesno_print(cnfwin_t* cnfwin)
+{
+  if(!cnfwin->ytext || !cnfwin->ytxlen) return;
 
-  int alength = ylength + 1 + nlength;
+  if(!cnfwin->ntext || !cnfwin->ntxlen) return;
+
+  WINDOW* window = cnfwin->window->window;
+
+  int ymax = cnfwin->window->ymax;
+  int xmax = cnfwin->window->xmax;
+
+  int alength = cnfwin->ytxlen + 1 + cnfwin->ntxlen;
 
   int ashift = (xmax - alength) / 2;
 
@@ -125,6 +145,24 @@ void cnfwin_refresh(cnfwin_t* cnfwin)
   wprintw(window, "%s", cnfwin->ntext);
 
   wattroff(window, A_REVERSE);
+}
+
+/*
+ *
+ */
+void cnfwin_refresh(cnfwin_t* cnfwin)
+{
+  if(!cnfwin->window->active) return;
+
+  window_clean(cnfwin->window);
+
+  WINDOW* window = cnfwin->window->window;
+
+  box(window, 0, 0);
+
+  cnfwin_prompt_print(cnfwin);
+
+  cnfwin_yesno_print(cnfwin);
 
   wrefresh(window);
 }
@@ -157,10 +195,8 @@ void cnfwin_input(cnfwin_t* cnfwin, void (*key_handler)(int))
 
   screen_refresh();
 
-  WINDOW* window = cnfwin->window->window;
-
   int key;
-  while(running && (key = wgetch(window)))
+  while(running && (key = wgetch(cnfwin->window->window)))
   {
     screen_key_handler(key);
 

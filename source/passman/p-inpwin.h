@@ -13,9 +13,11 @@ typedef struct
   int scroll;       // How many characters that is scrolled
   bool hidden;      // Render like a hidden password
   bool secret;      // Only secret inputs can hide content
+  char* title;      // Title
+  int ttllen;       // Title length
 } inpwin_t;         // Input window
 
-extern inpwin_t* inpwin_create(int x, int y, int w, char* buffer, size_t size, bool secret, bool active);
+extern inpwin_t* inpwin_create(int x, int y, int w, char* buffer, size_t size, char* prompt, bool secret, bool active);
 
 extern void inpwin_resize(inpwin_t* inpwin, int x, int y, int w);
 
