@@ -140,9 +140,14 @@ static void inpwin_title_print(inpwin_t* inpwin)
 
   int xmax = inpwin->window->xmax;
 
-  int shift = (xmax - inpwin->ttllen) / 2;
+  int length = MIN(xmax - 2, inpwin->ttllen);
 
-  mvwprintw(window, 0, shift, "%s", inpwin->title);
+  wmove(window, 0, (xmax - length) / 2);
+
+  for(int index = 0; index < length; index++)
+  {
+    waddch(window, inpwin->title[index]);
+  }
 }
 
 /*

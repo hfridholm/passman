@@ -146,6 +146,8 @@ static void mendbs_dbases_key_handler(int key)
 
       cnfwin_prompt_set(delpop, prompt);
 
+      screen_resize();
+
       delpop->answer = false;
 
       cnfpop_input(delpop, NULL);
@@ -175,6 +177,8 @@ static void mendbs_dbases_key_handler(int key)
 
     case 'r':
       inpwin_buffer_set(rnmpop, item, 64);
+
+      screen_resize();
 
       inppop_input(rnmpop, NULL);
       break;

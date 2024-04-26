@@ -31,7 +31,7 @@ void txtwin_resize(txtwin_t* txtwin, int x, int y, int w, int h)
 }
 
 /*
- *
+ * Note: After you change the title, you have to resize the window
  */
 void txtwin_title_set(txtwin_t* txtwin, char* title)
 {
@@ -41,7 +41,7 @@ void txtwin_title_set(txtwin_t* txtwin, char* title)
 }
 
 /*
- *
+ * Note: After you change the text, you have to resize the window
  */
 void txtwin_text_set(txtwin_t* txtwin, char* text)
 {
@@ -110,7 +110,9 @@ static void txtwin_text_print(txtwin_t* txtwin)
     // 1. Shift text to center of window
     if(height == (lines - 1))
     {
-      int xshift = (xmax - txtwin->txtlen + index) / 2;
+      int linlen = MIN(xmax - 2, txtwin->txtlen - index);
+
+      int xshift = (xmax - linlen) / 2;
       
       wmove(window, yshift + 1 + height, xshift);
     }
@@ -139,9 +141,14 @@ static void txtwin_title_print(txtwin_t* txtwin)
 
   int xmax = txtwin->window->xmax;
 
-  int shift = (xmax - txtwin->ttllen) / 2;
+  int length = MIN(xmax - 2, txtwin->ttllen);
 
-  mvwprintw(window, 0, shift, "%s", txtwin->title);
+  wmove(window, 0, (xmax - length) / 2);
+
+  for(int index = 0; index < length; index++)
+  {
+    waddch(window, txtwin->title[index]);
+  }
 }
 
 /*

@@ -28,7 +28,7 @@ void cnfwin_resize(cnfwin_t* cnfwin, int x, int y, int w)
 }
 
 /*
- *
+ * Note: After you change the prompt, you have to resize the window
  */
 void cnfwin_prompt_set(cnfwin_t* cnfwin, char* prompt)
 {
@@ -91,16 +91,18 @@ static void cnfwin_prompt_print(cnfwin_t* cnfwin)
   int index = 0;
   for(int height = 0; height < ymax - 4; height++)
   {
-    if(height >= ymax - 5)
+    // 1. Shift prompt to center of window
+    if(height == (ymax - 5))
     {
-      int rlength = cnfwin->pmtlen - index;
+      int linlen = MIN(xmax - 2, cnfwin->pmtlen - index);
 
-      int cshift = (xmax - rlength) / 2;
+      int xshift = (xmax - linlen) / 2;
 
-      wmove(window, 1 + height, cshift);
+      wmove(window, 1 + height, xshift);
     }
     else wmove(window, 1 + height, 1);
 
+    // 2. Print the current line of text
     for(int width = 0; width < xmax - 2; width++)
     {
       index = (height * (xmax - 2) + width);
