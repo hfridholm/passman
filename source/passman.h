@@ -28,7 +28,7 @@
 
 #include "passman/p-cnfwin.h"
 #include "passman/p-inpwin.h"
-#include "passman/p-infwin.h"
+#include "passman/p-txtwin.h"
 #include "passman/p-lstwin.h"
 
 #include "passman/p-mendbs.h"
@@ -42,6 +42,6 @@ extern void screen_init(void);
 
 extern void screen_free(void);
 
-extern infwin_t* szepop;
+extern txtwin_t* szepop;
 
 #endif // PASSMAN_H

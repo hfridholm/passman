@@ -135,10 +135,12 @@ static void mendbs_dbases_key_handler(int key)
   {
     case KEY_ENTR:
       inppop_input(opnpop, NULL);
+
+      infpop_input("Info", "The password was wrong");
       break;
 
     case 'd':
-      char prompt[64];
+      char prompt[128];
   
       sprintf(prompt, "Delete \"%s\"?", item);
 
@@ -147,10 +149,28 @@ static void mendbs_dbases_key_handler(int key)
       delpop->answer = false;
 
       cnfpop_input(delpop, NULL);
+
+      if(delpop->answer)
+      {
+        char text[128];
+
+        sprintf(text, "The database \"%s\" was deleted", item);
+        
+        infpop_input("Info", text);
+      }
       break;
 
     case 'n':
       inppop_input(newpop, NULL);
+
+      if(newpop->length)
+      {
+        char text[128];
+
+        sprintf(text, "New database \"%s\" was created", newpop->buffer);
+        
+        infpop_input("Info", text);
+      }
       break;
 
     case 'r':

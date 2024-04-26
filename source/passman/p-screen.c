@@ -3,7 +3,8 @@
 bool running = true;
 
 cnfwin_t* extpop;
-infwin_t* szepop;
+txtwin_t* szepop;
+txtwin_t* infpop;
 
 menu_t  menu;
 
@@ -31,7 +32,9 @@ void screen_refresh(void)
 
   menu_refresh();
 
-  infwin_refresh(szepop);
+  txtwin_refresh(szepop);
+
+  txtwin_refresh(infpop);
 
   cnfwin_refresh(extpop);
 }
@@ -43,7 +46,9 @@ static void popups_resize(int xmax, int ymax)
 
   cnfwin_resize(extpop, x, y, 24);
 
-  infwin_resize(szepop, x, y, 104, 26);
+  txtwin_resize(infpop, x, y, 40, -1);
+
+  txtwin_resize(szepop, x, y, 104, 26);
 }
 
 static void menus_resize(int xmax, int ymax)
@@ -84,14 +89,18 @@ static void popups_init(int xmax, int ymax)
 
   extpop = cnfwin_create(x, y, 24, "Do you want to exit?", "Yes", "No", false);
 
-  szepop = infwin_create(x, y, 104, 26, "Info", "Resize the terminal to match this window", false);
+  szepop = txtwin_create(x, y, 104, 26, "Info", "Resize the terminal to match this window", false);
+
+  infpop = txtwin_create(x, y, 40, -1, NULL, NULL, false);
 }
 
 static void popups_free(void)
 {
   cnfwin_free(extpop);
 
-  infwin_free(szepop);
+  txtwin_free(szepop);
+
+  txtwin_free(infpop);
 }
 
 void screen_init(void)
@@ -138,4 +147,18 @@ void screen_key_handler(int key)
     default:
       break;
   }
+}
+
+void infpop_input(char* title, char* text)
+{
+  txtwin_title_set(infpop, title);
+
+  txtwin_text_set(infpop, text);
+
+  int x = getmaxx(stdscr) / 2;
+  int y = getmaxx(stdscr) / 2;
+
+  txtwin_resize(infpop, x, y, 40, -1);
+
+  txtpop_input(infpop, NULL);
 }

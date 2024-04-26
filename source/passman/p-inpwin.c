@@ -130,7 +130,7 @@ static void inpwin_length_print(inpwin_t* inpwin)
 }
 
 /*
- * Print the title of the info window
+ * Print the title of the text window
  */
 static void inpwin_title_print(inpwin_t* inpwin)
 {

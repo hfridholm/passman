@@ -7,6 +7,12 @@
   change back to previous name
 - ability to change database password in mendbe
 - add "Press enter to continue..." text to infwin
+- crop title on box to (xmax - 2)
+
+## Must
+- bug: txtwin prints text all wrong
+  this was caused by txtwin height not updating when text is set
+- don't let txtwin print more chars than possible (ymax - 2)
 
 ## Maybe
 - rename inpwin scroll to shift?
