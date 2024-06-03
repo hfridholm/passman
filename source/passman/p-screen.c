@@ -20,6 +20,10 @@ static void menu_refresh(void)
       menpsw_refresh();
       break;
 
+    case MENU_DATABASE:
+      mendbe_refresh();
+      break;
+
     default:
       break;
   }
@@ -27,7 +31,7 @@ static void menu_refresh(void)
 
 void screen_refresh(void)
 {
-  clear();
+  // clear();
   refresh();
 
   menu_refresh();
@@ -56,6 +60,8 @@ static void menus_resize(int xmax, int ymax)
   mendbs_resize(xmax, ymax);
 
   menpsw_resize(xmax, ymax);
+
+  mendbe_resize(xmax, ymax);
 }
 
 void screen_resize(void)
@@ -73,6 +79,8 @@ static void menus_init(int xmax, int ymax)
   mendbs_init(xmax, ymax);
 
   menpsw_init(xmax, ymax);
+
+  mendbe_init(xmax, ymax);
 }
 
 static void menus_free(void)
@@ -80,6 +88,8 @@ static void menus_free(void)
   mendbs_free();
 
   menpsw_free();
+
+  mendbe_free();
 }
 
 static void popups_init(int xmax, int ymax)
@@ -109,6 +119,7 @@ void screen_init(void)
   noecho();
   curs_set(0);
   raw();
+  keypad(stdscr, TRUE);
 
   int xmax = getmaxx(stdscr);
   int ymax = getmaxy(stdscr);

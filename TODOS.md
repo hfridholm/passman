@@ -7,7 +7,6 @@
   change back to previous name
 - ability to change database password in mendbe
 - add "Press enter to continue..." text to infwin
-- crop title on box to (xmax - 2)
 
 ## Must
 

@@ -175,8 +175,6 @@ void inpwin_refresh(inpwin_t* inpwin)
 
   inpwin_length_print(inpwin);
 
-  wmove(window, 1, 1 + (inpwin->cursor - inpwin->scroll));
-
   wrefresh(window);
 }
 
@@ -274,7 +272,7 @@ static void inpwin_scroll_left(inpwin_t* inpwin)
 /*
  * Note: If input window has no buffer, nothing should be done
  */
-static void inpwin_key_handler(inpwin_t* inpwin, int key)
+void inpwin_key_handler(inpwin_t* inpwin, int key)
 {
   if(!inpwin->buffer) return;
 
@@ -317,6 +315,8 @@ void inpwin_input(inpwin_t* inpwin, void (*key_handler)(int))
 
   WINDOW* window = inpwin->window->window;
 
+  wmove(window, 1, 1 + (inpwin->cursor - inpwin->scroll));
+
   int key;
   while(running && (key = wgetch(window)))
   {
@@ -333,6 +333,8 @@ void inpwin_input(inpwin_t* inpwin, void (*key_handler)(int))
     curs_set(1);
 
     screen_refresh();
+    
+    wmove(window, 1, 1 + (inpwin->cursor - inpwin->scroll));
   }
 
   curs_set(0);

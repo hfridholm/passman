@@ -31,4 +31,6 @@ extern void inppop_input(inpwin_t* inppop, void (*key_handler)(int));
 
 extern void inpwin_buffer_set(inpwin_t* inpwin, char* buffer, size_t size);
 
+extern void inpwin_key_handler(inpwin_t* inpwin, int key);
+
 #endif // P_INPWIN_H
