@@ -1,4 +1,10 @@
-#include "../file.h"
+/*
+ * Written by Hampus Fridholm
+ *
+ * Last updated: 2024-04-20
+ */
+
+#include "file.h"
 
 /*
  * Get the size of the data in a file at the inputted path

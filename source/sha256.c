@@ -1,6 +1,8 @@
 /*
  * The SHA256 algorithm
  *
+ * Written by Hampus Fridholm
+ *
  * Credit: https://sha256algorithm.com
  *
  * Last updated: 2024-04-20

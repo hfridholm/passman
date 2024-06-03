@@ -21,15 +21,11 @@ AES_SOURCE_FILES := $(wildcard $(AES_DIR)/*.c)
 AES_OBJECT_FILES := $(addprefix $(OBJECT_DIR)/, $(notdir $(AES_SOURCE_FILES:.c=.o)))
 
 # These are the source files and object files for the HASH library
-HASH_DIR := $(SOURCE_DIR)/hash
-
-HASH_SOURCE_FILES := $(wildcard $(HASH_DIR)/*.c)
+HASH_SOURCE_FILES := $(SOURCE_DIR)/sha256.c
 HASH_OBJECT_FILES := $(addprefix $(OBJECT_DIR)/, $(notdir $(HASH_SOURCE_FILES:.c=.o)))
 
 # These are the source files and object files for the FILE library
-FILE_DIR := $(SOURCE_DIR)/file
-
-FILE_SOURCE_FILES := $(wildcard $(FILE_DIR)/*.c)
+FILE_SOURCE_FILES := $(SOURCE_DIR)/file.c
 FILE_OBJECT_FILES := $(addprefix $(OBJECT_DIR)/, $(notdir $(FILE_SOURCE_FILES:.c=.o)))
 
 # These are the source files and object files for the PASSMAN library
