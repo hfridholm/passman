@@ -24,12 +24,12 @@
 #define KEY_ENTR  10
 #define KEY_TAB   9
 
-#include "passman/p-window.h"
+#include "passman/p-win.h"
 
-#include "passman/p-cnfwin.h"
-#include "passman/p-inpwin.h"
-#include "passman/p-txtwin.h"
-#include "passman/p-lstwin.h"
+#include "passman/p-win-confirm.h"
+#include "passman/p-win-input.h"
+#include "passman/p-win-text.h"
+#include "passman/p-win-list.h"
 
 #include "passman/p-mendbs.h"
 #include "passman/p-mendbe.h"
