@@ -6,7 +6,7 @@ typedef struct
   menu_head_t head;
 } menu_psw_t;
 
-extern menu_psw_t* menu_psw_create(int xmax, int ymax);
+extern menu_psw_t* menu_psw_create(char* name, int xmax, int ymax);
 
 extern void        menu_psw_resize(men_psw_t* menu, int xmax, int ymax);
 

@@ -4,7 +4,7 @@
 typedef struct
 {
   menu_head_t head;
-  char        dbs_names;
+  char**      dbs_names;
   int         dbs_count;
   char        buffer_search[64];
   char        buffer_new[64];

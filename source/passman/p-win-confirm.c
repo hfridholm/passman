@@ -45,7 +45,7 @@ void win_confirm_prompt_set(win_confirm_t* win, char* prompt)
  *
  * RETURN (win_confirm_t* win)
  */
-win_confirm_t* win_confirm_create(int x, int y, int w, char* prompt, char* text_yes, char* text_no, bool active)
+win_confirm_t* win_confirm_create(char* name, int x, int y, int w, char* prompt, char* text_yes, char* text_no, bool active, key_handler_t* key_handler)
 {
   win_confirm_t* win = malloc(sizeof(win_confirm_t));
 
@@ -59,7 +59,7 @@ win_confirm_t* win_confirm_create(int x, int y, int w, char* prompt, char* text_
 
   int h = win_confirm_height(win->prompt_len, w);
 
-  win->head = win_head_create(x, y, w, h, active);
+  win->head = win_head_create(x, y, w, h, active, key_handler);
 
   return win;
 }

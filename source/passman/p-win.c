@@ -29,18 +29,24 @@ void win_head_resize(win_head_t* win, int x, int y, int w, int h)
  *
  * RETURN (win_t* win)
  */
-win_t* win_head_create(int x, int y, int w, int h, bool active)
+win_head_t win_head_create(win_type_t type, char* name, int x, int y, int w, int h, bool active, key_handler_t* key_handler)
 {
-  win_t* win = malloc(sizeof(win_t));
+  win_head_t win;
 
-  win->win = newwin(h, w, y - (h / 2), x - (w / 2));
+  win.type = type;
+
+  win.name = name;
+
+  win.window = newwin(h, w, y - (h / 2), x - (w / 2));
   
-  win->xmax = w;
-  win->ymax = h;
+  win.xmax = w;
+  win.ymax = h;
 
-  keypad(win->win, TRUE);
+  keypad(win.window, TRUE);
 
-  win->active = active;
+  win.active = active;
+
+  win.key_handler = key_handler;
 
   return win;
 }
@@ -119,4 +125,23 @@ void win_free(win_t* win)
     default:
       break;
   }
+}
+
+void wins_free(win_t** wins, int count)
+{
+  for(int index = 0; index < count; index++)
+  {
+    win_free(wins[index], count);
+  }
+}
+
+win_t* wins_name_win_get(win_t** wins, int count, char* name)
+{
+  for(int index = 0; index < count; index++)
+  {
+    win_t* win = wins[index];
+
+    if(strcmp(win->name, name) == 0) return win;
+  }
+  return NULL;
 }

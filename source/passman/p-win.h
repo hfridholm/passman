@@ -12,19 +12,19 @@ typedef enum
 
 typedef struct
 {
-  win_type_t type;
-  char*      name;   // Used to identify window
-  WINDOW*    window;
-  int        ymax;
-  int        xmax;
-  bool       active;
-  void       (*key_handler)(int); 
+  win_type_t     type;
+  char*          name;        // Used to identify window
+  WINDOW*        window;
+  int            ymax;
+  int            xmax;
+  bool           active;
+  key_handler_t* key_handler;
 } win_head_t;
 
 typedef win_t win_head_t;
 
 
-extern win_t* win_head_create(int x, int y, int w, int h, bool active);
+extern win_t* win_head_create(win_type_t type, char* name, int x, int y, int w, int h, bool active, key_handler_t* key_handler);
 
 extern void   win_head_free(win_head_t* win);
 

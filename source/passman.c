@@ -209,11 +209,33 @@ int main(int argc, char* argv[])
     .account = "google.com"
   };
 
-  screen_init();
+  screen_t* screen = screen_create();
 
-  mendbe_input();
+  screen_refresh(screen);
 
-  screen_free();
+  int key
+  while((key = wgetch()))
+  {
+    screen_key_handler(screen, key);
+
+    win_t* pop = screen_pop_get(screen);
+
+    menu_t* menu = screen_menu_get(screen);
+
+    if(pop != NULL && pop->active && pop->key_handler)
+    {
+      pop->key_handler(screen, pop, key);
+    }
+    else if(menu != NULL)
+    {
+      menu_key_handler(menu, screen, key);
+    }
+
+    screen_refresh(screen);
+  }
+
+
+  screen_free(screen);
 
   printf("Exited Successfully!\n");
 

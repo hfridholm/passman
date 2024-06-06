@@ -13,7 +13,7 @@ typedef struct
   bool        answer;       // The answer (yes or no)
 } win_confirm_t;
 
-extern win_confirm_t* win_confirm_create(int x, int y, int w, char* prompt, char* text_yes, char* text_no, bool active);
+extern win_confirm_t* win_confirm_create(int x, int y, int w, char* prompt, char* text_yes, char* text_no, bool active, key_handler_t* key_handler);
 
 extern void           win_confirm_free(win_confirm_t* win);
 

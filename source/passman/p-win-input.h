@@ -15,7 +15,7 @@ typedef struct
   int         title_len;   // Title length
 } win_input_t;
 
-extern win_input_t* win_input_create(int x, int y, int w, char* buffer, size_t size, char* prompt, bool secret, bool active);
+extern win_input_t* win_input_create(char* name, int x, int y, int w, char* buffer, size_t size, char* prompt, bool secret, bool active);
 
 extern void         win_input_resize(win_input_t* win, int x, int y, int w);
 

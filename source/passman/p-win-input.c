@@ -61,16 +61,15 @@ void win_input_buffer_set(win_input_t* win, char* buffer, size_t size)
  *
  * RETURN (win_input_t* win)
  */
-win_input_t* win_create(int x, int y, int w, char* buffer, size_t size, char* title, bool secret, bool active)
+win_input_t* win_input_create(char* name, int x, int y, int w, char* buffer, size_t size, char* title, bool secret, bool active)
 {
   win_input_t* win = malloc(sizeof(win_input_t));
 
-  win->head = win_head_create(x, y, w, 3, active);
+  win->head = win_head_create(WIN_INPUT, name, x, y, w, 3, active);
 
   win_input_buffer_set(win, buffer, size);
 
-  win->secret = secret;
-  win->hidden = secret;
+  win->hidden = win->secret = secret;
 
   win->title     = title;
   win->title_len = (title ? strlen(title) : 0);

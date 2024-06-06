@@ -1,175 +1,138 @@
 #include "../passman.h"
 
-bool running = true;
-
-cnfwin_t* extpop;
-txtwin_t* szepop;
-txtwin_t* infpop;
-
-menu_t  menu;
-
-static void menu_refresh(void)
-{
-  switch(menu)
-  {
-    case MENU_DATABASES:
-      mendbs_refresh();
-      break;
-
-    case MENU_PASSWORD:
-      menpsw_refresh();
-      break;
-
-    case MENU_DATABASE:
-      mendbe_refresh();
-      break;
-
-    default:
-      break;
-  }
-}
-
-void screen_refresh(void)
+void screen_refresh(screen_t* screen)
 {
   // clear();
   refresh();
 
-  menu_refresh();
+  if(screen->menu_index >= 0 && screen->menu_index < screen->menu_count)
+  {
+    menu_refresh(screen->menus[screen->menu_index]);
+  }
 
-  txtwin_refresh(szepop);
-
-  txtwin_refresh(infpop);
-
-  cnfwin_refresh(extpop);
+  if(screen->pop_index >= 0 && screen->pop_index < screen->pop_count)
+  {
+    win_refresh(screen->pops[screen->pop_index]);
+  }
 }
 
-static void popups_resize(int xmax, int ymax)
+static void screen_pops_resize(screen_t* screen, int xmax, int ymax)
 {
   int x = xmax / 2;
   int y = ymax / 2;
 
-  cnfwin_resize(extpop, x, y, 24);
+  screen_pop_confirm_resize(screen, "exit", x, y, 24);
 
-  txtwin_resize(infpop, x, y, 40, -1);
+  screen_pop_text_resize(screen, "size", x, y, 104, 26);
 
-  txtwin_resize(szepop, x, y, 104, 26);
+  screen_pop_text_resize(screen, "info", x, y, 40, -1);
 }
 
-static void menus_resize(int xmax, int ymax)
-{
-  mendbs_resize(xmax, ymax);
-
-  menpsw_resize(xmax, ymax);
-
-  mendbe_resize(xmax, ymax);
-}
-
-void screen_resize(void)
+void screen_resize(screen_t* screen)
 {
   int xmax = getmaxx(stdscr);
   int ymax = getmaxy(stdscr);
 
-  menus_resize(xmax, ymax);
+  menus_resize(screen, xmax, ymax);
 
-  popups_resize(xmax, ymax);
+  screen_pops_resize(screen, xmax, ymax);
 }
 
-static void menus_init(int xmax, int ymax)
+static void screen_menus_create(screen_t* screen, int xmax, int ymax)
 {
-  mendbs_init(xmax, ymax);
+  screen_menu_dbs_create(screen, "dbs", xmax, ymax);
 
-  menpsw_init(xmax, ymax);
+  screen_menu_psw_create(screen, "psw", xmax, ymax);
 
-  mendbe_init(xmax, ymax);
+  screen_mneu_db_create(screen, "db", xmax, ymax);
 }
 
-static void menus_free(void)
-{
-  mendbs_free();
-
-  menpsw_free();
-
-  mendbe_free();
-}
-
-static void popups_init(int xmax, int ymax)
+static void screen_pops_create(screen_t* screen, int xmax, int ymax)
 {
   int x = xmax / 2;
   int y = ymax / 2;
 
-  extpop = cnfwin_create(x, y, 24, "Do you want to exit?", "Yes", "No", false);
+  screen_pop_confirm_create(screen, "exit", x, y, 24, "Do you want to exit?", "Yes", "No", false, screen_pop_exit_key_handler);
 
-  szepop = txtwin_create(x, y, 104, 26, "Info", "Resize the terminal to match this window", false);
+  screen_pop_text_create(screen, "size", x, y, 104, 26, "Info", "Resize the terminal to match this window", false, screen_pop_text_key_handler);
 
-  infpop = txtwin_create(x, y, 40, -1, NULL, NULL, false);
+  screen_pop_text_create(screen, "info", x, y, 40, -1, NULL, NULL, false, screen_pop_text_key_handler);
 }
 
-static void popups_free(void)
+screen_t* screen_create(void)
 {
-  cnfwin_free(extpop);
+  screen_t* screen = malloc(sizeof(screen_t));
 
-  txtwin_free(szepop);
+  screen->running = true;
 
-  txtwin_free(infpop);
-}
-
-void screen_init(void)
-{
   initscr();
   noecho();
-  curs_set(0);
   raw();
   keypad(stdscr, TRUE);
 
   int xmax = getmaxx(stdscr);
   int ymax = getmaxy(stdscr);
 
-  menus_init(xmax, ymax);
+  screen_menus_create(screen, xmax, ymax);
 
-  popups_init(xmax, ymax);
+  screen_pops_create(screen, xmax, ymax);
+
+  return screen;
 }
 
-void screen_free(void)
+void screen_free(screen_t* screen)
 {
-  menus_free();
+  menus_free(screen->menus, screen->menu_count);
 
-  popups_free();
+  free(screen->menus);
+
+  wins_free(screen->pops, screen->pop_count);
+
+  free(screen->pops);
 
   endwin();
 }
 
-void screen_key_handler(int key)
+void screen_pop_exit_key_handler(screen_t* screen, win_t* pop, int key)
 {
+  if(pop == NULL) return;
+
+  win_confirm_key_handler(pop, key);
+
   switch(key)
   {
-    case KEY_CTRLC:
-      if(!extpop->window->active)
-      {
-        cnfpop_input(extpop, NULL);
-
-        if(extpop->answer) running = false;
-      }
-      break;
-
-    case KEY_RESIZE:
-      screen_resize();
-      break;
-
-    default:
+    case KEY_ENTER:
+      if(pop->answer == true) screen->running = false;
+  
+      pop->head->active = false;
       break;
   }
 }
 
-void infpop_input(char* title, char* text)
+void screen_pop_text_key_handler(screen_t* screen, win_t* pop, int key)
 {
-  txtwin_title_set(infpop, title);
+  if(pop == NULL) return;
 
-  txtwin_text_set(infpop, text);
+  win_text_key_handler(pop, key);
 
-  int x = getmaxx(stdscr) / 2;
-  int y = getmaxx(stdscr) / 2;
+  switch(key)
+  {
+    case KEY_ENTER:
+      pop->head->active = false;
+      break;
+  }
+}
 
-  txtwin_resize(infpop, x, y, 40, -1);
+void screen_key_handler(screen_t* screen, int key)
+{
+  switch(key)
+  {
+    case KEY_CTRLC:
+      screen->pop_index = wins_name_win_index(screen->pops, screen->pop_count, "exit");
+      break;
 
-  txtpop_input(infpop, NULL);
+    case KEY_RESIZE:
+      screen_resize(screen);
+      break;
+  }
 }

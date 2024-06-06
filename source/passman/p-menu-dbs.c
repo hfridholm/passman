@@ -93,9 +93,18 @@ void menu_dbs_free(menu_psw_t* menu)
   free(menu);
 }
 
-static void menu_dbs_win_dbs_key_handler(int key)
+void menu_dbs_win_dbs_key_handler(screen_t* screen, int key)
 {
-  char* item = dbases->items[dbases->index];
+  menu_t* menu = screen_name_menu_get(screen, "dbs");
+
+  if(menu == NULL || menu->type != MENU_DBS) return;
+
+  win_t* win = menu_name_win_get(menu, "dbs");
+
+  if(win == NULL || win->type != WIN_LIST) return;
+
+
+  char* item = win->items[win->item_index];
 
   switch(key)
   {
