@@ -13,10 +13,12 @@ typedef enum
 typedef struct
 {
   win_type_t type;
+  char*      name;   // Used to identify window
   WINDOW*    window;
   int        ymax;
   int        xmax;
   bool       active;
+  void       (*key_handler)(int); 
 } win_head_t;
 
 typedef win_t win_head_t;
