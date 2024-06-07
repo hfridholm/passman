@@ -61,7 +61,7 @@ void win_text_text_set(win_text_t* win, char* text)
  *
  * RETURN (win_text_t* win)
  */
-win_text_t* win_text_create(int x, int y, int w, int h, char* title, char* text, bool active)
+win_text_t* win_text_create(char* name, int x, int y, int w, int h, char* title, char* text, bool active, key_handler_t* key_handler)
 {
   win_text_t* win = malloc(sizeof(win_text_t));
 
@@ -169,4 +169,22 @@ void win_text_refresh(win_text_t* win)
   win_text_text_print(win);
 
   wrefresh(window);
+}
+
+void win_text_key_handler(win_head_t* win_head, int key)
+{
+  if(win_head == NULL || win_head->type != WIN_TEXT) return;
+
+  win_list_t* win = (win_list_t*) win_head;
+
+  switch(key)
+  {
+    case 'j':
+      win_list_scroll_down(win);
+      break;
+
+    case 'k':
+      win_list_scroll_up(win);
+      break;
+  }
 }

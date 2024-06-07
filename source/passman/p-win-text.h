@@ -10,7 +10,7 @@ typedef struct
   int         text_len;  // Length of text
 } win_text_t;
 
-extern win_text_t* win_text_create(int x, int y, int w, int h, char* title, char* text, bool active);
+extern win_text_t* win_text_create(char* name, int x, int y, int w, int h, char* title, char* text, bool active, key_handler_t* key_handler);
 
 extern void        win_text_free(win_text_t* win);
 

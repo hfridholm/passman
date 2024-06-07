@@ -61,11 +61,11 @@ void win_input_buffer_set(win_input_t* win, char* buffer, size_t size)
  *
  * RETURN (win_input_t* win)
  */
-win_input_t* win_input_create(char* name, int x, int y, int w, char* buffer, size_t size, char* title, bool secret, bool active)
+win_input_t* win_input_create(char* name, int x, int y, int w, char* buffer, size_t size, char* title, bool secret, bool active, key_handler_t* key_handler)
 {
   win_input_t* win = malloc(sizeof(win_input_t));
 
-  win->head = win_head_create(WIN_INPUT, name, x, y, w, 3, active);
+  win->head = win_head_create(WIN_INPUT, name, x, y, w, 3, active, key_handler);
 
   win_input_buffer_set(win, buffer, size);
 
@@ -270,8 +270,13 @@ static void win_input_scroll_left(win_input_t* win)
 /*
  * Note: If input window has no buffer, nothing should be done
  */
-void win_input_key_handler(win_input_t* win, int key)
+void win_input_key_handler(win_head_t* win_head, int key)
 {
+  if(win_head == NULL || win_head->type != WIN_INPUT) return;
+
+  win_input_t* win = (win_input_t*) win_head;
+
+
   if(!win->buffer) return;
 
   switch(key)
@@ -281,19 +286,19 @@ void win_input_key_handler(win_input_t* win, int key)
       break;
 
     case KEY_RIGHT:
-      win_scroll_right(win);
+      win_input_scroll_right(win);
       break;
 
     case KEY_LEFT:
-      win_scroll_left(win);
+      win_input_scroll_left(win);
       break;
 
     case KEY_BACKSPACE:
-      win_symbol_del(win);
+      win_input_symbol_del(win);
       break;
     
     default:
-      win_symbol_add(win, key);
+      win_input_symbol_add(win, key);
       break;
   }
 }

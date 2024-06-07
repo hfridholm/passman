@@ -213,8 +213,8 @@ int main(int argc, char* argv[])
 
   screen_refresh(screen);
 
-  int key
-  while((key = wgetch()))
+  int key;
+  while((key = wgetch(stdscr)))
   {
     screen_key_handler(screen, key);
 
@@ -224,11 +224,11 @@ int main(int argc, char* argv[])
 
     if(pop != NULL && pop->active && pop->key_handler)
     {
-      pop->key_handler(screen, pop, key);
+      pop->key_handler(pop, key);
     }
     else if(menu != NULL)
     {
-      menu_key_handler(menu, screen, key);
+      menu_key_handler(menu, key);
     }
 
     screen_refresh(screen);

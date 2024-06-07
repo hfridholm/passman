@@ -10,7 +10,7 @@ typedef struct
   int         scroll;     // How many lines has been scrolled down
 } win_list_t;
 
-extern win_list_t* win_list_create(int x, int y, int w, int h, char** items, int count, bool active);
+extern win_list_t* win_list_create(char* name, int x, int y, int w, int h, char** items, int count, bool active, key_handler_t* key_handler);
 
 extern void        win_list_free(win_list_t* win);
 

@@ -1,6 +1,8 @@
 #ifndef P_WIN_INPUT_H
 #define P_WIN_INPUT_H
 
+#include "p-win.h"
+
 typedef struct
 {
   win_head_t* head;
@@ -15,7 +17,7 @@ typedef struct
   int         title_len;   // Title length
 } win_input_t;
 
-extern win_input_t* win_input_create(char* name, int x, int y, int w, char* buffer, size_t size, char* prompt, bool secret, bool active);
+extern win_input_t* win_input_create(char* name, int x, int y, int w, char* buffer, size_t size, char* prompt, bool secret, bool active, key_handler_t* key_handler);
 
 extern void         win_input_resize(win_input_t* win, int x, int y, int w);
 
@@ -26,6 +28,6 @@ extern void         win_input_refresh(win_input_t* win);
 
 extern void win_input_buffer_set(win_input_t* win, char* buffer, size_t size);
 
-extern void win_input_key_handler(win_input_t* win, int key);
+extern void win_input_key_handler(win_t* win, int key);
 
 #endif // P_WIN_INPUT_H

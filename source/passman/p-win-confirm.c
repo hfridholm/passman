@@ -172,8 +172,12 @@ void win_confirm_refresh(win_confirm_t* win)
 /*
  *
  */
-void win_confirm_key_handler(win_confirm_t* win, int key)
+void win_confirm_key_handler(win_head_t* win_head, int key)
 {
+  if(win_head == NULL || win_head->type != WIN_CONFIRM) return;
+
+  win_confirm_t* win = (win_confirm_t*) win_head;
+
   switch(key)
   {
     case 'l':
