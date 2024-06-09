@@ -18,9 +18,7 @@
   and make a error sound if the user could not del symbol for example
 
 ## Now
-- remove pops and modify win to behave like popups
-  (tab_ability = false, active = false)
 - remove win_index and create system that relies on wins order
   (the last win is the interactive one and gets rendered on top)
   (tabbing rotates the whole array)
-  (inactive wins just sits in the array at their places, but does not effect)
+- change order of win_create params (name, active, tab_ability, x, y, ...)

@@ -3,14 +3,14 @@
 
 typedef struct
 {
-  win_head_t* head;
-  char*       prompt;       // The question to answer
-  int         prompt_len;
-  char*       text_yes;     // The text for answering yes
-  int         text_yes_len;
-  char*       text_no;      // The text for answering no
-  int         text_no_len;
-  bool        answer;       // The answer (yes or no)
+  win_head_t head;
+  char*      prompt;       // The question to answer
+  int        prompt_len;
+  char*      text_yes;     // The text for answering yes
+  int        text_yes_len;
+  char*      text_no;      // The text for answering no
+  int        text_no_len;
+  bool       answer;       // The answer (yes or no)
 } win_confirm_t;
 
 extern win_confirm_t* win_confirm_create(char* name, int x, int y, int w, char* prompt, char* text_yes, char* text_no, bool active, key_handler_t* key_handler);

@@ -12,9 +12,9 @@
  */
 void win_head_resize(win_head_t* win, int x, int y, int w, int h)
 {
-  wresize(win->win, h, w);
+  wresize(win->window, h, w);
 
-  mvwin(win->win, y - (h / 2), x - (w / 2));
+  mvwin(win->window, y - (h / 2), x - (w / 2));
 
   win->xmax = w;
   win->ymax = h;
@@ -55,26 +55,25 @@ void win_head_clean(win_head_t* win)
 {
   for(int y = 0; y < win->ymax; y++)
   {
-    wmove(win->win, y, 0);
+    wmove(win->window, y, 0);
 
     for(int x = 0; x < win->xmax; x++)
     {
-      waddch(win->win, ' ');
+      waddch(win->window, ' ');
     }
   }
 }
 
-void win_head_free(win_head_t* win)
+void win_head_free(win_head_t win)
 {
-  if(win == NULL) return;
+  if(win.window)
+  {
+    wclear(win.window);
 
-  wclear(win->win);
+    wrefresh(win.window);
 
-  wrefresh(win->win);
-
-  delwin(win->win);
-
-  free(win);
+    delwin(win.window);
+  }
 }
 
 void win_refresh(win_t* win)
@@ -131,7 +130,17 @@ void wins_free(win_t** wins, int count)
 {
   for(int index = 0; index < count; index++)
   {
-    win_free(wins[index], count);
+    win_free(wins[index]);
+  }
+}
+
+void wins_refresh(win_t** wins, int count)
+{
+  for(int index = 0; index < count; index++)
+  {
+    win_t* win = wins[index];
+
+    if(win->active) win_refresh(wins[index]);
   }
 }
 
@@ -144,4 +153,86 @@ win_t* wins_name_win_get(win_t** wins, int count, char* name)
     if(strcmp(win->name, name) == 0) return win;
   }
   return NULL;
+}
+
+int wins_name_win_index(win_t** wins, int count, char* name)
+{
+  for(int index = 0; index < count; index++)
+  {
+    win_t* win = wins[index];
+
+    if(strcmp(win->name, name) == 0) return index;
+  }
+  return -1;
+}
+
+win_t* wins_active_win_get(win_t** wins, int count)
+{
+  for(int index = 0; index < count; index++)
+  {
+    win_t* win = wins[index];
+
+    if(win->active) return win;
+  }
+  return NULL;
+}
+
+int wins_next_active_win_index(win_t** wins, int count)
+{
+  int active_num = 0;
+
+  for(int index = 0; index < count; index++)
+  {
+    win_t* win = wins[index];
+
+    if(win->active) active_num++;
+
+    if(active_num == 2) return index;
+  }
+  return -1;
+}
+
+void wins_rotate(win_t** wins, int count, int turns)
+{
+  int shift = turns % count;
+
+  win_t* temp_wins[shift];
+
+  for(int index = 0; index < shift; index++)
+  {
+    temp_wins[index] = wins[index];
+  }
+
+  for(int index = 0; index < (count - shift); index++)
+  {
+    wins[index] = wins[shift + index];
+  }
+
+  for(int index = 0; index < shift; index++)
+  {
+    wins[count - shift + index] = temp_wins[index];
+  }
+}
+
+void wins_index_win_focus_set(win_t** wins, int count, int win_index)
+{
+  if(win_index < 0 || win_index >= count) return;
+
+  win_t* temp_win = wins[win_index];
+
+  for(int index = 1; index <= win_index; index++)
+  {
+    wins[index] = wins[index - 1];
+  }
+
+  wins[0] = temp_win;
+
+  wins[0]->active = true;
+}
+
+void wins_name_win_focus_set(win_t** wins, int count, char* name)
+{
+  int index = wins_name_win_index(wins, count, name);
+
+  wins_index_win_focus_set(wins, count, index);
 }

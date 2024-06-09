@@ -24,7 +24,7 @@ void win_confirm_resize(win_confirm_t* win, int x, int y, int w)
 {
   int h = win_confirm_height(win->prompt_len, w);
 
-  win_head_resize(win->head, x, y, w, h);
+  win_head_resize((win_head_t*) win, x, y, w, h);
 }
 
 /*
@@ -59,7 +59,7 @@ win_confirm_t* win_confirm_create(char* name, int x, int y, int w, char* prompt,
 
   int h = win_confirm_height(win->prompt_len, w);
 
-  win->head = win_head_create(x, y, w, h, active, key_handler);
+  win->head = win_head_create(WIN_CONFIRM, name, x, y, w, h, active, key_handler);
 
   return win;
 }
@@ -83,10 +83,10 @@ static void win_confirm_prompt_print(win_confirm_t* win)
 {
   if(!win->prompt || !win->prompt_len) return;
 
-  WINDOW* window = win->head->window;
+  WINDOW* window = win->head.window;
 
-  int ymax = win->head->ymax;
-  int xmax = win->head->xmax;
+  int ymax = win->head.ymax;
+  int xmax = win->head.xmax;
 
   int index = 0;
   for(int height = 0; height < ymax - 4; height++)
@@ -123,10 +123,10 @@ static void win_confirm_yesno_print(win_confirm_t* win)
 
   if(!win->text_no || !win->text_no_len) return;
 
-  WINDOW* window = win->head->window;
+  WINDOW* window = win->head.window;
 
-  int ymax = win->head->ymax;
-  int xmax = win->head->xmax;
+  int ymax = win->head.ymax;
+  int xmax = win->head.xmax;
 
   if(win->answer == true) wattron(window, A_REVERSE);
 
@@ -154,11 +154,11 @@ static void win_confirm_yesno_print(win_confirm_t* win)
  */
 void win_confirm_refresh(win_confirm_t* win)
 {
-  if(!win->head->active) return;
+  if(!win->head.active) return;
 
-  win_head_clean(win->head);
+  win_head_clean((win_head_t*) win);
 
-  WINDOW* window = win->head->window;
+  WINDOW* window = win->head.window;
 
   box(window, 0, 0);
 

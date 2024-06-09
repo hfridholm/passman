@@ -211,6 +211,7 @@ int main(int argc, char* argv[])
 
   screen_t* screen = screen_create();
 
+  /*
   screen_refresh(screen);
 
   int key;
@@ -218,22 +219,9 @@ int main(int argc, char* argv[])
   {
     screen_key_handler(screen, key);
 
-    win_t* pop = screen_pop_get(screen);
-
-    menu_t* menu = screen_menu_get(screen);
-
-    if(pop != NULL && pop->active && pop->key_handler)
-    {
-      pop->key_handler(pop, key);
-    }
-    else if(menu != NULL)
-    {
-      menu_key_handler(menu, key);
-    }
-
     screen_refresh(screen);
   }
-
+  */
 
   screen_free(screen);
 

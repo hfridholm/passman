@@ -8,24 +8,13 @@ menu_head_t menu_head_create(menu_type_t type, char* name)
   menu.name = name;
 
   menu.win_count = 0;
-  menu.win_index = -1;
-
-  menu.pop_count = 0;
-  menu.pop_index = -1;
 
   return menu;
 }
 
 void menu_refresh(menu_t* menu)
 {
-  for(int index = 0; index < menu->win_count; index++)
-  {
-    if(index == menu->win_index) continue;
-
-    win_refresh(menu->wins[index]);
-  }
-
-  win_refresh(menu->wins[menu->win_index]);
+  wins_refresh(menu->wins, menu->win_count);
 }
 
 void menu_resize(menu_t* menu, int xmax, int ymax)
@@ -86,16 +75,9 @@ void menu_head_free(menu_head_t menu)
 
     free(menu.wins);
   }
-
-  if(menu.pops != NULL)
-  {
-    wins_free(menu.pops, menu.pop_count);
-
-    free(menu.pops);
-  }
 }
 
-void menu_head_key_handler(menu_head_t* menu, int key)
+void menu_base_key_handler(menu_head_t* menu, int key)
 {
   switch(key)
   {
@@ -114,16 +96,11 @@ void menu_head_key_handler(menu_head_t* menu, int key)
 
 void menu_key_handler(menu_t* menu, int key)
 {
-  win_t* pop = menu_pop_get(menu);
-  win_t* win = menu_win_get(menu);
+  win_t* win = menu_active_win_get(menu);
 
-  if(pop != NULL && pop->active && pop->key_handler)
+  if(win != NULL && win->key_handler)
   {
-    pop->key_handler(pop, key);
-  }
-  else if(win != NULL && win->active && win->key_handler)
-  {
-    menu_head_key_handler(menu, key);
+    menu_base_key_handler(menu, key);
 
     win->key_handler(win, key);
   }

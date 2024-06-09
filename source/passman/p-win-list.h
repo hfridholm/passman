@@ -3,11 +3,11 @@
 
 typedef struct
 {
-  win_head_t* head;
-  char**      items;      // The items in the list
-  int         item_count; // The number of items
-  int         item_index; // Which item the user hovers over
-  int         scroll;     // How many lines has been scrolled down
+  win_head_t head;
+  char**     items;      // The items in the list
+  int        item_count; // The number of items
+  int        item_index; // Which item the user hovers over
+  int        scroll;     // How many lines has been scrolled down
 } win_list_t;
 
 extern win_list_t* win_list_create(char* name, int x, int y, int w, int h, char** items, int count, bool active, key_handler_t* key_handler);

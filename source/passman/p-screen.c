@@ -7,25 +7,24 @@ void screen_refresh(screen_t* screen)
 
   if(screen->menu_index >= 0 && screen->menu_index < screen->menu_count)
   {
-    menu_refresh(screen->menus[screen->menu_index]);
+    menu_t* menu = screen->menus[screen->menu_index];
+
+    if(menu != NULL) menu_refresh(menu);
   }
 
-  if(screen->pop_index >= 0 && screen->pop_index < screen->pop_count)
-  {
-    win_refresh(screen->pops[screen->pop_index]);
-  }
+  wins_refresh(screen->wins, screen->win_count);
 }
 
-static void screen_pops_resize(screen_t* screen, int xmax, int ymax)
+static void screen_wins_resize(screen_t* screen, int xmax, int ymax)
 {
   int x = xmax / 2;
   int y = ymax / 2;
 
-  screen_pop_confirm_resize(screen, "exit", x, y, 24);
+  screen_win_confirm_resize(screen, "exit", x, y, 24);
 
-  screen_pop_text_resize(screen, "size", x, y, 104, 26);
+  screen_win_text_resize(screen, "size", x, y, 104, 26);
 
-  screen_pop_text_resize(screen, "info", x, y, 40, -1);
+  screen_win_text_resize(screen, "info", x, y, 40, -1);
 }
 
 static void screen_menus_resize(screen_t* screen, int xmax, int ymax)
@@ -43,7 +42,7 @@ void screen_resize(screen_t* screen)
 
   screen_menus_resize(screen, xmax, ymax);
 
-  screen_pops_resize(screen, xmax, ymax);
+  screen_wins_resize(screen, xmax, ymax);
 }
 
 static void screen_menus_create(screen_t* screen, int xmax, int ymax)
@@ -55,41 +54,39 @@ static void screen_menus_create(screen_t* screen, int xmax, int ymax)
   screen_menu_db_create(screen, "db", xmax, ymax);
 }
 
-void screen_pop_exit_key_handler(win_head_t* pop_head, int key)
+void screen_win_exit_key_handler(win_head_t* win_head, int key)
 {
-  if(pop_head == NULL || pop_head->type != WIN_CONFIRM) return;
+  if(win_head == NULL || win_head->type != WIN_CONFIRM) return;
 
-  win_confirm_key_handler(pop_head, key);
+  win_confirm_key_handler(win_head, key);
 
-  win_confirm_t* pop = (win_confirm_t*) pop_head;
+  win_confirm_t* win = (win_confirm_t*) win_head;
 
   switch(key)
   {
     case KEY_ENTER:
-      if(pop->answer == true) pop_head->screen->running = false;
+      if(win->answer == true) win_head->screen->running = false;
   
-      pop_head->active = false;
+      win_head->active = false;
       break;
   }
 }
 
-static void screen_pops_create(screen_t* screen, int xmax, int ymax)
+static void screen_wins_create(screen_t* screen, int xmax, int ymax)
 {
   int x = xmax / 2;
   int y = ymax / 2;
 
-  screen_pop_confirm_create(screen, "exit", x, y, 24, "Do you want to exit?", "Yes", "No", false, screen_pop_exit_key_handler);
+  screen_win_confirm_create(screen, "exit", x, y, 24, "Do you want to exit?", "Yes", "No", false, screen_win_exit_key_handler);
 
-  screen_pop_text_create(screen, "size", x, y, 104, 26, "Info", "Resize the terminal to match this window", false, win_text_key_handler);
+  // screen_win_text_create(screen, "size", x, y, 104, 26, "Info", "Resize the terminal to match this window", false, pop_text_key_handler);
 
-  screen_pop_text_create(screen, "info", x, y, 40, -1, NULL, NULL, false, win_text_key_handler);
+  // screen_win_text_create(screen, "info", x, y, 40, -1, NULL, NULL, false, pop_text_key_handler);
 }
 
 screen_t* screen_create(void)
 {
   screen_t* screen = malloc(sizeof(screen_t));
-
-  screen->running = true;
 
   initscr();
   noecho();
@@ -99,50 +96,67 @@ screen_t* screen_create(void)
   int xmax = getmaxx(stdscr);
   int ymax = getmaxy(stdscr);
 
-  screen_menus_create(screen, xmax, ymax);
+  // screen_menus_create(screen, xmax, ymax);
 
-  screen_pops_create(screen, xmax, ymax);
+  screen_wins_create(screen, xmax, ymax);
+
+  screen->running = true;
 
   return screen;
 }
 
 void screen_free(screen_t* screen)
 {
-  menus_free(screen->menus, screen->menu_count);
+  if(screen->menus != NULL)
+  {
+    menus_free(screen->menus, screen->menu_count);
 
-  free(screen->menus);
+    free(screen->menus);
+  }
 
-  wins_free(screen->pops, screen->pop_count);
+  if(screen->wins != NULL)
+  {
+    wins_free(screen->wins, screen->win_count);
 
-  free(screen->pops);
+    free(screen->wins);
+  }
 
   endwin();
 }
 
-void screen_pop_text_key_handler(screen_t* screen, win_t* pop, int key)
+void screen_name_win_focus_set(screen_t* screen, char* win_name)
 {
-  if(pop == NULL) return;
+  wins_name_win_focus_set(screen->wins, screen->win_count, win_name);
+}
 
-  win_text_key_handler(pop, key);
-
+void screen_base_key_handler(screen_t* screen, int key)
+{
   switch(key)
   {
-    case KEY_ENTER:
-      pop->head->active = false;
+    case KEY_CTRLC:
+      screen_name_win_focus_set(screen, "exit");
+      break;
+
+    case KEY_RESIZE:
+      screen_resize(screen);
       break;
   }
 }
 
 void screen_key_handler(screen_t* screen, int key)
 {
-  switch(key)
-  {
-    case KEY_CTRLC:
-      screen->pop_index = wins_name_win_index(screen->pops, screen->pop_count, "exit");
-      break;
+  screen_base_key_handler(screen, key);
 
-    case KEY_RESIZE:
-      screen_resize(screen);
-      break;
+  win_t* win = screen_active_win_get(screen);
+
+  menu_t* menu = screen_menu_get(screen);
+
+  if(win != NULL && win->key_handler)
+  {
+    win->key_handler(win, key);
+  }
+  else if(menu != NULL)
+  {
+    menu_key_handler(menu, key);
   }
 }

@@ -5,16 +5,16 @@
 
 typedef struct
 {
-  win_head_t* head;
-  char*       buffer;      // The inputted string
-  int         buffer_size; // Max size of buffer
-  int         buffer_len;  // The length of the string
-  int         cursor;      // The index which the cursor is on
-  int         scroll;      // How many characters that is scrolled
-  bool        hidden;      // Render like a hidden password
-  bool        secret;      // Only secret inputs can hide content
-  char*       title;       // Title
-  int         title_len;   // Title length
+  win_head_t head;
+  char*      buffer;      // The inputted string
+  int        buffer_size; // Max size of buffer
+  int        buffer_len;  // The length of the string
+  int        cursor;      // The index which the cursor is on
+  int        scroll;      // How many characters that is scrolled
+  bool       hidden;      // Render like a hidden password
+  bool       secret;      // Only secret inputs can hide content
+  char*      title;       // Title
+  int        title_len;   // Title length
 } win_input_t;
 
 extern win_input_t* win_input_create(char* name, int x, int y, int w, char* buffer, size_t size, char* prompt, bool secret, bool active, key_handler_t* key_handler);

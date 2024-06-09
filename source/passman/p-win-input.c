@@ -8,7 +8,7 @@
  */
 void win_input_resize(win_input_t* win, int x, int y, int w)
 {
-  win_head_resize(win->head, x, y, w, 3);
+  win_head_resize((win_head_t*) win, x, y, w, 3);
 
   // 1. Clamp the cursor to the end
   if((win->cursor - win->scroll) >= (w - 2))
@@ -48,7 +48,7 @@ void win_input_buffer_set(win_input_t* win, char* buffer, size_t size)
 
   win->cursor = win->buffer_len;
 
-  int xmax = win->head->xmax;
+  int xmax = win->head.xmax;
 
   win->scroll = MAX(0, win->buffer_len - (xmax - 2) + 1);
 }
@@ -94,9 +94,9 @@ void win_input_free(win_input_t* win)
  */
 static void win_input_buffer_print(win_input_t* win)
 {
-  WINDOW* window = win->head->window;
+  WINDOW* window = win->head.window;
 
-  int xmax = win->head->xmax;
+  int xmax = win->head.xmax;
 
   wmove(window, 1, 1);
 
@@ -122,9 +122,9 @@ static void win_input_buffer_print(win_input_t* win)
  */
 static void win_input_length_print(win_input_t* win)
 {
-  WINDOW* window = win->head->window;
+  WINDOW* window = win->head.window;
 
-  int x = win->head->xmax - 8;
+  int x = win->head.xmax - 8;
 
   mvwprintw(window, 2, x, "%03d/%03d", win->buffer_len, win->buffer_size);
 }
@@ -136,9 +136,9 @@ static void win_input_title_print(win_input_t* win)
 {
   if(!win->title || !win->title_len) return;
 
-  WINDOW* window = win->head->window;
+  WINDOW* window = win->head.window;
 
-  int xmax = win->head->xmax;
+  int xmax = win->head.xmax;
 
   int length = MIN(xmax - 2, win->title_len);
 
@@ -155,16 +155,16 @@ static void win_input_title_print(win_input_t* win)
  */
 void win_input_refresh(win_input_t* win)
 {
-  if(!win->head->active) return;
+  if(!win->head.active) return;
 
-  win_head_clean(win->head);
+  win_head_clean((win_head_t*) win);
 
   if(win->buffer)
   {
     win_input_buffer_print(win);
   }
 
-  WINDOW* window = win->head->window;
+  WINDOW* window = win->head.window;
 
   box(window, 0, 0);
 
@@ -188,7 +188,7 @@ static int win_input_symbol_add(win_input_t* win, char symbol)
   if(win->buffer_len >= win->buffer_size) return 2;
 
 
-  int xmax = win->head->xmax;
+  int xmax = win->head.xmax;
 
   // Shift characters forward to make room for new character
   for(int index = win->buffer_len + 1; index-- > win->cursor;)
@@ -243,7 +243,7 @@ static void win_input_scroll_right(win_input_t* win)
   // The cursor can not be further than the text itself
   win->cursor = MIN(win->buffer_len, win->cursor + 1);
 
-  int xmax = win->head->xmax;
+  int xmax = win->head.xmax;
 
   // The cursor is at the end of the input window
   if((win->cursor - win->scroll) >= (xmax - 2))

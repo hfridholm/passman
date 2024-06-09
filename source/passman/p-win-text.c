@@ -27,7 +27,7 @@ void win_text_resize(win_text_t* win, int x, int y, int w, int h)
 {
   if(h <= 0) h = win_text_height(win->text_len, w);
 
-  win_head_resize(win->head, x, y, w, h);
+  win_head_resize((win_head_t*) win, x, y, w, h);
 }
 
 /*
@@ -71,7 +71,7 @@ win_text_t* win_text_create(char* name, int x, int y, int w, int h, char* title,
 
   if(h <= 0) h = win_text_height(win->text_len, w);
 
-  win->head = win_head_create(x, y, w, h, active);
+  win->head = win_head_create(WIN_TEXT, name, x, y, w, h, active, key_handler);
 
   return win;
 }
@@ -95,10 +95,10 @@ static void win_text_text_print(win_text_t* win)
 {
   if(!win->text || !win->text_len) return;
 
-  WINDOW* window = win->head->window;
+  WINDOW* window = win->head.window;
 
-  int ymax = win->head->ymax;
-  int xmax = win->head->xmax;
+  int ymax = win->head.ymax;
+  int xmax = win->head.xmax;
 
   int lines = MIN(ymax - 2, (win->text_len / (xmax - 2)) + 1);
 
@@ -137,9 +137,9 @@ static void win_text_title_print(win_text_t* win)
 {
   if(!win->title || !win->title_len) return;
 
-  WINDOW* window = win->head->window;
+  WINDOW* window = win->head.window;
 
-  int xmax = win->head->xmax;
+  int xmax = win->head.xmax;
 
   int length = MIN(xmax - 2, win->title_len);
 
@@ -156,11 +156,11 @@ static void win_text_title_print(win_text_t* win)
  */
 void win_text_refresh(win_text_t* win)
 {
-  if(!win->head->active) return;
+  if(!win->head.active) return;
 
-  win_head_clean(win->head);
+  win_head_clean((win_head_t*) win);
 
-  WINDOW* window = win->head->window;
+  WINDOW* window = win->head.window;
 
   box(window, 0, 0);
 
@@ -171,20 +171,14 @@ void win_text_refresh(win_text_t* win)
   wrefresh(window);
 }
 
-void win_text_key_handler(win_head_t* win_head, int key)
+void pop_text_key_handler(win_head_t* win_head, int key)
 {
   if(win_head == NULL || win_head->type != WIN_TEXT) return;
 
-  win_list_t* win = (win_list_t*) win_head;
-
   switch(key)
   {
-    case 'j':
-      win_list_scroll_down(win);
-      break;
-
-    case 'k':
-      win_list_scroll_up(win);
+    case KEY_ENTER:
+      win_head->active = false;
       break;
   }
 }

@@ -9,7 +9,7 @@
  */
 void win_list_resize(win_list_t* win, int x, int y, int w, int h)
 {
-  win_head_resize(win->head, x, y, w, h);
+  win_head_resize((win_head_t*) win, x, y, w, h);
 
   // 1. Clamp the marked item to the floor
   if((win->item_index - win->scroll) >= (h - 2))
@@ -59,13 +59,13 @@ void win_list_free(win_list_t* win)
 
 void win_list_refresh(win_list_t* win)
 {
-  if(!win->head->active) return;
+  if(!win->head.active) return;
 
-  win_head_clean(win->head);
+  win_head_clean((win_head_t*) win);
 
-  WINDOW* window = win->head->window;
+  WINDOW* window = win->head.window;
 
-  int ymax = win->head->ymax;
+  int ymax = win->head.ymax;
 
   int amount = MIN(win->item_count, ymax - 2);
 
@@ -89,7 +89,7 @@ static void win_list_scroll_down(win_list_t* win)
 {
   win->item_index = MIN(win->item_count - 1, win->item_index + 1);
 
-  int ymax = win->head->ymax;
+  int ymax = win->head.ymax;
 
   if((win->item_index - win->scroll) >= (ymax - 2))
   {

@@ -20,13 +20,9 @@ void menu_win_add(menu_t* menu, win_t* win)
   menu->wins[menu->win_count++] = win;
 }
 
-win_t* menu_win_get(menu_t* menu)
+win_t* menu_active_win_get(menu_t* menu)
 {
-  if(menu->win_index >= 0 && menu->win_index < menu->win_count)
-  {
-    return menu->wins[menu->win_index];
-  }
-  return NULL;
+  return wins_active_win_get(menu->wins, menu->win_count);
 }
 
 int menu_win_input_resize(menu_t* menu, const char* win_name, int x, int y, int w)
@@ -75,6 +71,13 @@ void menu_win_input_create(menu_t* menu, char* name, int x, int y, int w, char* 
   menu_win_add(menu, (win_t*) win);
 }
 
+void menu_win_confirm_create(menu_t* menu, char* name, int x, int y, int w, char* prompt, char* text_yes, char* text_no, bool active, key_handler_t* key_handler)
+{
+  win_confirm_t* win = win_confirm_create(name, x, y, w, prompt, text_yes, text_no, active, key_handler);
+
+  menu_win_add(menu, (win_t*) win);
+}
+
 void menu_win_list_create(menu_t* menu, char* name, int x, int y, int w, int h, char** items, int count, bool active, key_handler_t* key_handler)
 {
   win_list_t* win = win_list_create(name, x, y, w, h, items, count, active, key_handler);
@@ -84,17 +87,10 @@ void menu_win_list_create(menu_t* menu, char* name, int x, int y, int w, int h, 
 
 void menu_win_tab(menu_t* menu, bool reverse)
 {
-  for(int index = 0; index < menu->win_count; index++)
+  int index = wins_next_active_win_index(menu->wins, menu->win_count);
+
+  if(index >= 0 && index < menu->win_count)
   {
-    int add_index = (reverse)
-      ? (menu->win_index + index * (menu->win_count - 1))
-      : (menu->win_index + index + 1);
-
-    int win_index = add_index % menu->win_count;
-
-    if(menu->wins[win_index]->active)
-    {
-      menu->win_index = win_index;
-    }
+    wins_rotate(menu->wins, menu->win_count, index);
   }
 }

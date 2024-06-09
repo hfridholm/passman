@@ -20,19 +20,19 @@ void screen_menu_dbs_create(screen_t* screen, char* name, int xmax, int ymax)
 {
   menu_dbs_t* menu = menu_dbs_create(name, xmax, ymax);
 
-  screen_menu_add(screen, menu);
+  screen_menu_add(screen, (menu_t*) menu);
 }
 
 void screen_menu_db_create(screen_t* screen, char* name, int xmax, int ymax)
 {
   menu_db_t* menu = menu_db_create(name, xmax, ymax);
 
-  screen_menu_add(screen, menu);
+  screen_menu_add(screen, (menu_t*) menu);
 }
 
 void screen_menu_psw_create(screen_t* screen, char* name, int xmax, int ymax)
 {
   menu_psw_t* menu = menu_psw_create(name, xmax, ymax);
 
-  screen_menu_add(screen, menu);
+  screen_menu_add(screen, (menu_t*) menu);
 }

@@ -23,6 +23,7 @@ static void menu_dbs_names_free(menu_dbs_t* menu)
   {
     free(menu->dbs_names[index]);
   }
+
   free(menu->dbs_names);
 }
 
@@ -37,14 +38,13 @@ void menu_dbs_resize(menu_dbs_t* menu, int xmax, int ymax)
 
   menu_win_list_resize((menu_t*) menu, "dbs", x, y + 2, w, h);
 
+  menu_win_confirm_resize((menu_t*) menu, "delete", x, y, 30);
 
-  menu_pop_confirm_resize((menu_t*) menu, "delete", x, y, 30);
+  menu_win_input_resize((menu_t*) menu, "open", x, y, 50);
 
-  menu_pop_input_resize((menu_t*) menu, "open", x, y, 50);
+  menu_win_input_resize((menu_t*) menu, "new", x, y, 50);
 
-  menu_pop_input_resize((menu_t*) menu, "new", x, y, 50);
-
-  menu_pop_input_resize((menu_t*) menu, "rename", x, y, 50);
+  menu_win_input_resize((menu_t*) menu, "rename", x, y, 50);
 }
 
 void menu_dbs_win_dbs_key_handler(win_head_t* win_head, int key)
@@ -94,14 +94,13 @@ menu_dbs_t* menu_dbs_create(char* name, int xmax, int ymax)
   
   menu_win_list_create((menu_t*) menu, "dbs", x, y + 2, w, h, menu->dbs_names, menu->dbs_count, true, menu_dbs_win_dbs_key_handler);
 
+  menu_win_confirm_create((menu_t*) menu, "delete", x, y, 30, "Delete Database?", "Yes", "No", false, win_confirm_key_handler);
 
-  menu_pop_confirm_create((menu_t*) menu, "delete", x, y, 30, "Delete Database?", "Yes", "No", false, win_confirm_key_handler);
+  menu_win_input_create((menu_t*) menu, "open", x, y, 50, password, sizeof(password), "Password", true, false, win_input_key_handler);
 
-  menu_pop_input_create((menu_t*) menu, "open", x, y, 50, password, sizeof(password), "Password", true, false, win_input_key_handler);
+  menu_win_input_create((menu_t*) menu, "new", x, y, 50, menu->buffer_new, sizeof(menu->buffer_new), "New", false, false, win_input_key_handler);
 
-  menu_pop_input_create((menu_t*) menu, "new", x, y, 50, menu->buffer_new, sizeof(menu->buffer_new), "New", false, false, win_input_key_handler);
-
-  menu_pop_input_create((menu_t*) menu, "rename", x, y, 50, NULL, 0, "Rename", false, false, win_input_key_handler);
+  menu_win_input_create((menu_t*) menu, "rename", x, y, 50, NULL, 0, "Rename", false, false, win_input_key_handler);
 
   return menu;
 }
