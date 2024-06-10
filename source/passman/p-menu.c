@@ -7,7 +7,10 @@ menu_head_t menu_head_create(menu_type_t type, char* name)
   menu.type = type;
   menu.name = name;
 
+  menu.wins = NULL;
   menu.win_count = 0;
+
+  menu.screen = NULL;
 
   return menu;
 }

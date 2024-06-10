@@ -65,6 +65,8 @@ void win_list_refresh(win_list_t* win)
 
   WINDOW* window = win->head.window;
 
+  if(window == NULL) return;
+
   int ymax = win->head.ymax;
 
   int amount = MIN(win->item_count, ymax - 2);

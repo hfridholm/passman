@@ -18,4 +18,7 @@ extern void        win_list_resize(win_list_t* win, int x, int y, int w, int h);
 
 extern void        win_list_refresh(win_list_t* win);
 
+
+extern void win_list_key_handler(win_head_t* win_head, int key);
+
 #endif // P_WIN_LIST_H

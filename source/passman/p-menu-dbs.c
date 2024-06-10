@@ -47,29 +47,54 @@ void menu_dbs_resize(menu_dbs_t* menu, int xmax, int ymax)
   menu_win_input_resize((menu_t*) menu, "rename", x, y, 50);
 }
 
+void menu_dbs_db_open(menu_dbs_t* menu, int db_index)
+{
+  menu_name_win_focus_set((menu_t*) menu, "open");
+}
+
+void menu_dbs_db_new(menu_dbs_t* menu)
+{
+  menu_name_win_focus_set((menu_t*) menu, "new");
+}
+
+void menu_dbs_db_delete(menu_dbs_t* menu, int db_index)
+{
+  menu_name_win_focus_set((menu_t*) menu, "delete");
+}
+
+void menu_dbs_db_rename(menu_dbs_t* menu, int db_index)
+{
+  menu_name_win_focus_set((menu_t*) menu, "rename");
+}
+
 void menu_dbs_win_dbs_key_handler(win_head_t* win_head, int key)
 {
-  if(win_head == NULL || win_head->type != WIN_LIST) return;
+  if(!win_head || win_head->type != WIN_LIST) return;
 
-  // win_list_t* win = (win_list_t*) win_head;
+  win_list_key_handler(win_head, key);
 
-  // char* item = win->items[win->item_index];
+  win_list_t* win = (win_list_t*) win_head;
+
+  if(!win_head->menu || win_head->menu->type != MENU_DBS) return;
+
+  if(win->item_index < 0 || win->item_index >= win->item_count) return;
 
   switch(key)
   {
-    case KEY_ENTR:
+    case 'o': case KEY_ENTR:
+      menu_dbs_db_open((menu_dbs_t*) win_head->menu, win->item_index);
       break;
 
     case 'd':
+      menu_dbs_db_delete((menu_dbs_t*) win_head->menu, win->item_index);
       break;
 
     case 'n':
+      menu_dbs_db_new((menu_dbs_t*) win_head->menu);
       break;
 
     case 'r':
-      break;
-
-    case KEY_TAB:
+      menu_dbs_db_rename((menu_dbs_t*) win_head->menu, win->item_index);
       break;
 
     default:
@@ -89,6 +114,11 @@ menu_dbs_t* menu_dbs_create(char* name, int xmax, int ymax)
   int y = ymax / 2;
   int w = xmax - 12;
   int h = ymax - 10;
+
+  memset(menu->buffer_search, '\0', sizeof(menu->buffer_search));
+
+  memset(menu->buffer_new, '\0', sizeof(menu->buffer_new));
+
 
   menu_win_input_create((menu_t*) menu, "search", x, 5, w, menu->buffer_search, sizeof(menu->buffer_search), NULL, false, true, win_input_key_handler);
   

@@ -97,6 +97,8 @@ static void win_text_text_print(win_text_t* win)
 
   WINDOW* window = win->head.window;
 
+  if(window == NULL) return;
+
   int ymax = win->head.ymax;
   int xmax = win->head.xmax;
 
@@ -139,6 +141,8 @@ static void win_text_title_print(win_text_t* win)
 
   WINDOW* window = win->head.window;
 
+  if(window == NULL) return;
+
   int xmax = win->head.xmax;
 
   int length = MIN(xmax - 2, win->title_len);
@@ -162,6 +166,8 @@ void win_text_refresh(win_text_t* win)
 
   WINDOW* window = win->head.window;
 
+  if(window == NULL) return;
+
   box(window, 0, 0);
 
   win_text_title_print(win);
@@ -177,7 +183,7 @@ void pop_text_key_handler(win_head_t* win_head, int key)
 
   switch(key)
   {
-    case KEY_ENTER:
+    case KEY_ENTR:
       win_head->active = false;
       break;
   }

@@ -2,9 +2,15 @@
 
 void screen_win_add(screen_t* screen, win_t* win)
 {
-  screen->wins = realloc(screen->wins, sizeof(win_t*) * (screen->win_count + 1));
+  if(screen->wins == NULL)
+  {
+    screen->wins = malloc(sizeof(win_t*));
+  }
+  else screen->wins = realloc(screen->wins, sizeof(win_t*) * (screen->win_count + 1));
 
   screen->wins[screen->win_count++] = win;
+
+  win->screen = screen;
 }
 
 win_t* screen_active_win_get(screen_t* screen)

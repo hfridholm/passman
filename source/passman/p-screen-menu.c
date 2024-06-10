@@ -11,9 +11,20 @@ menu_t* screen_menu_get(screen_t* screen)
 
 void screen_menu_add(screen_t* screen, menu_t* menu)
 {
-  screen->menus = realloc(screen->menus, sizeof(menu_t*) * (screen->menu_count + 1));
+  if(screen->menus == NULL)
+  {
+    screen->menus = malloc(sizeof(menu_t*));
+  }
+  else screen->menus = realloc(screen->menus, sizeof(menu_t*) * (screen->menu_count + 1));
 
   screen->menus[screen->menu_count++] = menu;
+
+  menu->screen = screen;
+
+  for(int index = 0; index < menu->win_count; index++)
+  {
+    menu->wins[index]->screen = screen;
+  }
 }
 
 void screen_menu_dbs_create(screen_t* screen, char* name, int xmax, int ymax)

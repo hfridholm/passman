@@ -85,6 +85,8 @@ static void win_confirm_prompt_print(win_confirm_t* win)
 
   WINDOW* window = win->head.window;
 
+  if(window == NULL) return;
+
   int ymax = win->head.ymax;
   int xmax = win->head.xmax;
 
@@ -125,6 +127,8 @@ static void win_confirm_yesno_print(win_confirm_t* win)
 
   WINDOW* window = win->head.window;
 
+  if(window == NULL) return;
+
   int ymax = win->head.ymax;
   int xmax = win->head.xmax;
 
@@ -159,6 +163,8 @@ void win_confirm_refresh(win_confirm_t* win)
   win_head_clean((win_head_t*) win);
 
   WINDOW* window = win->head.window;
+
+  if(window == NULL) return;
 
   box(window, 0, 0);
 

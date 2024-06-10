@@ -34,7 +34,6 @@ win_head_t win_head_create(win_type_t type, char* name, int x, int y, int w, int
   win_head_t win;
 
   win.type = type;
-
   win.name = name;
 
   win.window = newwin(h, w, y - (h / 2), x - (w / 2));
@@ -45,6 +44,9 @@ win_head_t win_head_create(win_type_t type, char* name, int x, int y, int w, int
   keypad(win.window, TRUE);
 
   win.active = active;
+
+  win.menu = NULL;
+  win.screen = NULL;
 
   win.key_handler = key_handler;
 
@@ -66,7 +68,7 @@ void win_head_clean(win_head_t* win)
 
 void win_head_free(win_head_t win)
 {
-  if(win.window)
+  if(win.window != NULL)
   {
     wclear(win.window);
 
@@ -78,6 +80,8 @@ void win_head_free(win_head_t win)
 
 void win_refresh(win_t* win)
 {
+  curs_set(0);
+
   switch(win->type)
   {
     case WIN_CONFIRM:
@@ -136,7 +140,7 @@ void wins_free(win_t** wins, int count)
 
 void wins_refresh(win_t** wins, int count)
 {
-  for(int index = 0; index < count; index++)
+  for(int index = count; index-- > 0;)
   {
     win_t* win = wins[index];
 

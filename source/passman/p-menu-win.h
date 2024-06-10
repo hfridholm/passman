@@ -7,6 +7,8 @@ extern void   menu_win_tab(menu_t* menu, bool reverse);
 
 extern win_t* menu_active_win_get(menu_t* menu);
 
+extern void menu_name_win_focus_set(menu_t* menu, char* win_name);
+
 
 extern int menu_win_input_resize(menu_t* menu, const char* win_name, int x, int y, int w);
 

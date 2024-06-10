@@ -45,11 +45,6 @@ extern void        win_head_clean(win_head_t* win);
 extern void        win_head_resize(win_head_t* win, int x, int y, int w, int h);
 
 
-extern void win_free(win_t* win);
-
-extern void win_refresh(win_t* win);
-
-
 extern void wins_free(win_t** wins, int count);
 
 extern void wins_refresh(win_t** wins, int count);

@@ -2,7 +2,9 @@
 
 void screen_refresh(screen_t* screen)
 {
-  // clear();
+  curs_set(0);
+
+  clear();
   refresh();
 
   if(screen->menu_index >= 0 && screen->menu_index < screen->menu_count)
@@ -64,8 +66,14 @@ void screen_win_exit_key_handler(win_head_t* win_head, int key)
 
   switch(key)
   {
-    case KEY_ENTER:
-      if(win->answer == true) win_head->screen->running = false;
+    case KEY_ENTR:
+      if(win->answer == true)
+      {
+        if(win_head->screen)
+        {
+          win_head->screen->running = false;
+        }
+      }
   
       win_head->active = false;
       break;
@@ -79,14 +87,21 @@ static void screen_wins_create(screen_t* screen, int xmax, int ymax)
 
   screen_win_confirm_create(screen, "exit", x, y, 24, "Do you want to exit?", "Yes", "No", false, screen_win_exit_key_handler);
 
-  // screen_win_text_create(screen, "size", x, y, 104, 26, "Info", "Resize the terminal to match this window", false, pop_text_key_handler);
+  screen_win_text_create(screen, "size", x, y, 104, 26, "Info", "Resize the terminal to match this window", false, pop_text_key_handler);
 
-  // screen_win_text_create(screen, "info", x, y, 40, -1, NULL, NULL, false, pop_text_key_handler);
+  screen_win_text_create(screen, "info", x, y, 40, -1, NULL, NULL, false, pop_text_key_handler);
 }
 
 screen_t* screen_create(void)
 {
   screen_t* screen = malloc(sizeof(screen_t));
+
+  screen->wins = NULL;
+  screen->win_count = 0;
+
+  screen->menus = NULL;
+  screen->menu_count = 0;
+  screen->menu_index = -1;
 
   initscr();
   noecho();
@@ -96,7 +111,7 @@ screen_t* screen_create(void)
   int xmax = getmaxx(stdscr);
   int ymax = getmaxy(stdscr);
 
-  // screen_menus_create(screen, xmax, ymax);
+  screen_menus_create(screen, xmax, ymax);
 
   screen_wins_create(screen, xmax, ymax);
 
@@ -120,6 +135,8 @@ void screen_free(screen_t* screen)
 
     free(screen->wins);
   }
+
+  free(screen);
 
   endwin();
 }
@@ -148,6 +165,19 @@ void screen_key_handler(screen_t* screen, int key)
   screen_base_key_handler(screen, key);
 
   win_t* win = screen_active_win_get(screen);
+
+  if(win)
+  {
+    wmove(stdscr, 0, 0);
+
+    printf("screen win: %s\n", win->name);
+  }
+  else
+  {
+    wmove(stdscr, 0, 0);
+
+    printf("screen none\n");
+  }
 
   menu_t* menu = screen_menu_get(screen);
 

@@ -25,6 +25,11 @@ win_t* menu_active_win_get(menu_t* menu)
   return wins_active_win_get(menu->wins, menu->win_count);
 }
 
+void menu_name_win_focus_set(menu_t* menu, char* win_name)
+{
+  wins_name_win_focus_set(menu->wins, menu->win_count, win_name);
+}
+
 int menu_win_input_resize(menu_t* menu, const char* win_name, int x, int y, int w)
 {
   win_t* win = menu_name_win_get(menu, win_name);

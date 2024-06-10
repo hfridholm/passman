@@ -211,17 +211,21 @@ int main(int argc, char* argv[])
 
   screen_t* screen = screen_create();
 
-  /*
+  screen->menu_index = 0;
+
   screen_refresh(screen);
 
   int key;
-  while((key = wgetch(stdscr)))
+  while(screen->running && (key = wgetch(stdscr)))
   {
+    mvprintw(0, 0, "ENTER: %d key: %d", KEY_ENTR, key);
+
+    if(key == KEY_CTRLZ) break;
+
     screen_key_handler(screen, key);
 
     screen_refresh(screen);
   }
-  */
 
   screen_free(screen);
 

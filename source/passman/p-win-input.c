@@ -38,7 +38,7 @@ void win_input_resize(win_input_t* win, int x, int y, int w)
  */
 void win_input_buffer_set(win_input_t* win, char* buffer, size_t size)
 {
-  if(!buffer) return;
+  if(buffer == NULL) return;
 
   win->buffer = buffer;
 
@@ -96,6 +96,8 @@ static void win_input_buffer_print(win_input_t* win)
 {
   WINDOW* window = win->head.window;
 
+  if(window == NULL) return;
+
   int xmax = win->head.xmax;
 
   wmove(window, 1, 1);
@@ -124,6 +126,8 @@ static void win_input_length_print(win_input_t* win)
 {
   WINDOW* window = win->head.window;
 
+  if(window == NULL) return;
+
   int x = win->head.xmax - 8;
 
   mvwprintw(window, 2, x, "%03d/%03d", win->buffer_len, win->buffer_size);
@@ -137,6 +141,8 @@ static void win_input_title_print(win_input_t* win)
   if(!win->title || !win->title_len) return;
 
   WINDOW* window = win->head.window;
+
+  if(window == NULL) return;
 
   int xmax = win->head.xmax;
 
@@ -159,18 +165,22 @@ void win_input_refresh(win_input_t* win)
 
   win_head_clean((win_head_t*) win);
 
-  if(win->buffer)
-  {
-    win_input_buffer_print(win);
-  }
-
   WINDOW* window = win->head.window;
+
+  if(window == NULL) return;
 
   box(window, 0, 0);
 
   win_input_title_print(win);
 
   win_input_length_print(win);
+
+  if(win->buffer)
+  {
+    win_input_buffer_print(win);
+
+    curs_set(1);
+  }
 
   wrefresh(window);
 }
