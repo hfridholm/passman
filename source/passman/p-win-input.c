@@ -61,11 +61,11 @@ void win_input_buffer_set(win_input_t* win, char* buffer, size_t size)
  *
  * RETURN (win_input_t* win)
  */
-win_input_t* win_input_create(char* name, int x, int y, int w, char* buffer, size_t size, char* title, bool secret, bool active, key_handler_t* key_handler)
+win_input_t* win_input_create(char* name, bool active, bool tab_ability, int x, int y, int w, char* buffer, size_t size, char* title, bool secret, key_handler_t* key_handler)
 {
   win_input_t* win = malloc(sizeof(win_input_t));
 
-  win->head = win_head_create(WIN_INPUT, name, x, y, w, 3, active, key_handler);
+  win->head = win_head_create(WIN_INPUT, name, active, tab_ability, x, y, w, 3, key_handler);
 
   win_input_buffer_set(win, buffer, size);
 
@@ -178,6 +178,8 @@ void win_input_refresh(win_input_t* win)
   if(win->buffer)
   {
     win_input_buffer_print(win);
+
+    wmove(window, 1, 1 + win->cursor - win->scroll);
 
     curs_set(1);
   }
@@ -311,4 +313,22 @@ void win_input_key_handler(win_head_t* win_head, int key)
       win_input_symbol_add(win, key);
       break;
   }
+}
+
+void pop_input_key_handler(win_head_t* win_head, int key)
+{
+  if(win_head == NULL || win_head->type != WIN_INPUT) return;
+
+  win_input_key_handler(win_head, key);
+
+  if(key == KEY_ENTR) win_head->active = false;
+}
+
+win_input_t* wins_name_win_input_get(win_t** wins, int count, char* name)
+{
+  win_t* win = wins_name_win_get(wins, count, name);
+
+  if(!win || win->type != WIN_INPUT) return NULL;
+
+  return (win_input_t*) win;
 }

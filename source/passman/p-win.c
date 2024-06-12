@@ -29,7 +29,7 @@ void win_head_resize(win_head_t* win, int x, int y, int w, int h)
  *
  * RETURN (win_t* win)
  */
-win_head_t win_head_create(win_type_t type, char* name, int x, int y, int w, int h, bool active, key_handler_t* key_handler)
+win_head_t win_head_create(win_type_t type, char* name, bool active, bool tab_ability, int x, int y, int w, int h, key_handler_t* key_handler)
 {
   win_head_t win;
 
@@ -43,9 +43,10 @@ win_head_t win_head_create(win_type_t type, char* name, int x, int y, int w, int
 
   keypad(win.window, TRUE);
 
-  win.active = active;
+  win.active      = active;
+  win.tab_ability = tab_ability;
 
-  win.menu = NULL;
+  win.menu   = NULL;
   win.screen = NULL;
 
   win.key_handler = key_handler;
@@ -181,23 +182,10 @@ win_t* wins_active_win_get(win_t** wins, int count)
   return NULL;
 }
 
-int wins_next_active_win_index(win_t** wins, int count)
-{
-  int active_num = 0;
-
-  for(int index = 0; index < count; index++)
-  {
-    win_t* win = wins[index];
-
-    if(win->active) active_num++;
-
-    if(active_num == 2) return index;
-  }
-  return -1;
-}
-
 void wins_rotate(win_t** wins, int count, int turns)
 {
+  if(turns <= 0) return;
+
   int shift = turns % count;
 
   win_t* temp_wins[shift];

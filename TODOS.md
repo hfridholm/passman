@@ -11,10 +11,8 @@
 
 ## Maybe
 - rename inpwin scroll to shift?
+- create win_head_t (ish) struct to pass to win_***_create
 
 ## Future
 - add status codes to inpwin symbol_add and del,
   and make a error sound if the user could not del symbol for example
-
-## Now
-- change order of win_create params (name, active, tab_ability, x, y, ...)

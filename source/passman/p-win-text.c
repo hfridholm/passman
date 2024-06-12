@@ -61,7 +61,7 @@ void win_text_text_set(win_text_t* win, char* text)
  *
  * RETURN (win_text_t* win)
  */
-win_text_t* win_text_create(char* name, int x, int y, int w, int h, char* title, char* text, bool active, key_handler_t* key_handler)
+win_text_t* win_text_create(char* name, bool active, bool tab_ability, int x, int y, int w, int h, char* title, char* text, key_handler_t* key_handler)
 {
   win_text_t* win = malloc(sizeof(win_text_t));
 
@@ -71,7 +71,7 @@ win_text_t* win_text_create(char* name, int x, int y, int w, int h, char* title,
 
   if(h <= 0) h = win_text_height(win->text_len, w);
 
-  win->head = win_head_create(WIN_TEXT, name, x, y, w, h, active, key_handler);
+  win->head = win_head_create(WIN_TEXT, name, active, tab_ability, x, y, w, h, key_handler);
 
   return win;
 }
@@ -181,10 +181,14 @@ void pop_text_key_handler(win_head_t* win_head, int key)
 {
   if(win_head == NULL || win_head->type != WIN_TEXT) return;
 
-  switch(key)
-  {
-    case KEY_ENTR:
-      win_head->active = false;
-      break;
-  }
+  if(key == KEY_ENTR) win_head->active = false;
+}
+
+win_text_t* wins_name_win_text_get(win_t** wins, int count, char* name)
+{
+  win_t* win = wins_name_win_get(wins, count, name);
+
+  if(!win || win->type != WIN_TEXT) return NULL;
+
+  return (win_text_t*) win;
 }

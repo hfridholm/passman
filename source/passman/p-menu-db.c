@@ -25,9 +25,11 @@ menu_db_t* menu_db_create(char* name, int xmax, int ymax)
   int x = xmax / 2;
   int w = xmax - 12;
 
-  menu_win_input_create((menu_t*) menu, "name", x, 5, w, dbfile, sizeof(dbfile), "Name", false, true, win_input_key_handler);
+  menu_win_input_create((menu_t*) menu, "name", true, true,
+    x, 5, w, dbfile, sizeof(dbfile), "Name", false, win_input_key_handler);
   
-  menu_win_input_create((menu_t*) menu, "email", x, 9, w, database.email, sizeof(database.email), "Email", false, true, win_input_key_handler);
+  menu_win_input_create((menu_t*) menu, "email", true, true,
+    x, 9, w, database.email, sizeof(database.email), "Email", false, win_input_key_handler);
 
   return menu;
 }

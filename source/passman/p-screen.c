@@ -85,11 +85,14 @@ static void screen_wins_create(screen_t* screen, int xmax, int ymax)
   int x = xmax / 2;
   int y = ymax / 2;
 
-  screen_win_confirm_create(screen, "exit", x, y, 24, "Do you want to exit?", "Yes", "No", false, screen_win_exit_key_handler);
+  screen_win_confirm_create(screen, "exit", false, false,
+    x, y, 24, "Do you want to exit?", "Yes", "No", screen_win_exit_key_handler);
 
-  screen_win_text_create(screen, "size", x, y, 104, 26, "Info", "Resize the terminal to match this window", false, pop_text_key_handler);
+  screen_win_text_create(screen, "size", false, false,
+    x, y, 104, 26, "Info", "Resize the terminal to match this window", pop_text_key_handler);
 
-  screen_win_text_create(screen, "info", x, y, 40, -1, NULL, NULL, false, pop_text_key_handler);
+  screen_win_text_create(screen, "info", false, false,
+    x, y, 40, -1, NULL, NULL, pop_text_key_handler);
 }
 
 screen_t* screen_create(void)

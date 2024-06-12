@@ -36,11 +36,11 @@ void win_list_resize(win_list_t* win, int x, int y, int w, int h)
  *
  * RETURN (win_list_t* win)
  */
-win_list_t* win_list_create(char* name, int x, int y, int w, int h, char** items, int count, bool active, key_handler_t* key_handler)
+win_list_t* win_list_create(char* name, bool active, bool tab_ability, int x, int y, int w, int h, char** items, int count, key_handler_t* key_handler)
 {
   win_list_t* win = malloc(sizeof(win_list_t));
 
-  win->head = win_head_create(WIN_LIST, name, x, y, w, h, active, key_handler);
+  win->head = win_head_create(WIN_LIST, name, active, tab_ability, x, y, w, h, key_handler);
 
   win->items      = items;
   win->item_count = count;
@@ -122,4 +122,22 @@ void win_list_key_handler(win_head_t* win_head, int key)
       win_list_scroll_up(win);
       break;
   }
+}
+
+char* win_list_item_get(win_list_t* win)
+{
+  if(!win || !win->items) return NULL;
+
+  if(win->item_index < 0 || win->item_index >= win->item_count) return NULL;
+
+  return win->items[win->item_index];
+}
+
+win_list_t* wins_name_win_list_get(win_t** wins, int count, char* name)
+{
+  win_t* win = wins_name_win_get(wins, count, name);
+
+  if(!win || win->type != WIN_LIST) return NULL;
+
+  return (win_list_t*) win;
 }
