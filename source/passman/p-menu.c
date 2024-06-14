@@ -18,6 +18,17 @@ menu_head_t menu_head_create(menu_type_t type, char* name)
 void menu_refresh(menu_t* menu)
 {
   wins_refresh(menu->wins, menu->win_count);
+
+  wmove(stdscr, 0, 0);
+
+  for(int index = 0; index < menu->win_count; index++)
+  {
+    win_t* win = menu->wins[index];
+
+    printw("%02d [%c] %s\n", index, 
+      (win->active) ? 'X' : ' ',
+      win->name);
+  }
 }
 
 void menu_resize(menu_t* menu, int xmax, int ymax)

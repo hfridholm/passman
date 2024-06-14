@@ -12,6 +12,7 @@
 ## Maybe
 - rename inpwin scroll to shift?
 - create win_head_t (ish) struct to pass to win_***_create
+- send debug messages over socket to console client socket process
 
 ## Future
 - add status codes to inpwin symbol_add and del,

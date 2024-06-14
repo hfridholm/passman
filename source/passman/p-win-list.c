@@ -141,3 +141,14 @@ win_list_t* wins_name_win_list_get(win_t** wins, int count, char* name)
 
   return (win_list_t*) win;
 }
+
+void win_list_item_add(win_list_t* win, char* item)
+{
+  if(!win || !item || !win->item_count) return;
+
+  win->items = realloc(win->items, sizeof(char*) * (win->item_count + 1));
+
+  strcpy(win->items[win->item_count], item);
+
+  win->item_count++;
+}

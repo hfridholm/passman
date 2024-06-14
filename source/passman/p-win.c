@@ -208,11 +208,11 @@ void wins_rotate(win_t** wins, int count, int turns)
 
 void wins_index_win_focus_set(win_t** wins, int count, int win_index)
 {
-  if(win_index < 0 || win_index >= count) return;
+  if(!wins || win_index < 0 || win_index >= count) return;
 
   win_t* temp_win = wins[win_index];
 
-  for(int index = 1; index <= win_index; index++)
+  for(int index = (win_index + 1); index-- > 1;)
   {
     wins[index] = wins[index - 1];
   }

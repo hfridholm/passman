@@ -30,7 +30,7 @@ int database_read(void)
   sha256(hash, password, strlen(password));
 
   // If the hashes don't match, the password was wrong
-  if(strncmp(hash, database.phash, 64)) return 2;
+  if(strncmp(hash, database.psw_hash, 64)) return 2;
 
   return 0; // Success!
 }
@@ -47,7 +47,7 @@ int database_write(void)
   char hash[64];
   sha256(hash, password, strlen(password));
 
-  memcpy(database.phash, hash, 64);
+  memcpy(database.psw_hash, hash, 64);
 
   aes_encrypt(buffer, &database, DBSIZE, password, encrypt);
 

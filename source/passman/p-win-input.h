@@ -26,6 +26,8 @@ extern void         win_input_free(win_input_t* win);
 extern void         win_input_refresh(win_input_t* win);
 
 
+extern void win_input_buffer_update(win_input_t* win);
+
 extern void win_input_buffer_set(win_input_t* win, char* buffer, size_t size);
 
 extern void win_input_key_handler(win_head_t* win_head, int key);

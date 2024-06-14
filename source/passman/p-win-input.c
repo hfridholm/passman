@@ -33,6 +33,17 @@ void win_input_resize(win_input_t* win, int x, int y, int w)
   }
 }
 
+void win_input_buffer_update(win_input_t* win)
+{
+  win->buffer_len = win->buffer ? strlen(win->buffer) : 0;
+
+  win->cursor = win->buffer_len;
+
+  int xmax = win->head.xmax;
+
+  win->scroll = MAX(0, win->buffer_len - (xmax - 2) + 1);
+}
+
 /*
  * Sync the input window with a new buffer and update cursor
  */
@@ -44,13 +55,7 @@ void win_input_buffer_set(win_input_t* win, char* buffer, size_t size)
 
   win->buffer_size = size - 1;
 
-  win->buffer_len = strlen(buffer);
-
-  win->cursor = win->buffer_len;
-
-  int xmax = win->head.xmax;
-
-  win->scroll = MAX(0, win->buffer_len - (xmax - 2) + 1);
+  win_input_buffer_update(win);
 }
 
 /*

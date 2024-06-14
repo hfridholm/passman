@@ -8,17 +8,18 @@ typedef struct
   char email[64];
   char name[64];
   char password[64];
-  char cdate[16];
-  char udate[16];
+  char date_create[16];
+  char date_update[16];
 } account_t;
 
 typedef struct
 {
-  char phash[64]; // Password hash (SHA256)
-  char email[64];
-  char cdate[16];
-  char udate[16];
-  uint8_t amount;
+  char      name[64];
+  char      psw_hash[64]; // Password hash (SHA256)
+  char      email[64];
+  char      date_create[16];
+  char      date_update[16];
+  uint8_t   account_count;
   account_t accounts[128];
 } database_t;
 

@@ -204,7 +204,7 @@ int main(int argc, char* argv[])
   database_write();
   */
 
-  database.amount = 1;
+  database.account_count = 1;
   database.accounts[0] = (account_t) {
     .account = "google.com"
   };

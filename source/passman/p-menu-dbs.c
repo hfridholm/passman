@@ -21,7 +21,9 @@ static void menu_dbs_names_free(menu_dbs_t* menu)
 {
   for(int index = 0; index < menu->dbs_count; index++)
   {
-    free(menu->dbs_names[index]);
+    char* name = menu->dbs_names[index];
+
+    if(name) free(name);
   }
 
   free(menu->dbs_names);
@@ -57,9 +59,12 @@ void menu_dbs_win_dbs_key_handler(win_head_t* win_head, int key)
   if(!win_list_item_get((win_list_t*) win_head)) return;
 
 
-  menu_t* menu = win_head->menu;
+  menu_t* menu_head = win_head->menu;
 
-  if(!menu || menu->type != MENU_DBS) return;
+  if(!menu_head || menu_head->type != MENU_DBS) return;
+
+  menu_dbs_t* menu = (menu_dbs_t*) menu_head;
+
 
   switch(key)
   {
@@ -68,14 +73,30 @@ void menu_dbs_win_dbs_key_handler(win_head_t* win_head, int key)
       break;
 
     case 'd':
+      win_confirm_t* win_delete = menu_name_win_confirm_get((menu_t*) menu, "delete");
+
+      if(win_delete) win_delete->answer = false;
+
       menu_name_win_focus_set((menu_t*) menu, "delete");
       break;
 
     case 'n':
+      win_input_t* win_new = menu_name_win_input_get((menu_t*) menu, "new");
+
+      memset(menu->buffer_new, '\0', sizeof(menu->buffer_new));
+
+      if(win_new) win_input_buffer_update(win_new);
+
       menu_name_win_focus_set((menu_t*) menu, "new");
       break;
 
     case 'r':
+      win_input_t* win_rename = menu_name_win_input_get((menu_t*) menu, "rename");
+
+      char* item = win_list_item_get((win_list_t*) win_head);
+
+      if(win_rename) win_input_buffer_set(win_rename, item, strlen(item) + 1);
+
       menu_name_win_focus_set((menu_t*) menu, "rename");
       break;
 
@@ -88,7 +109,7 @@ void menu_dbs_win_delete_key_handler(win_head_t* win_head, int key)
 {
   if(!win_head || win_head->type != WIN_CONFIRM) return;
 
-  win_input_key_handler(win_head, key);
+  win_confirm_key_handler(win_head, key);
 
 
   if(key != KEY_ENTR) return;
@@ -138,15 +159,20 @@ void menu_dbs_win_new_key_handler(win_head_t* win_head, int key)
 
   win_input_key_handler(win_head, key);
 
+  win_input_t* win = (win_input_t*) win_head;
+
 
   if(key != KEY_ENTR) return;
 
 
-  win_input_t* win = (win_input_t*) win_head;
+  menu_head_t* menu_head = win_head->menu;
 
-  char* buffer = win->buffer;
+  if(!menu_head || menu_head->type != MENU_DBS) return;
 
-  printf("Creating: %s\n", buffer ? buffer : "unknown");
+
+  win_list_t* win_list = menu_name_win_list_get(menu_head, "dbs");
+
+
 
   win_head->active = false;
 }
