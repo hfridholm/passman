@@ -144,11 +144,6 @@ void screen_free(screen_t* screen)
   endwin();
 }
 
-void screen_name_win_focus_set(screen_t* screen, char* win_name)
-{
-  wins_name_win_focus_set(screen->wins, screen->win_count, win_name);
-}
-
 void screen_base_key_handler(screen_t* screen, int key)
 {
   switch(key)
@@ -169,27 +164,28 @@ void screen_key_handler(screen_t* screen, int key)
 
   win_t* win = screen_active_win_get(screen);
 
-  if(win)
-  {
-    wmove(stdscr, 0, 0);
-
-    printf("screen win: %s\n", win->name);
-  }
-  else
-  {
-    wmove(stdscr, 0, 0);
-
-    printf("screen none\n");
-  }
-
   menu_t* menu = screen_menu_get(screen);
 
-  if(win != NULL && win->key_handler)
+  if(win && win->key_handler)
   {
     win->key_handler(win, key);
   }
-  else if(menu != NULL)
+  else if(menu)
   {
     menu_key_handler(menu, key);
   }
+}
+
+/*
+ *
+ */
+void screen_text_popup(screen_t* screen, char* title, char* text)
+{
+  win_text_t* win = screen_name_win_text_get(screen, "info");
+
+  win_text_title_set(win, title);
+
+  win_text_text_set(win, text);
+
+  screen_name_win_focus_set(screen, "info");
 }

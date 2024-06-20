@@ -18,7 +18,7 @@ menu_psw_t* menu_psw_create(char* name, int xmax, int ymax)
   int y = ymax / 2;
 
   menu_win_input_create((menu_t*) menu, "psw", true, true,
-    x, y, xmax - 10, password, sizeof(password), NULL, false, win_input_key_handler);
+    x, y, xmax - 10, NULL, 0, NULL, false, win_input_key_handler);
 
   return menu;
 }

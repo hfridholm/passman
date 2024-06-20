@@ -25,6 +25,13 @@ win_input_t* menu_name_win_input_get(menu_t* menu, char* win_name)
   return wins_name_win_input_get(menu->wins, menu->win_count, win_name);
 }
 
+void menu_name_win_input_buffer_set(menu_t* menu, char* win_name, char* buffer, size_t size)
+{
+  win_input_t* win = menu_name_win_input_get(menu, win_name);
+
+  win_input_buffer_set(win, buffer, size);
+}
+
 void menu_win_add(menu_t* menu, win_t* win)
 {
   menu->wins = realloc(menu->wins, sizeof(menu_t*) * (menu->win_count + 1));

@@ -14,4 +14,7 @@ extern void       menu_db_resize(menu_db_t* menu, int xmax, int ymax);
 
 extern void       menu_db_free(menu_db_t* menu);
 
+
+extern void menu_db_dbase_set(menu_db_t* menu, dbase_t* dbase);
+
 #endif // P_MENU_DB_H

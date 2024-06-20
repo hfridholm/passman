@@ -18,6 +18,7 @@ typedef struct menu_head_t
   win_t**     wins;
   int         win_count;
   screen_t*   screen;
+  event 
 } menu_head_t;
 
 typedef menu_head_t menu_t;

@@ -2,11 +2,7 @@
 
 void screen_win_add(screen_t* screen, win_t* win)
 {
-  if(screen->wins == NULL)
-  {
-    screen->wins = malloc(sizeof(win_t*));
-  }
-  else screen->wins = realloc(screen->wins, sizeof(win_t*) * (screen->win_count + 1));
+  screen->wins = realloc(screen->wins, sizeof(win_t*) * (screen->win_count + 1));
 
   screen->wins[screen->win_count++] = win;
 
@@ -46,28 +42,31 @@ void screen_win_list_create(screen_t* screen, char* name, bool active, bool tab_
   screen_win_add(screen, (win_t*) win);
 }
 
-int screen_win_confirm_resize(screen_t* screen, char* name, int x, int y, int w)
+win_confirm_t* screen_name_win_confirm_get(screen_t* screen, char* win_name)
 {
-  win_t* win = wins_name_win_get(screen->wins, screen->win_count, name);
-
-  if(win == NULL) return 1;
-
-  if(win->type != WIN_CONFIRM) return 2;
-
-  win_confirm_resize((win_confirm_t*) win, x, y, w);
-
-  return 0;
+  return wins_name_win_confirm_get(screen->wins, screen->win_count, win_name);
 }
 
-int screen_win_text_resize(screen_t* screen, char* name, int x, int y, int w, int h)
+win_text_t* screen_name_win_text_get(screen_t* screen, char* win_name)
 {
-  win_t* win = wins_name_win_get(screen->wins, screen->win_count, name);
+  return wins_name_win_text_get(screen->wins, screen->win_count, win_name);
+}
 
-  if(win == NULL) return 1;
+void screen_win_confirm_resize(screen_t* screen, char* name, int x, int y, int w)
+{
+  win_confirm_t* win = screen_name_win_confirm_get(screen, name);
 
-  if(win->type != WIN_TEXT) return 2;
+  win_confirm_resize(win, x, y, w);
+}
 
-  win_text_resize((win_text_t*) win, x, y, w, h);
+void screen_win_text_resize(screen_t* screen, char* name, int x, int y, int w, int h)
+{
+  win_text_t* win = screen_name_win_text_get(screen, name);
 
-  return 0;
+  win_text_resize(win, x, y, w, h);
+}
+
+void screen_name_win_focus_set(screen_t* screen, char* win_name)
+{
+  wins_name_win_focus_set(screen->wins, screen->win_count, win_name);
 }

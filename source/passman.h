@@ -17,7 +17,7 @@
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 #define MIN(a, b) (((a) > (b)) ? (b) : (a))
 
-#include "passman/p-database.h"
+#include "passman/p-dbase.h"
 
 #define KEY_CTRLC 3
 #define KEY_CTRLZ 26

@@ -18,8 +18,6 @@
  */
 int dir_file_names(char** names, size_t* count, const char* dirpath)
 {
-  if(depth == 0) return 0;
-
   struct dirent* dire;
 
   DIR* dirp = opendir(dirpath);
@@ -35,13 +33,9 @@ int dir_file_names(char** names, size_t* count, const char* dirpath)
 
     if(dire->d_type != DT_REG) continue;
 
-    if(names)
-    {
-      names = realloc(names, sizeof(char*) * (*count + 1));
-    }
-    else names = malloc(sizeof(char*));
+    names = realloc(names, sizeof(char*) * (*count + 1));
 
-    names[count] = strdup(dire->d_name);
+    names[*count] = strdup(dire->d_name);
   }
 
   closedir(dirp);

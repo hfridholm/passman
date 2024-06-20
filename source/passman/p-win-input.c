@@ -58,6 +58,13 @@ void win_input_buffer_set(win_input_t* win, char* buffer, size_t size)
   win_input_buffer_update(win);
 }
 
+void win_input_title_set(win_input_t* win, char* title)
+{
+  win->title = title;
+
+  win->title_len = (title ? strlen(title) : 0);
+}
+
 /*
  * PARAMS
  * - int x | x-value center of window

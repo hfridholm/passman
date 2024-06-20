@@ -150,6 +150,20 @@ void menu_dbs_win_open_key_handler(win_head_t* win_head, int key)
 
   printf("Opening: %s\n", item ? item : "unknown");
 
+
+  screen_t* screen = win_head->screen;
+
+  if(!screen) return;
+
+  int status = dbase_read(&screen->database, item, screen->password);
+
+  if(status == 0)
+  {
+    screen_name_menu_focus_set(screen, "db");
+  }
+  else screen_text_popup(screen, "Error", "Could not open database");
+
+
   win_head->active = false;
 }
 
@@ -170,10 +184,22 @@ void menu_dbs_win_new_key_handler(win_head_t* win_head, int key)
   if(!menu_head || menu_head->type != MENU_DBS) return;
 
 
+  screen_t* screen = win_head->screen;
+
+  if(!screen) return;
+
+
+  screen->database = (dbase_t) {0};
+
 
   win_list_t* win_list = menu_name_win_list_get(menu_head, "dbs");
 
   win_list_item_add(win_list, win->buffer);
+
+
+  screen_name_menu_db_dbase_set(screen, "db", &screen->database);
+
+  screen_name_menu_focus_set(screen, "db");
 
 
   win_head->active = false;
@@ -219,7 +245,7 @@ menu_dbs_t* menu_dbs_create(char* name, int xmax, int ymax)
     x, y, 30, "Delete Database?", "Yes", "No", menu_dbs_win_delete_key_handler);
 
   menu_win_input_create((menu_t*) menu, "open", false, false,
-    x, y, 50, password, sizeof(password), "Password", true, menu_dbs_win_open_key_handler);
+    x, y, 50, NULL, 0, "Password", true, menu_dbs_win_open_key_handler);
 
   menu_win_input_create((menu_t*) menu, "new", false, false,
     x, y, 50, menu->buffer_new, sizeof(menu->buffer_new), "New", false, menu_dbs_win_new_key_handler);

@@ -12,6 +12,8 @@ typedef struct screen_t
   win_t**  wins;
   int      win_count;
   bool     running;
+  dbase_t  database;
+  char     password[64];
 } screen_t;
 
 extern screen_t* screen_create(void);
@@ -24,6 +26,9 @@ extern void      screen_free(screen_t* screen);
 
 
 extern void screen_key_handler(screen_t* screen, int key);
+
+
+extern void screen_text_popup(screen_t* screen, char* title, char* text);
 
 #include "p-screen-menu.h"
 #include "p-screen-win.h"

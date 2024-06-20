@@ -37,4 +37,7 @@ extern void menu_win_confirm_create(menu_t* menu, char* name, bool ability, bool
 
 extern void menu_win_add(menu_t* menu, win_t* win);
 
+
+extern void menu_name_win_input_buffer_set(menu_t* menu, char* win_name, char* buffer, size_t size);
+
 #endif // P_MENU_WIN_H

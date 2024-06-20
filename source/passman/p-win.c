@@ -151,9 +151,13 @@ void wins_refresh(win_t** wins, int count)
 
 win_t* wins_name_win_get(win_t** wins, int count, char* name)
 {
+  if(!wins) return NULL;
+
   for(int index = 0; index < count; index++)
   {
     win_t* win = wins[index];
+
+    if(!win) continue;
 
     if(strcmp(win->name, name) == 0) return win;
   }
@@ -162,9 +166,13 @@ win_t* wins_name_win_get(win_t** wins, int count, char* name)
 
 int wins_name_win_index(win_t** wins, int count, char* name)
 {
+  if(!wins) return -1;
+
   for(int index = 0; index < count; index++)
   {
     win_t* win = wins[index];
+
+    if(!win) continue;
 
     if(strcmp(win->name, name) == 0) return index;
   }
@@ -173,9 +181,13 @@ int wins_name_win_index(win_t** wins, int count, char* name)
 
 win_t* wins_active_win_get(win_t** wins, int count)
 {
+  if(!wins) return NULL;
+
   for(int index = 0; index < count; index++)
   {
     win_t* win = wins[index];
+
+    if(!win) continue;
 
     if(win->active) return win;
   }

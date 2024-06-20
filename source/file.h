@@ -7,6 +7,8 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <dirent.h>
+#include <stdlib.h>
 
 extern int file_read(void* pointer, size_t size, size_t nmemb, const char* filepath);
 

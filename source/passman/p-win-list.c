@@ -148,11 +148,7 @@ void win_list_item_add(win_list_t* win, char* item)
 {
   if(!win || !item) return;
 
-  if(win->items)
-  {
-    win->items = realloc(win->items, sizeof(char*) * (win->item_count + 1));
-  }
-  else win->items = malloc(sizeof(char*));
+  win->items = realloc(win->items, sizeof(char*) * (win->item_count + 1));
 
   win->items[win->item_count] = item;
 
