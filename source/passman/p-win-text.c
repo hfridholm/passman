@@ -61,7 +61,7 @@ void win_text_text_set(win_text_t* win, char* text)
  *
  * RETURN (win_text_t* win)
  */
-win_text_t* win_text_create(char* name, bool active, bool tab_ability, int x, int y, int w, int h, char* title, char* text, key_handler_t* key_handler)
+win_text_t* win_text_create(char* name, bool active, bool tab_ability, int x, int y, int w, int h, char* title, char* text, win_event_t* event)
 {
   win_text_t* win = malloc(sizeof(win_text_t));
 
@@ -71,7 +71,7 @@ win_text_t* win_text_create(char* name, bool active, bool tab_ability, int x, in
 
   if(h <= 0) h = win_text_height(win->text_len, w);
 
-  win->head = win_head_create(WIN_TEXT, name, active, tab_ability, x, y, w, h, key_handler);
+  win->head = win_head_create(WIN_TEXT, name, active, tab_ability, x, y, w, h, event);
 
   return win;
 }
@@ -177,7 +177,7 @@ void win_text_refresh(win_text_t* win)
   wrefresh(window);
 }
 
-void pop_text_key_handler(win_head_t* win_head, int key)
+void pop_text_event(win_head_t* win_head, int key)
 {
   if(win_head == NULL || win_head->type != WIN_TEXT) return;
 

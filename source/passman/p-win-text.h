@@ -10,7 +10,7 @@ typedef struct
   int        text_len;  // Length of text
 } win_text_t;
 
-extern win_text_t* win_text_create(char* name, bool active, bool tab_ability, int x, int y, int w, int h, char* title, char* text, key_handler_t* key_handler);
+extern win_text_t* win_text_create(char* name, bool active, bool tab_ability, int x, int y, int w, int h, char* title, char* text, win_event_t* event);
 
 extern void        win_text_free(win_text_t* win);
 
@@ -24,7 +24,7 @@ extern void win_text_title_set(win_text_t* win, char* title);
 extern void win_text_text_set(win_text_t* win, char* text);
 
 
-extern void pop_text_key_handler(win_head_t* win_head, int key);
+extern void pop_text_event(win_head_t* win_head, int key);
 
 
 extern win_text_t* wins_name_win_text_get(win_t** wins, int count, char* name);

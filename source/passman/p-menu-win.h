@@ -26,13 +26,13 @@ extern void menu_win_list_resize(menu_t* menu, char* win_name, int x, int y, int
 extern void menu_win_confirm_resize(menu_t* menu, char* win_name, int x, int y, int w);
 
 
-extern void menu_win_input_create(menu_t* menu, char* name, bool ability, bool tab_ability, int x, int y, int w, char* buffer, size_t size, char* title, bool secret, key_handler_t* key_handler);
+extern void menu_win_input_create(menu_t* menu, char* name, bool ability, bool tab_ability, int x, int y, int w, char* buffer, size_t size, char* title, bool secret, win_event_t* event);
 
-extern void menu_win_text_create(menu_t* menu, char* name, bool ability, bool tab_ability, int x, int y, int w, int h, char* title, char* text, key_handler_t* key_handler);
+extern void menu_win_text_create(menu_t* menu, char* name, bool ability, bool tab_ability, int x, int y, int w, int h, char* title, char* text, win_event_t* event);
 
-extern void menu_win_list_create(menu_t* menu, char* name, bool ability, bool tab_ability, int x, int y, int w, int h, key_handler_t* key_handler);
+extern void menu_win_list_create(menu_t* menu, char* name, bool ability, bool tab_ability, int x, int y, int w, int h, win_event_t* event);
 
-extern void menu_win_confirm_create(menu_t* menu, char* name, bool ability, bool tab_ability, int x, int y, int w, char* prompt, char* text_yes, char* text_no, key_handler_t* key_handler);
+extern void menu_win_confirm_create(menu_t* menu, char* name, bool ability, bool tab_ability, int x, int y, int w, char* prompt, char* text_yes, char* text_no, win_event_t* event);
 
 
 extern void menu_win_add(menu_t* menu, win_t* win);

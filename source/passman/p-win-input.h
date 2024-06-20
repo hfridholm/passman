@@ -17,7 +17,7 @@ typedef struct
   int        title_len;   // Title length
 } win_input_t;
 
-extern win_input_t* win_input_create(char* name, bool active, bool tab_ability, int x, int y, int w, char* buffer, size_t size, char* title, bool secret, key_handler_t* key_handler);
+extern win_input_t* win_input_create(char* name, bool active, bool tab_ability, int x, int y, int w, char* buffer, size_t size, char* title, bool secret, win_event_t* event);
 
 extern void         win_input_resize(win_input_t* win, int x, int y, int w);
 
@@ -32,9 +32,9 @@ extern void win_input_buffer_set(win_input_t* win, char* buffer, size_t size);
 
 extern void win_input_title_set(win_input_t* win, char* title);
 
-extern void win_input_key_handler(win_head_t* win_head, int key);
+extern void win_input_event(win_head_t* win_head, int key);
 
-extern void pop_input_key_handler(win_head_t* win_head, int key);
+extern void pop_input_event(win_head_t* win_head, int key);
 
 
 extern win_input_t* wins_name_win_input_get(win_t** wins, int count, char* name);

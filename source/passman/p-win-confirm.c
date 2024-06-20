@@ -45,7 +45,7 @@ void win_confirm_prompt_set(win_confirm_t* win, char* prompt)
  *
  * RETURN (win_confirm_t* win)
  */
-win_confirm_t* win_confirm_create(char* name, bool active, bool tab_ability, int x, int y, int w, char* prompt, char* text_yes, char* text_no, key_handler_t* key_handler)
+win_confirm_t* win_confirm_create(char* name, bool active, bool tab_ability, int x, int y, int w, char* prompt, char* text_yes, char* text_no, win_event_t* event)
 {
   win_confirm_t* win = malloc(sizeof(win_confirm_t));
 
@@ -59,7 +59,7 @@ win_confirm_t* win_confirm_create(char* name, bool active, bool tab_ability, int
 
   int h = win_confirm_height(win->prompt_len, w);
 
-  win->head = win_head_create(WIN_CONFIRM, name, active, tab_ability, x, y, w, h, key_handler);
+  win->head = win_head_create(WIN_CONFIRM, name, active, tab_ability, x, y, w, h, event);
 
   return win;
 }
@@ -178,7 +178,7 @@ void win_confirm_refresh(win_confirm_t* win)
 /*
  *
  */
-void win_confirm_key_handler(win_head_t* win_head, int key)
+void win_confirm_event(win_head_t* win_head, int key)
 {
   if(win_head == NULL || win_head->type != WIN_CONFIRM) return;
 
@@ -196,11 +196,11 @@ void win_confirm_key_handler(win_head_t* win_head, int key)
   }
 }
 
-void pop_confirm_key_handler(win_head_t* win_head, int key)
+void pop_confirm_event(win_head_t* win_head, int key)
 {
   if(win_head == NULL || win_head->type != WIN_CONFIRM) return;
 
-  win_confirm_key_handler(win_head, key);
+  win_confirm_event(win_head, key);
 
   if(key == KEY_ENTR) win_head->active = false;
 }

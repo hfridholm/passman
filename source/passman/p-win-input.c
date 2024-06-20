@@ -73,11 +73,11 @@ void win_input_title_set(win_input_t* win, char* title)
  *
  * RETURN (win_input_t* win)
  */
-win_input_t* win_input_create(char* name, bool active, bool tab_ability, int x, int y, int w, char* buffer, size_t size, char* title, bool secret, key_handler_t* key_handler)
+win_input_t* win_input_create(char* name, bool active, bool tab_ability, int x, int y, int w, char* buffer, size_t size, char* title, bool secret, win_event_t* event)
 {
   win_input_t* win = malloc(sizeof(win_input_t));
 
-  win->head = win_head_create(WIN_INPUT, name, active, tab_ability, x, y, w, 3, key_handler);
+  win->head = win_head_create(WIN_INPUT, name, active, tab_ability, x, y, w, 3, event);
 
   win_input_buffer_set(win, buffer, size);
 
@@ -294,7 +294,7 @@ static void win_input_scroll_left(win_input_t* win)
 /*
  * Note: If input window has no buffer, nothing should be done
  */
-void win_input_key_handler(win_head_t* win_head, int key)
+void win_input_event(win_head_t* win_head, int key)
 {
   if(win_head == NULL || win_head->type != WIN_INPUT) return;
 
@@ -327,11 +327,11 @@ void win_input_key_handler(win_head_t* win_head, int key)
   }
 }
 
-void pop_input_key_handler(win_head_t* win_head, int key)
+void pop_input_event(win_head_t* win_head, int key)
 {
   if(win_head == NULL || win_head->type != WIN_INPUT) return;
 
-  win_input_key_handler(win_head, key);
+  win_input_event(win_head, key);
 
   if(key == KEY_ENTR) win_head->active = false;
 }

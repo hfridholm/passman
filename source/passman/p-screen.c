@@ -56,11 +56,11 @@ static void screen_menus_create(screen_t* screen, int xmax, int ymax)
   screen_menu_db_create(screen, "db", xmax, ymax);
 }
 
-void screen_win_exit_key_handler(win_head_t* win_head, int key)
+void screen_win_exit_event(win_head_t* win_head, int key)
 {
   if(win_head == NULL || win_head->type != WIN_CONFIRM) return;
 
-  win_confirm_key_handler(win_head, key);
+  win_confirm_event(win_head, key);
 
   win_confirm_t* win = (win_confirm_t*) win_head;
 
@@ -86,13 +86,13 @@ static void screen_wins_create(screen_t* screen, int xmax, int ymax)
   int y = ymax / 2;
 
   screen_win_confirm_create(screen, "exit", false, false,
-    x, y, 24, "Do you want to exit?", "Yes", "No", screen_win_exit_key_handler);
+    x, y, 24, "Do you want to exit?", "Yes", "No", screen_win_exit_event);
 
   screen_win_text_create(screen, "size", false, false,
-    x, y, 104, 26, "Info", "Resize the terminal to match this window", pop_text_key_handler);
+    x, y, 104, 26, "Info", "Resize the terminal to match this window", pop_text_event);
 
   screen_win_text_create(screen, "info", false, false,
-    x, y, 40, -1, NULL, NULL, pop_text_key_handler);
+    x, y, 40, -1, NULL, NULL, pop_text_event);
 }
 
 screen_t* screen_create(void)
@@ -144,7 +144,7 @@ void screen_free(screen_t* screen)
   endwin();
 }
 
-void screen_base_key_handler(screen_t* screen, int key)
+void screen_base_event(screen_t* screen, int key)
 {
   switch(key)
   {
@@ -158,21 +158,21 @@ void screen_base_key_handler(screen_t* screen, int key)
   }
 }
 
-void screen_key_handler(screen_t* screen, int key)
+void screen_event(screen_t* screen, int key)
 {
-  screen_base_key_handler(screen, key);
+  screen_base_event(screen, key);
 
   win_t* win = screen_active_win_get(screen);
 
   menu_t* menu = screen_menu_get(screen);
 
-  if(win && win->key_handler)
+  if(win && win->event)
   {
-    win->key_handler(win, key);
+    win->event(win, key);
   }
   else if(menu)
   {
-    menu_key_handler(menu, key);
+    menu_event(menu, key);
   }
 }
 

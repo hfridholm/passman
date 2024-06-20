@@ -29,7 +29,7 @@ void win_head_resize(win_head_t* win, int x, int y, int w, int h)
  *
  * RETURN (win_t* win)
  */
-win_head_t win_head_create(win_type_t type, char* name, bool active, bool tab_ability, int x, int y, int w, int h, key_handler_t* key_handler)
+win_head_t win_head_create(win_type_t type, char* name, bool active, bool tab_ability, int x, int y, int w, int h, win_event_t* event)
 {
   win_head_t win;
 
@@ -49,7 +49,7 @@ win_head_t win_head_create(win_type_t type, char* name, bool active, bool tab_ab
   win.menu   = NULL;
   win.screen = NULL;
 
-  win.key_handler = key_handler;
+  win.event = event;
 
   return win;
 }

@@ -15,28 +15,29 @@ typedef struct screen_t    screen_t;
 
 typedef struct menu_head_t menu_t;
 
+
 typedef struct win_head_t win_head_t;
 
-typedef struct win_head_t  win_t;
+typedef struct win_head_t win_t;
 
 
-typedef void key_handler_t(win_head_t*, int);
+typedef void win_event_t(win_head_t*, int);
 
 typedef struct win_head_t
 {
-  win_type_t     type;
-  char*          name;        // Used to identify window
-  WINDOW*        window;
-  int            ymax;
-  int            xmax;
-  bool           active;
-  bool           tab_ability;
-  menu_t*        menu;
-  screen_t*      screen;
-  key_handler_t* key_handler;
+  win_type_t   type;
+  char*        name;        // Used to identify window
+  WINDOW*      window;
+  int          ymax;
+  int          xmax;
+  bool         active;
+  bool         tab_ability;
+  menu_t*      menu;
+  screen_t*    screen;
+  win_event_t* event;
 } win_head_t;
 
-extern win_head_t win_head_create(win_type_t type, char* name, bool active, bool tab_ability, int x, int y, int w, int h, key_handler_t* key_handler);
+extern win_head_t win_head_create(win_type_t type, char* name, bool active, bool tab_ability, int x, int y, int w, int h, win_event_t* event);
 
 extern void        win_head_free(win_head_t win);
 

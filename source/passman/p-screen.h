@@ -25,7 +25,7 @@ extern void      screen_refresh(screen_t* screen);
 extern void      screen_free(screen_t* screen);
 
 
-extern void screen_key_handler(screen_t* screen, int key);
+extern void screen_event(screen_t* screen, int key);
 
 
 extern void screen_text_popup(screen_t* screen, char* title, char* text);

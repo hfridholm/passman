@@ -91,7 +91,7 @@ void menu_head_free(menu_head_t menu)
   }
 }
 
-void menu_tab_key_handler(menu_head_t* menu, int key)
+void menu_tab_event(menu_head_t* menu, int key)
 {
   switch(key)
   {
@@ -108,17 +108,17 @@ void menu_tab_key_handler(menu_head_t* menu, int key)
   }
 }
 
-void menu_key_handler(menu_t* menu, int key)
+void menu_event(menu_t* menu, int key)
 {
   win_t* win = menu_active_win_get(menu);
 
   if(win && win->tab_ability)
   {
-    menu_tab_key_handler(menu, key);
+    menu_tab_event(menu, key);
   }
 
-  if(win && win->key_handler)
+  if(win && win->event)
   {
-    win->key_handler(win, key);
+    win->event(win, key);
   }
 }

@@ -36,11 +36,11 @@ void win_list_resize(win_list_t* win, int x, int y, int w, int h)
  *
  * RETURN (win_list_t* win)
  */
-win_list_t* win_list_create(char* name, bool active, bool tab_ability, int x, int y, int w, int h, key_handler_t* key_handler)
+win_list_t* win_list_create(char* name, bool active, bool tab_ability, int x, int y, int w, int h, win_event_t* event)
 {
   win_list_t* win = malloc(sizeof(win_list_t));
 
-  win->head = win_head_create(WIN_LIST, name, active, tab_ability, x, y, w, h, key_handler);
+  win->head = win_head_create(WIN_LIST, name, active, tab_ability, x, y, w, h, event);
 
   win->items      = NULL;
   win->item_count = 0;
@@ -108,7 +108,7 @@ static void win_list_scroll_up(win_list_t* win)
   win->scroll = MIN(win->scroll, win->item_index);
 }
 
-void win_list_key_handler(win_head_t* win_head, int key)
+void win_list_event(win_head_t* win_head, int key)
 {
   if(win_head == NULL || win_head->type != WIN_LIST) return;
 

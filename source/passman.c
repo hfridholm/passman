@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
 
     if(key == KEY_CTRLZ) break;
 
-    screen_key_handler(screen, key);
+    screen_event(screen, key);
 
     screen_refresh(screen);
   }

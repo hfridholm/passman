@@ -49,11 +49,11 @@ void menu_dbs_resize(menu_dbs_t* menu, int xmax, int ymax)
   menu_win_input_resize((menu_t*) menu, "rename", x, y, 50);
 }
 
-void menu_dbs_win_dbs_key_handler(win_head_t* win_head, int key)
+void menu_dbs_win_dbs_event(win_head_t* win_head, int key)
 {
   if(!win_head || win_head->type != WIN_LIST) return;
 
-  win_list_key_handler(win_head, key);
+  win_list_event(win_head, key);
 
 
   if(!win_list_item_get((win_list_t*) win_head)) return;
@@ -105,11 +105,11 @@ void menu_dbs_win_dbs_key_handler(win_head_t* win_head, int key)
   }
 }
 
-void menu_dbs_win_delete_key_handler(win_head_t* win_head, int key)
+void menu_dbs_win_delete_event(win_head_t* win_head, int key)
 {
   if(!win_head || win_head->type != WIN_CONFIRM) return;
 
-  win_confirm_key_handler(win_head, key);
+  win_confirm_event(win_head, key);
 
 
   if(key != KEY_ENTR) return;
@@ -129,11 +129,11 @@ void menu_dbs_win_delete_key_handler(win_head_t* win_head, int key)
   win_head->active = false;
 }
 
-void menu_dbs_win_open_key_handler(win_head_t* win_head, int key)
+void menu_dbs_win_open_event(win_head_t* win_head, int key)
 {
   if(!win_head || win_head->type != WIN_INPUT) return;
 
-  win_input_key_handler(win_head, key);
+  win_input_event(win_head, key);
 
 
   if(key != KEY_ENTR) return;
@@ -167,11 +167,11 @@ void menu_dbs_win_open_key_handler(win_head_t* win_head, int key)
   win_head->active = false;
 }
 
-void menu_dbs_win_new_key_handler(win_head_t* win_head, int key)
+void menu_dbs_win_new_event(win_head_t* win_head, int key)
 {
   if(!win_head || win_head->type != WIN_INPUT) return;
 
-  win_input_key_handler(win_head, key);
+  win_input_event(win_head, key);
 
   win_input_t* win = (win_input_t*) win_head;
 
@@ -208,7 +208,7 @@ void menu_dbs_win_new_key_handler(win_head_t* win_head, int key)
 void menu_dbs_win_dbs_create(menu_dbs_t* menu, int x, int y, int w, int h)
 {
   win_list_t* win = win_list_create("dbs", true, true,
-    x, y + 2, w, h, menu_dbs_win_dbs_key_handler);
+    x, y + 2, w, h, menu_dbs_win_dbs_event);
 
   for(int index = 0; index < menu->dbs_count; index++)
   {
@@ -237,21 +237,21 @@ menu_dbs_t* menu_dbs_create(char* name, int xmax, int ymax)
 
 
   menu_win_input_create((menu_t*) menu, "search", true, true,
-    x, 5, w, menu->buffer_search, sizeof(menu->buffer_search), NULL, false, win_input_key_handler);
+    x, 5, w, menu->buffer_search, sizeof(menu->buffer_search), NULL, false, win_input_event);
   
   menu_dbs_win_dbs_create(menu, x, y, w, h);
 
   menu_win_confirm_create((menu_t*) menu, "delete", false, false,
-    x, y, 30, "Delete Database?", "Yes", "No", menu_dbs_win_delete_key_handler);
+    x, y, 30, "Delete Database?", "Yes", "No", menu_dbs_win_delete_event);
 
   menu_win_input_create((menu_t*) menu, "open", false, false,
-    x, y, 50, NULL, 0, "Password", true, menu_dbs_win_open_key_handler);
+    x, y, 50, NULL, 0, "Password", true, menu_dbs_win_open_event);
 
   menu_win_input_create((menu_t*) menu, "new", false, false,
-    x, y, 50, menu->buffer_new, sizeof(menu->buffer_new), "New", false, menu_dbs_win_new_key_handler);
+    x, y, 50, menu->buffer_new, sizeof(menu->buffer_new), "New", false, menu_dbs_win_new_event);
 
   menu_win_input_create((menu_t*) menu, "rename", false, false,
-    x, y, 50, NULL, 0, "Rename", false, pop_input_key_handler);
+    x, y, 50, NULL, 0, "Rename", false, pop_input_event);
 
   return menu;
 }
