@@ -56,9 +56,6 @@ void menu_dbs_win_dbs_event(win_head_t* win_head, int key)
   win_list_event(win_head, key);
 
 
-  if(!win_list_item_get((win_list_t*) win_head)) return;
-
-
   menu_t* menu_head = win_head->menu;
 
   if(!menu_head || menu_head->type != MENU_DBS) return;
@@ -94,6 +91,8 @@ void menu_dbs_win_dbs_event(win_head_t* win_head, int key)
       win_input_t* win_rename = menu_name_win_input_get((menu_t*) menu, "rename");
 
       char* item = win_list_item_get((win_list_t*) win_head);
+
+      if(!item) break;
 
       if(win_rename) win_input_buffer_set(win_rename, item, strlen(item) + 1);
 
@@ -143,25 +142,27 @@ void menu_dbs_win_open_event(win_head_t* win_head, int key)
 
   if(!menu_head || menu_head->type != MENU_DBS) return;
 
+  menu_dbs_t* menu = (menu_dbs_t*) menu_head;
+
 
   win_list_t* win_list = menu_name_win_list_get(menu_head, "dbs");
 
   char* item = win_list_item_get(win_list);
-
-  printf("Opening: %s\n", item ? item : "unknown");
 
 
   screen_t* screen = win_head->screen;
 
   if(!screen) return;
 
-  int status = dbase_read(&screen->database, item, screen->password);
+  int status = dbase_read(&screen->dbase, item, menu->password);
 
   if(status == 0)
   {
+    screen_name_menu_db_dbase_set(screen, "db", &screen->dbase);
+
     screen_name_menu_focus_set(screen, "db");
   }
-  else screen_text_popup(screen, "Error", "Could not open database");
+  else screen_text_popup(screen, "Error", "Could not open dbase");
 
 
   win_head->active = false;
@@ -189,7 +190,9 @@ void menu_dbs_win_new_event(win_head_t* win_head, int key)
   if(!screen) return;
 
 
-  screen->database = (dbase_t) {0};
+  screen->dbase = (dbase_t) {0};
+
+  strcpy(screen->dbase.name, win->buffer);
 
 
   win_list_t* win_list = menu_name_win_list_get(menu_head, "dbs");
@@ -197,7 +200,7 @@ void menu_dbs_win_new_event(win_head_t* win_head, int key)
   win_list_item_add(win_list, win->buffer);
 
 
-  screen_name_menu_db_dbase_set(screen, "db", &screen->database);
+  screen_name_menu_db_dbase_set(screen, "db", &screen->dbase);
 
   screen_name_menu_focus_set(screen, "db");
 
@@ -210,10 +213,14 @@ void menu_dbs_win_dbs_create(menu_dbs_t* menu, int x, int y, int w, int h)
   win_list_t* win = win_list_create("dbs", true, true,
     x, y + 2, w, h, menu_dbs_win_dbs_event);
 
-  for(int index = 0; index < menu->dbs_count; index++)
+  for(size_t index = 0; index < menu->dbs_count; index++)
   {
     win_list_item_add(win, menu->dbs_names[index]);
+
+    printf("%s\n", menu->dbs_names[index]);
   }
+
+  getch();
 
   menu_win_add((menu_t*) menu, (win_t*) win);
 }
@@ -222,9 +229,19 @@ menu_dbs_t* menu_dbs_create(char* name, int xmax, int ymax)
 {
   menu_dbs_t* menu = malloc(sizeof(menu_dbs_t));
 
-  menu->head = menu_head_create(MENU_DBS, name);
+  menu->head = menu_head_create(MENU_DBS, name, NULL);
 
-  menu_dbs_names_create(menu);
+
+  printf("getting...\n");
+
+  getch();
+
+  dir_file_names(&menu->dbs_names, &menu->dbs_count, DBASE_DIR);
+
+  printf("done\n");
+
+  getch();
+
 
   int x = xmax / 2;
   int y = ymax / 2;
@@ -245,7 +262,7 @@ menu_dbs_t* menu_dbs_create(char* name, int xmax, int ymax)
     x, y, 30, "Delete Database?", "Yes", "No", menu_dbs_win_delete_event);
 
   menu_win_input_create((menu_t*) menu, "open", false, false,
-    x, y, 50, NULL, 0, "Password", true, menu_dbs_win_open_event);
+    x, y, 50, menu->password, sizeof(menu->password), "Password", true, menu_dbs_win_open_event);
 
   menu_win_input_create((menu_t*) menu, "new", false, false,
     x, y, 50, menu->buffer_new, sizeof(menu->buffer_new), "New", false, menu_dbs_win_new_event);

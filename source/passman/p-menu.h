@@ -29,7 +29,7 @@ typedef struct menu_head_t
 } menu_head_t;
 
 
-extern menu_head_t menu_head_create(menu_type_t type, char* name);
+extern menu_head_t menu_head_create(menu_type_t type, char* name, menu_event_t* event);
 
 extern void        menu_head_free(menu_head_t menu);
 

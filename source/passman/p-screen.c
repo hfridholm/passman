@@ -4,7 +4,6 @@ void screen_refresh(screen_t* screen)
 {
   curs_set(0);
 
-  clear();
   refresh();
 
   if(screen->menu_index >= 0 && screen->menu_index < screen->menu_count)

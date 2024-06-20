@@ -20,6 +20,6 @@ extern int    dir_file_write(const void* pointer, size_t size, size_t nmemb, con
 extern int    dir_file_read(void* pointer, size_t size, size_t nmemb, const char* dirpath, const char* name);
 
 
-extern void array_free(void** array, size_t count);
+extern int dir_file_names(char*** names, size_t* count, const char* dirpath);
 
 #endif // FILE_H

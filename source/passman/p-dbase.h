@@ -23,7 +23,7 @@ typedef struct
   accnt_t accnts[128];
 } dbase_t;
 
-#define DBASE_DIR "../assets"
+#define DBASE_DIR "../assets/"
 
 extern int dbase_read(dbase_t* dbase, const char* name, const char* password);
 

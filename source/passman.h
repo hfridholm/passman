@@ -21,7 +21,9 @@
 
 #define KEY_CTRLC 3
 #define KEY_CTRLZ 26
+#define KEY_CTRLS 19
 #define KEY_CTRLH 8
+
 #define KEY_ENTR  10
 #define KEY_TAB   9
 

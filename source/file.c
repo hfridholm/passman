@@ -5,6 +5,7 @@
  */
 
 #include "file.h"
+#include "passman.h"
 
 /*
  * PARAMS
@@ -16,7 +17,7 @@
  * - 0 | Success!
  * - 1 | Failed to open directory
  */
-int dir_file_names(char** names, size_t* count, const char* dirpath)
+int dir_file_names(char*** names, size_t* count, const char* dirpath)
 {
   struct dirent* dire;
 
@@ -33,26 +34,26 @@ int dir_file_names(char** names, size_t* count, const char* dirpath)
 
     if(dire->d_type != DT_REG) continue;
 
-    names = realloc(names, sizeof(char*) * (*count + 1));
+    char** new_names = realloc(*names, sizeof(char*) * ((*count) + 1));
 
-    names[*count] = strdup(dire->d_name);
+    if(!new_names)
+    {
+      printf("realloc failed\n");
+
+      closedir(dirp);
+
+      return 1;
+    }
+    else *names = new_names;
+
+    (*names)[(*count)] = strdup(dire->d_name);
+
+    (*count)++;
   }
 
   closedir(dirp);
 
   return 0; // Success!
-}
-
-void array_free(void** array, size_t count)
-{
-  if(!array) return;
-
-  for(size_t index = 0; index < count; index++)
-  {
-    if(array[index]) free(array[index]);
-  }
-
-  free(array);
 }
 
 /*

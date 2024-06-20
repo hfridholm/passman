@@ -33,6 +33,8 @@ int main(int argc, char* argv[])
   int key;
   while(screen->running && (key = wgetch(stdscr)))
   {
+    clear();
+
     mvprintw(0, 0, "ENTER: %d key: %d", KEY_ENTR, key);
 
     if(key == KEY_CTRLZ) break;

@@ -1,6 +1,6 @@
 #include "../passman.h"
 
-menu_head_t menu_head_create(menu_type_t type, char* name)
+menu_head_t menu_head_create(menu_type_t type, char* name, menu_event_t* event)
 {
   menu_head_t menu;
 
@@ -12,6 +12,8 @@ menu_head_t menu_head_create(menu_type_t type, char* name)
 
   menu.screen = NULL;
 
+  menu.event = event;
+
   return menu;
 }
 
@@ -19,6 +21,7 @@ void menu_refresh(menu_t* menu)
 {
   wins_refresh(menu->wins, menu->win_count);
 
+  /*
   wmove(stdscr, 0, 0);
 
   for(int index = 0; index < menu->win_count; index++)
@@ -29,6 +32,7 @@ void menu_refresh(menu_t* menu)
       (win->active) ? 'X' : ' ',
       win->name);
   }
+  */
 }
 
 void menu_resize(menu_t* menu, int xmax, int ymax)
@@ -110,6 +114,11 @@ void menu_tab_event(menu_head_t* menu, int key)
 
 void menu_event(menu_t* menu, int key)
 {
+  if(menu && menu->event)
+  {
+    menu->event(menu, key);
+  }
+
   win_t* win = menu_active_win_get(menu);
 
   if(win && win->tab_ability)

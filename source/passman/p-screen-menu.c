@@ -41,8 +41,6 @@ void screen_menu_dbs_create(screen_t* screen, char* name, int xmax, int ymax)
 {
   menu_dbs_t* menu = menu_dbs_create(name, xmax, ymax);
 
-  menu_name_win_input_buffer_set((menu_t*) menu, "open", screen->password, sizeof(screen->password));
-
   screen_menu_add(screen, (menu_t*) menu);
 }
 

@@ -12,7 +12,7 @@ menu_psw_t* menu_psw_create(char* name, int xmax, int ymax)
 {
   menu_psw_t* menu = malloc(sizeof(menu_psw_t));
 
-  menu->head = menu_head_create(MENU_PSW, name);
+  menu->head = menu_head_create(MENU_PSW, name, NULL);
 
   int x = xmax / 2;
   int y = ymax / 2;
