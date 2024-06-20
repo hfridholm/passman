@@ -1,5 +1,8 @@
 #include "passman.h"
 
+dbases_t dbases;
+screen_t screen;
+
 bool argnew = false;
 bool argopen = false;
 

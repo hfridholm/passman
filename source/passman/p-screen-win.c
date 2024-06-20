@@ -39,9 +39,9 @@ void screen_win_text_create(screen_t* screen, char* name, bool active, bool tab_
   screen_win_add(screen, (win_t*) win);
 }
 
-void screen_win_list_create(screen_t* screen, char* name, bool active, bool tab_ability, int x, int y, int w, int h, char** items, int count, key_handler_t* key_handler)
+void screen_win_list_create(screen_t* screen, char* name, bool active, bool tab_ability, int x, int y, int w, int h, key_handler_t* key_handler)
 {
-  win_list_t* win = win_list_create(name, active, tab_ability, x, y, w, h, items, count, key_handler);
+  win_list_t* win = win_list_create(name, active, tab_ability, x, y, w, h, key_handler);
 
   screen_win_add(screen, (win_t*) win);
 }

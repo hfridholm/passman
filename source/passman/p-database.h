@@ -21,17 +21,12 @@ typedef struct
   char      date_update[16];
   uint8_t   account_count;
   account_t accounts[128];
-} database_t;
+} dbase_t;
 
-#define DBSIZE     sizeof(database_t)
-#define DBSIZE_ENC (DBSIZE + 16 - (DBSIZE % 16))
-
-extern database_t database;
-extern char password[64];
-
-extern ksize_t encrypt;
-
-extern char dbfile[256];
-extern char pwfile[256];
+typedef struct
+{
+  dbase_t* dbases;
+  int      dbase_count
+} dbases_t;
 
 #endif // P_DATABASE_H

@@ -30,8 +30,11 @@ extern void menu_win_input_create(menu_t* menu, char* name, bool ability, bool t
 
 extern void menu_win_text_create(menu_t* menu, char* name, bool ability, bool tab_ability, int x, int y, int w, int h, char* title, char* text, key_handler_t* key_handler);
 
-extern void menu_win_list_create(menu_t* menu, char* name, bool ability, bool tab_ability, int x, int y, int w, int h, char** items, int count, key_handler_t* key_handler);
+extern void menu_win_list_create(menu_t* menu, char* name, bool ability, bool tab_ability, int x, int y, int w, int h, key_handler_t* key_handler);
 
 extern void menu_win_confirm_create(menu_t* menu, char* name, bool ability, bool tab_ability, int x, int y, int w, char* prompt, char* text_yes, char* text_no, key_handler_t* key_handler);
+
+
+extern void menu_win_add(menu_t* menu, win_t* win);
 
 #endif // P_MENU_WIN_H

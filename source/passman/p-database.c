@@ -1,12 +1,9 @@
 #include "../passman.h"
 
-ksize_t encrypt = AES_256;
-
-char dbfile[256];
-char pwfile[256];
-
-database_t database;
-char       password[64];
+void dbase_names_get(char** names, int* count)
+{
+  char** files = files_
+}
 
 /*
  * RETURN (int status)
@@ -24,7 +21,7 @@ int database_read(void)
 
   file_read(buffer, size, sizeof(char), dbfile);
 
-  aes_decrypt(&database, buffer, sizeof(buffer), password, encrypt);
+  aes_decrypt(&database, buffer, sizeof(buffer), password, AES_256);
 
   char hash[64];
   sha256(hash, password, strlen(password));
@@ -41,7 +38,9 @@ int database_read(void)
  */
 int database_write(void)
 {
-  char buffer[DBSIZE_ENC]; // Database encrypted size
+  size_t encrypt_size = sizeof(database_t) + 16 - (sizeof(database_t) % 16))
+
+  char buffer[encrypt_size];
   memset(buffer, '\0', sizeof(buffer));
 
   char hash[64];
@@ -49,7 +48,7 @@ int database_write(void)
 
   memcpy(database.psw_hash, hash, 64);
 
-  aes_encrypt(buffer, &database, DBSIZE, password, encrypt);
+  aes_encrypt(buffer, &database, encrypt_size, password, AES_256);
 
   file_write(buffer, sizeof(buffer), sizeof(char), dbfile);
 

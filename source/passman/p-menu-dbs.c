@@ -170,11 +170,26 @@ void menu_dbs_win_new_key_handler(win_head_t* win_head, int key)
   if(!menu_head || menu_head->type != MENU_DBS) return;
 
 
+
   win_list_t* win_list = menu_name_win_list_get(menu_head, "dbs");
 
+  win_list_item_add(win_list, win->buffer);
 
 
   win_head->active = false;
+}
+
+void menu_dbs_win_dbs_create(menu_dbs_t* menu, int x, int y, int w, int h)
+{
+  win_list_t* win = win_list_create("dbs", true, true,
+    x, y + 2, w, h, menu_dbs_win_dbs_key_handler);
+
+  for(int index = 0; index < menu->dbs_count; index++)
+  {
+    win_list_item_add(win, menu->dbs_names[index]);
+  }
+
+  menu_win_add((menu_t*) menu, (win_t*) win);
 }
 
 menu_dbs_t* menu_dbs_create(char* name, int xmax, int ymax)
@@ -198,8 +213,7 @@ menu_dbs_t* menu_dbs_create(char* name, int xmax, int ymax)
   menu_win_input_create((menu_t*) menu, "search", true, true,
     x, 5, w, menu->buffer_search, sizeof(menu->buffer_search), NULL, false, win_input_key_handler);
   
-  menu_win_list_create((menu_t*) menu, "dbs", true, true,
-    x, y + 2, w, h, menu->dbs_names, menu->dbs_count, menu_dbs_win_dbs_key_handler);
+  menu_dbs_win_dbs_create(menu, x, y, w, h);
 
   menu_win_confirm_create((menu_t*) menu, "delete", false, false,
     x, y, 30, "Delete Database?", "Yes", "No", menu_dbs_win_delete_key_handler);

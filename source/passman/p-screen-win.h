@@ -10,7 +10,7 @@ extern void screen_win_input_create(screen_t* screen, char* name, bool ability, 
 
 extern void screen_win_text_create(screen_t* screen, char* name, bool ability, bool tab_ability, int x, int y, int w, int h, char* title, char* text, key_handler_t* key_handler);
 
-extern void screen_win_list_create(screen_t* screen, char* name, bool ability, bool tab_ability, int x, int y, int w, int h, char** items, int count, key_handler_t* key_handler);
+extern void screen_win_list_create(screen_t* screen, char* name, bool ability, bool tab_ability, int x, int y, int w, int h, key_handler_t* key_handler);
 
 extern void screen_win_confirm_create(screen_t* screen, char* name, bool ability, bool tab_ability, int x, int y, int w, char* prompt, char* text_yes, char* text_no, key_handler_t* key_handler);
 
