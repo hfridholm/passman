@@ -40,4 +40,6 @@ extern void menu_win_add(menu_t* menu, win_t* win);
 
 extern void menu_name_win_input_buffer_set(menu_t* menu, char* win_name, char* buffer, size_t size);
 
+extern char* menu_name_win_list_item_get(menu_t* menu, char* win_name);
+
 #endif // P_MENU_WIN_H

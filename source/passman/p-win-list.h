@@ -28,6 +28,8 @@ extern void  win_list_item_add(win_list_t* win, char* item);
 
 extern void  win_list_item_delete(win_list_t* win, int item_index);
 
+extern void  win_list_item_rename(win_list_t* win, char* new_name);
+
 
 extern win_list_t* wins_name_win_list_get(win_t** wins, int count, char* name);
 

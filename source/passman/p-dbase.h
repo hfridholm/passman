@@ -25,8 +25,14 @@ typedef struct
 
 #define DBASE_DIR "../assets/"
 
+#define DBASE_ENCRYPT_SIZE (sizeof(dbase_t) + 16 - (sizeof(dbase_t) % 16))
+
 extern int dbase_read(dbase_t* dbase, const char* name, const char* password);
 
 extern int dbase_write(dbase_t* dbase, const char* name, const char* password);
+
+extern int dbase_file_rename(const char* old_name, const char* new_name);
+
+extern size_t dbase_file_size(const char* name);
 
 #endif // P_DBASE_H

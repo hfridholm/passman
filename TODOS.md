@@ -6,6 +6,8 @@
   change back to previous name
 - ability to change database password in mendbe
 - add "Press enter to continue..." text to infwin
+- create bool screen_win_is_focus function,
+  add hash variable in screen struct of the focus win (for comparison)
 
 ## Must
 

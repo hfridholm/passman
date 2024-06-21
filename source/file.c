@@ -135,6 +135,26 @@ int file_read(void* pointer, size_t size, size_t nmemb, const char* filepath)
   return status;
 }
 
+/*
+ * RETURN (same as rename)
+ */
+int dir_file_rename(const char* dirpath, const char* old_name, const char* new_name)
+{
+  size_t old_path_size = strlen(dirpath) + 1 + strlen(old_name);
+
+  char old_filepath[old_path_size + 1];
+
+  sprintf(old_filepath, "%s/%s", dirpath, old_name);
+
+  size_t new_path_size = strlen(dirpath) + 1 + strlen(new_name);
+
+  char new_filepath[new_path_size + 1];
+
+  sprintf(new_filepath, "%s/%s", dirpath, new_name);
+
+  return rename(old_filepath, new_filepath);
+}
+
 int dir_file_read(void* pointer, size_t size, size_t nmemb, const char* dirpath, const char* name)
 {
   size_t path_size = strlen(dirpath) + 1 + strlen(name);

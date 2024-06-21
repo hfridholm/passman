@@ -77,7 +77,10 @@ void win_list_refresh(win_list_t* win)
   {
     int print_index = index + win->scroll;
 
-    if(print_index == win->item_index) wattron(window, A_REVERSE);
+    if(print_index == win->item_index)
+    {
+      wattron(window, A_REVERSE);
+    }
 
     mvwprintw(window, index + 1, 1, "%s", win->items[print_index]);
 
@@ -124,6 +127,19 @@ void win_list_event(win_head_t* win_head, int key)
       win_list_scroll_up(win);
       break;
   }
+}
+
+void win_list_item_rename(win_list_t* win, char* new_name)
+{
+  if(!win || !win->items) return;
+
+  if(win->item_index < 0 || win->item_index >= win->item_count) return;
+
+  char* item = win->items[win->item_index];
+
+  win->items[win->item_index] = realloc(item, sizeof(char) * strlen(new_name) + 1);
+
+  strcpy(win->items[win->item_index], new_name);
 }
 
 char* win_list_item_get(win_list_t* win)

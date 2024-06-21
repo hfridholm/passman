@@ -126,3 +126,10 @@ void menu_win_tab(menu_t* menu, bool reverse)
     wins_rotate(menu->wins, menu->win_count, index);
   }
 }
+
+char* menu_name_win_list_item_get(menu_t* menu, char* win_name)
+{
+  win_list_t* win = menu_name_win_list_get(menu, win_name);
+
+  return win_list_item_get(win);
+}

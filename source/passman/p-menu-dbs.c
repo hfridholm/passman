@@ -1,20 +1,38 @@
 #include "../passman.h"
 
-char* names[] = {"Secret", "Home", "School", "This", "That", "Sweden", "Hampus", "Nogger"};
-int name_count = 8;
+void matrix_free(void** matrix, size_t count)
+{
+  if(!matrix) return;
+
+  for(size_t index = 0; index < count; index++)
+  {
+    if(matrix[index]) free(matrix[index]);
+  }
+
+  free(matrix);
+}
 
 static void menu_dbs_names_create(menu_dbs_t* menu)
 {
-  menu->dbs_names = malloc(sizeof(char*) * name_count);
+  char** names = NULL;
+  size_t count = 0;
 
-  for(int index = 0; index < name_count; index++)
+  dir_file_names(&names, &count, DBASE_DIR);
+
+  for(size_t index = 0; index < count; index++)
   {
-    menu->dbs_names[index] = malloc(sizeof(char) * 64);
+    size_t size = dbase_file_size(names[index]);
 
-    strcpy(menu->dbs_names[index], names[index]);
+    if(size != DBASE_ENCRYPT_SIZE) continue;
+
+    menu->dbs_names = realloc(menu->dbs_names, sizeof(char*) * (menu->dbs_count + 1));
+
+    menu->dbs_names[menu->dbs_count] = strdup(names[index]);
+
+    menu->dbs_count++;
   }
 
-  menu->dbs_count = name_count;
+  matrix_free((void**) names, count);
 }
 
 static void menu_dbs_names_free(menu_dbs_t* menu)
@@ -80,7 +98,7 @@ void menu_dbs_win_dbs_event(win_head_t* win_head, int key)
     case 'n':
       win_input_t* win_new = menu_name_win_input_get((menu_t*) menu, "new");
 
-      memset(menu->buffer_new, '\0', sizeof(menu->buffer_new));
+      memset(menu->buffer_name, '\0', sizeof(menu->buffer_name));
 
       if(win_new) win_input_buffer_update(win_new);
 
@@ -94,7 +112,9 @@ void menu_dbs_win_dbs_event(win_head_t* win_head, int key)
 
       if(!item) break;
 
-      if(win_rename) win_input_buffer_set(win_rename, item, strlen(item) + 1);
+      strncpy(menu->buffer_name, item, sizeof(menu->buffer_name));
+
+      if(win_rename) win_input_buffer_update(win_rename);
 
       menu_name_win_focus_set((menu_t*) menu, "rename");
       break;
@@ -216,13 +236,42 @@ void menu_dbs_win_dbs_create(menu_dbs_t* menu, int x, int y, int w, int h)
   for(size_t index = 0; index < menu->dbs_count; index++)
   {
     win_list_item_add(win, menu->dbs_names[index]);
-
-    printf("%s\n", menu->dbs_names[index]);
   }
 
-  getch();
-
   menu_win_add((menu_t*) menu, (win_t*) win);
+}
+
+void menu_dbs_win_rename_event(win_head_t* win_head, int key)
+{
+  if(!win_head || win_head->type != WIN_INPUT) return;
+
+  win_input_event(win_head, key);
+
+  win_input_t* win = (win_input_t*) win_head;
+
+
+  if(key != KEY_ENTR) return;
+
+
+  menu_head_t* menu_head = win_head->menu;
+
+  if(!menu_head || menu_head->type != MENU_DBS) return;
+
+  menu_dbs_t* menu = (menu_dbs_t*) menu_head;
+
+
+  win_list_t* win_list = menu_name_win_list_get((menu_t*) menu, "dbs");
+
+  char* old_name = win_list_item_get(win_list);
+
+  char* new_name = win->buffer;
+
+  dbase_file_rename(old_name, new_name);
+
+  win_list_item_rename(win_list, new_name);
+
+
+  win_head->active = false;
 }
 
 menu_dbs_t* menu_dbs_create(char* name, int xmax, int ymax)
@@ -231,17 +280,7 @@ menu_dbs_t* menu_dbs_create(char* name, int xmax, int ymax)
 
   menu->head = menu_head_create(MENU_DBS, name, NULL);
 
-
-  printf("getting...\n");
-
-  getch();
-
-  dir_file_names(&menu->dbs_names, &menu->dbs_count, DBASE_DIR);
-
-  printf("done\n");
-
-  getch();
-
+  menu_dbs_names_create(menu);
 
   int x = xmax / 2;
   int y = ymax / 2;
@@ -250,7 +289,7 @@ menu_dbs_t* menu_dbs_create(char* name, int xmax, int ymax)
 
   memset(menu->buffer_search, '\0', sizeof(menu->buffer_search));
 
-  memset(menu->buffer_new, '\0', sizeof(menu->buffer_new));
+  memset(menu->buffer_name, '\0', sizeof(menu->buffer_name));
 
 
   menu_win_input_create((menu_t*) menu, "search", true, true,
@@ -265,10 +304,10 @@ menu_dbs_t* menu_dbs_create(char* name, int xmax, int ymax)
     x, y, 50, menu->password, sizeof(menu->password), "Password", true, menu_dbs_win_open_event);
 
   menu_win_input_create((menu_t*) menu, "new", false, false,
-    x, y, 50, menu->buffer_new, sizeof(menu->buffer_new), "New", false, menu_dbs_win_new_event);
+    x, y, 50, menu->buffer_name, sizeof(menu->buffer_name), "New", false, menu_dbs_win_new_event);
 
   menu_win_input_create((menu_t*) menu, "rename", false, false,
-    x, y, 50, NULL, 0, "Rename", false, pop_input_event);
+    x, y, 50, menu->buffer_name, sizeof(menu->buffer_name), "Rename", false, menu_dbs_win_rename_event);
 
   return menu;
 }
