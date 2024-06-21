@@ -49,11 +49,20 @@ void win_input_buffer_update(win_input_t* win)
  */
 void win_input_buffer_set(win_input_t* win, char* buffer, size_t size)
 {
-  if(buffer == NULL) return;
+  if(!win || !buffer) return;
 
   win->buffer = buffer;
 
   win->buffer_size = size - 1;
+
+  win_input_buffer_update(win);
+}
+
+void win_input_buffer_clear(win_input_t* win)
+{
+  if(!win) return;
+
+  memset(win->buffer, '\0', win->buffer_size);
 
   win_input_buffer_update(win);
 }

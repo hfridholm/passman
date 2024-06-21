@@ -32,6 +32,13 @@ void menu_name_win_input_buffer_set(menu_t* menu, char* win_name, char* buffer, 
   win_input_buffer_set(win, buffer, size);
 }
 
+void menu_name_win_input_buffer_clear(menu_t* menu, char* win_name)
+{
+  win_input_t* win = menu_name_win_input_get(menu, win_name);
+
+  win_input_buffer_clear(win);
+}
+
 void menu_win_add(menu_t* menu, win_t* win)
 {
   menu->wins = realloc(menu->wins, sizeof(menu_t*) * (menu->win_count + 1));
@@ -93,9 +100,9 @@ void menu_win_text_create(menu_t* menu, char* name, bool active, bool tab_abilit
   menu_win_add(menu, (win_t*) win);
 }
 
-void menu_win_list_create(menu_t* menu, char* name, bool active, bool tab_ability, int x, int y, int w, int h, win_event_t* event)
+void menu_win_list_create(menu_t* menu, char* name, bool active, bool tab_ability, int x, int y, int w, int h, int max_count, win_event_t* event)
 {
-  win_list_t* win = win_list_create(name, active, tab_ability, x, y, w, h, event);
+  win_list_t* win = win_list_create(name, active, tab_ability, x, y, w, h, max_count, event);
 
   menu_win_add(menu, (win_t*) win);
 }
@@ -132,4 +139,11 @@ char* menu_name_win_list_item_get(menu_t* menu, char* win_name)
   win_list_t* win = menu_name_win_list_get(menu, win_name);
 
   return win_list_item_get(win);
+}
+
+void menu_name_win_list_item_add(menu_t* menu, char* win_name, char* item)
+{
+  win_list_t* win = menu_name_win_list_get(menu, win_name);
+
+  win_list_item_add(win, item);
 }

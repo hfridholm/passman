@@ -30,7 +30,7 @@ extern void menu_win_input_create(menu_t* menu, char* name, bool ability, bool t
 
 extern void menu_win_text_create(menu_t* menu, char* name, bool ability, bool tab_ability, int x, int y, int w, int h, char* title, char* text, win_event_t* event);
 
-extern void menu_win_list_create(menu_t* menu, char* name, bool ability, bool tab_ability, int x, int y, int w, int h, win_event_t* event);
+extern void menu_win_list_create(menu_t* menu, char* name, bool ability, bool tab_ability, int x, int y, int w, int h, int max_count, win_event_t* event);
 
 extern void menu_win_confirm_create(menu_t* menu, char* name, bool ability, bool tab_ability, int x, int y, int w, char* prompt, char* text_yes, char* text_no, win_event_t* event);
 
@@ -38,8 +38,13 @@ extern void menu_win_confirm_create(menu_t* menu, char* name, bool ability, bool
 extern void menu_win_add(menu_t* menu, win_t* win);
 
 
-extern void menu_name_win_input_buffer_set(menu_t* menu, char* win_name, char* buffer, size_t size);
+extern void  menu_name_win_input_buffer_set(menu_t* menu, char* win_name, char* buffer, size_t size);
+
+extern void  menu_name_win_input_buffer_clear(menu_t* menu, char* win_name);
+
 
 extern char* menu_name_win_list_item_get(menu_t* menu, char* win_name);
+
+extern void  menu_name_win_list_item_add(menu_t* menu, char* win_name, char* item);
 
 #endif // P_MENU_WIN_H

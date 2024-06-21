@@ -37,13 +37,20 @@ int dbase_read(dbase_t* dbase, const char* name, const char* password)
 
   dbase_file_read(buffer, size, sizeof(char), name);
 
-  aes_decrypt(dbase, buffer, sizeof(buffer), password, AES_256);
+  // First, decrypt file to string. Then compare just psw hash
+  char decrypt[sizeof(dbase_t)];
+
+  memset(decrypt, '\0', sizeof(decrypt));
+
+  aes_decrypt(decrypt, buffer, sizeof(buffer), password, AES_256);
 
   char hash[64];
   sha256(hash, password, strlen(password));
 
   // If the hashes don't match, the password was wrong
-  if(strncmp(hash, dbase->psw_hash, 64)) return 2;
+  if(memcmp(hash, decrypt, sizeof(char) * 64) != 0) return 2;
+
+  memcpy(dbase, decrypt, sizeof(dbase_t));
 
   return 0; // Success!
 }

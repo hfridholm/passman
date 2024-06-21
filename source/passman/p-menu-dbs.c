@@ -148,29 +148,14 @@ void menu_dbs_win_delete_event(win_head_t* win_head, int key)
   win_head->active = false;
 }
 
-void menu_dbs_win_open_event(win_head_t* win_head, int key)
+void menu_dbs_win_open_enter(menu_dbs_t* menu, win_input_t* win)
 {
-  if(!win_head || win_head->type != WIN_INPUT) return;
-
-  win_input_event(win_head, key);
-
-
-  if(key != KEY_ENTR) return;
-
-
-  menu_head_t* menu_head = win_head->menu;
-
-  if(!menu_head || menu_head->type != MENU_DBS) return;
-
-  menu_dbs_t* menu = (menu_dbs_t*) menu_head;
-
-
-  win_list_t* win_list = menu_name_win_list_get(menu_head, "dbs");
+  win_list_t* win_list = menu_name_win_list_get((menu_t*) menu, "dbs");
 
   char* item = win_list_item_get(win_list);
 
 
-  screen_t* screen = win_head->screen;
+  screen_t* screen = menu->head.screen;
 
   if(!screen) return;
 
@@ -185,7 +170,42 @@ void menu_dbs_win_open_event(win_head_t* win_head, int key)
   else screen_text_popup(screen, "Error", "Could not open dbase");
 
 
-  win_head->active = false;
+  menu_name_win_input_buffer_clear((menu_t*) menu, "open");
+
+  win->head.active = false;
+}
+
+void menu_dbs_win_open_event(win_head_t* win_head, int key)
+{
+  if(!win_head || win_head->type != WIN_INPUT) return;
+
+  win_input_event(win_head, key);
+
+  win_input_t* win = (win_input_t*) win_head;
+
+
+  menu_head_t* menu_head = win_head->menu;
+
+  if(!menu_head || menu_head->type != MENU_DBS) return;
+
+  menu_dbs_t* menu = (menu_dbs_t*) menu_head;
+
+
+  switch(key)
+  {
+    case KEY_ESC: case KEY_CTRLZ:
+      menu_name_win_input_buffer_clear((menu_t*) menu, "open");
+
+      win_head->active = false;
+      break;
+
+    case KEY_ENTR:
+      menu_dbs_win_open_enter(menu, win);
+      break;
+
+    default:
+      break;
+  }
 }
 
 void menu_dbs_win_new_event(win_head_t* win_head, int key)
@@ -231,7 +251,7 @@ void menu_dbs_win_new_event(win_head_t* win_head, int key)
 void menu_dbs_win_dbs_create(menu_dbs_t* menu, int x, int y, int w, int h)
 {
   win_list_t* win = win_list_create("dbs", true, true,
-    x, y + 2, w, h, menu_dbs_win_dbs_event);
+    x, y + 2, w, h, -1, menu_dbs_win_dbs_event);
 
   for(size_t index = 0; index < menu->dbs_count; index++)
   {
@@ -274,11 +294,29 @@ void menu_dbs_win_rename_event(win_head_t* win_head, int key)
   win_head->active = false;
 }
 
+void menu_dbs_event(menu_head_t* menu_head, int key)
+{
+  if(!menu_head || menu_head->type != MENU_DBS) return;
+
+  menu_dbs_t* menu = (menu_dbs_t*) menu_head;
+
+  screen_t* screen = menu_head->screen;
+
+  if(!screen) return;
+
+  switch(key)
+  {
+    case KEY_CTRLZ:
+      screen_name_win_focus_set(screen, "exit");
+      break;
+  }
+}
+
 menu_dbs_t* menu_dbs_create(char* name, int xmax, int ymax)
 {
   menu_dbs_t* menu = malloc(sizeof(menu_dbs_t));
 
-  menu->head = menu_head_create(MENU_DBS, name, NULL);
+  menu->head = menu_head_create(MENU_DBS, name, menu_dbs_event);
 
   menu_dbs_names_create(menu);
 
@@ -314,7 +352,7 @@ menu_dbs_t* menu_dbs_create(char* name, int xmax, int ymax)
 
 void menu_dbs_free(menu_dbs_t* menu)
 {
-  if(menu == NULL) return;
+  if(!menu) return;
 
   menu_dbs_names_free(menu);
 

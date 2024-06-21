@@ -37,8 +37,6 @@ int main(int argc, char* argv[])
 
     mvprintw(0, 0, "ENTER: %d key: %d", KEY_ENTR, key);
 
-    if(key == KEY_CTRLZ) break;
-
     screen_event(screen, key);
 
     screen_refresh(screen);

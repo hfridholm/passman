@@ -14,8 +14,8 @@ typedef struct
 
 typedef struct
 {
-  char    name[64];
   char    psw_hash[64];    // Password hash (SHA256)
+  char    name[64];
   char    email[64];
   char    date_create[16];
   char    date_update[16];

@@ -36,7 +36,7 @@ void win_list_resize(win_list_t* win, int x, int y, int w, int h)
  *
  * RETURN (win_list_t* win)
  */
-win_list_t* win_list_create(char* name, bool active, bool tab_ability, int x, int y, int w, int h, win_event_t* event)
+win_list_t* win_list_create(char* name, bool active, bool tab_ability, int x, int y, int w, int h, int max_count, win_event_t* event)
 {
   win_list_t* win = malloc(sizeof(win_list_t));
 
@@ -44,6 +44,8 @@ win_list_t* win_list_create(char* name, bool active, bool tab_ability, int x, in
 
   win->items      = NULL;
   win->item_count = 0;
+
+  win->max_count = max_count;
 
   return win;
 }
@@ -82,7 +84,7 @@ void win_list_refresh(win_list_t* win)
       wattron(window, A_REVERSE);
     }
 
-    mvwprintw(window, index + 1, 1, "%s", win->items[print_index]);
+    mvwprintw(window, index + 1, 1, "#%02d: %s", index + 1, win->items[print_index]);
 
     wattroff(window, A_REVERSE);
   }
@@ -167,6 +169,8 @@ void win_list_item_add(win_list_t* win, char* item)
   win->items = realloc(win->items, sizeof(char*) * (win->item_count + 1));
 
   win->items[win->item_count] = item;
+
+  win->item_index = win->item_count;
 
   win->item_count++;
 }

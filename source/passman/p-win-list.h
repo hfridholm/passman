@@ -8,9 +8,10 @@ typedef struct
   int        item_count; // The number of items
   int        item_index; // Which item the user hovers over
   int        scroll;     // How many lines has been scrolled down
+  int        max_count;  // Maximum amount of items
 } win_list_t;
 
-extern win_list_t* win_list_create(char* name, bool active, bool tab_ability, int x, int y, int w, int h, win_event_t* event);
+extern win_list_t* win_list_create(char* name, bool active, bool tab_ability, int x, int y, int w, int h, int max_count, win_event_t* event);
 
 extern void        win_list_free(win_list_t* win);
 

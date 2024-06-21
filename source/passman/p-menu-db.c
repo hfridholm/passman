@@ -63,7 +63,16 @@ void menu_db_event(menu_head_t* menu_head, int key)
     case KEY_CTRLS:
       menu_name_win_focus_set((menu_t*) menu, "save");
       break;
+
+    case KEY_CTRLZ:
+      screen_name_menu_focus_set(screen, "dbs");
+      break;
   }
+}
+
+void menu_db_win_acs_event(win_head_t* win_head, int key)
+{
+
 }
 
 /*
@@ -88,6 +97,11 @@ menu_db_t* menu_db_create(char* name, int xmax, int ymax)
   menu_win_input_create((menu_t*) menu, "save", false, false,
     x, y, w, menu->password, sizeof(menu->password), "Password", true, menu_db_win_save_event);
 
+  int h = ymax - 12;
+
+  menu_win_list_create((menu_t*) menu, "acs", true, true,
+    x, (h / 2) + 12, w, h, 120, menu_db_win_acs_event);
+
   return menu;
 }
 
@@ -96,7 +110,7 @@ menu_db_t* menu_db_create(char* name, int xmax, int ymax)
  */
 void menu_db_free(menu_db_t* menu)
 {
-  if(menu == NULL) return;
+  if(!menu) return;
 
   menu_head_free(menu->head);
 
@@ -108,4 +122,9 @@ void menu_db_dbase_set(menu_db_t* menu, dbase_t* dbase)
   menu_name_win_input_buffer_set((menu_t*) menu, "name", dbase->name, sizeof(dbase->name));
 
   menu_name_win_input_buffer_set((menu_t*) menu, "email", dbase->email, sizeof(dbase->email));
+
+  for(size_t index = 0; index < dbase->accnt_count; index++)
+  {
+    menu_name_win_list_item_add((menu_t*) menu, "acs", dbase->accnts[index].name);
+  }
 }
