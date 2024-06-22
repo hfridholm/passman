@@ -146,11 +146,11 @@ int win_list_event(win_head_t* win_head, int key)
 
   switch(key)
   {
-    case 'j':
+    case 'j': case 'J': case KEY_DOWN:
       win_list_scroll_down((win_list_t*) win_head);
       return 1;
 
-    case 'k':
+    case 'k': case 'K': case KEY_UP:
       win_list_scroll_up((win_list_t*) win_head);
       return 2;
 

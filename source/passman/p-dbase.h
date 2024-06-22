@@ -41,6 +41,8 @@ extern int    dbase_file_rename(const char* old_name, const char* new_name);
 extern size_t dbase_file_size(const char* name);
 
 
+extern int  dbase_name_accnt_index_get(dbase_t* dbase, const char* name);
+
 extern void dbase_name_accnt_delete(dbase_t* dbase, const char* name);
 
 #endif // P_DBASE_H

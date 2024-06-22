@@ -186,11 +186,11 @@ int win_confirm_event(win_head_t* win_head, int key)
 
   switch(key)
   {
-    case 'l':
+    case 'l': case 'L': case KEY_RIGHT:
       win->answer = false;
       return 1;
 
-    case 'h':
+    case 'h': case 'H': case KEY_LEFT:
       win->answer = true;
       return 2;
 

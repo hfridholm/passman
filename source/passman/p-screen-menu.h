@@ -3,6 +3,11 @@
 
 extern menu_t* screen_active_menu_get(screen_t* screen);
 
+extern menu_t* screen_menu_get(screen_t* screen, char* menu_name);
+
+extern menu_act_t* screen_menu_act_get(screen_t* screen, char* menu_name);
+
+
 extern void screen_menu_focus_set(screen_t* screen, char* menu_name);
 
 extern void screen_menu_add(screen_t* screen, menu_t* menu);

@@ -94,6 +94,15 @@ menu_db_t* screen_menu_db_get(screen_t* screen, char* menu_name)
   return (menu_db_t*) menu;
 }
 
+menu_act_t* screen_menu_act_get(screen_t* screen, char* menu_name)
+{
+  menu_t* menu = screen_menu_get(screen, menu_name);
+
+  if(!menu || menu->type != MENU_ACT) return NULL;
+
+  return (menu_act_t*) menu;
+}
+
 void screen_menu_db_dbase_set(screen_t* screen, char* menu_name, dbase_t* dbase)
 {
   menu_db_t* menu = screen_menu_db_get(screen, menu_name);

@@ -101,18 +101,23 @@ static void dbase_accnt_delete(dbase_t* dbase, int accnt_index)
   dbase->accnts[dbase->accnt_count] = (accnt_t) {0};
 }
 
-void dbase_name_accnt_delete(dbase_t* dbase, const char* name)
+int dbase_name_accnt_index_get(dbase_t* dbase, const char* name)
 {
-  if(!dbase || !name) return;
+  if(!dbase || !name) return -1;
 
   for(int index = 0; index < dbase->accnt_count; index++)
   {
     accnt_t accnt = dbase->accnts[index];
 
-    if(strcmp(name, accnt.name) != 0) continue;
-
-    dbase_accnt_delete(dbase, index);
-
-    break;
+    if(strcmp(name, accnt.name) == 0) return index;
   }
+
+  return -1;
+}
+
+void dbase_name_accnt_delete(dbase_t* dbase, const char* name)
+{
+  int index = dbase_name_accnt_index_get(dbase, name);
+
+  if(index != -1) dbase_accnt_delete(dbase, index);
 }

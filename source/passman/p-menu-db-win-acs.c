@@ -2,7 +2,31 @@
 
 static void menu_db_win_acs_event_open(menu_db_t* menu, win_list_t* win)
 {
-  if(!win_list_hover_item_exists(win)) return;
+  char* item = win_list_hover_item_string_get(win);
+
+  if(!item) return;
+
+
+  dbase_t* dbase = menu->dbase;
+
+  int accnt_index = dbase_name_accnt_index_get(dbase, item);
+
+  if(accnt_index == -1) return;
+
+
+  screen_t* screen = menu->head.screen;
+
+  if(!screen) return;
+
+
+  menu_act_t* menu_act = screen_menu_act_get(screen, "act");
+
+  if(!menu_act) return;
+
+
+  menu_act->accnt = &dbase->accnts[accnt_index];
+
+  menu_act_accnt_fill(menu_act);
 
   screen_menu_focus_set(menu->head.screen, "act");
 }

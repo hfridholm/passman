@@ -13,4 +13,7 @@ extern void        menu_act_free(menu_act_t* menu);
 
 extern void        menu_act_resize(menu_act_t* menu, int xmax, int ymax);
 
+
+extern void menu_act_accnt_fill(menu_act_t* menu);
+
 #endif // P_MENU_ACT_H
