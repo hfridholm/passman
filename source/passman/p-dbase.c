@@ -5,6 +5,11 @@ int dbase_file_rename(const char* old_name, const char* new_name)
   return dir_file_rename(DBASE_DIR, old_name, new_name);
 }
 
+int dbase_file_remove(const char* name)
+{
+  return dir_file_remove(DBASE_DIR, name);
+}
+
 int dbase_file_read(void* pointer, size_t size, size_t nmemb, const char* name)
 {
   return dir_file_read(pointer, size, nmemb, DBASE_DIR, name);

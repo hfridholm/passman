@@ -1,6 +1,9 @@
 #include "../passman.h"
 
-static void menu_db_win_delete_event_enter(menu_db_t* menu, win_confirm_t* win)
+/*
+ *
+ */
+static void menu_db_accnt_delete(menu_db_t* menu)
 {
   win_list_t* win_acs = menu_name_win_list_get((menu_t*) menu, "acs");
 
@@ -9,6 +12,19 @@ static void menu_db_win_delete_event_enter(menu_db_t* menu, win_confirm_t* win)
   dbase_name_accnt_delete(menu->dbase, item);
 
   win_list_hover_item_delete(win_acs);
+}
+
+/*
+ *
+ */
+static void menu_db_win_delete_event_enter(menu_db_t* menu, win_confirm_t* win)
+{
+  if(win->answer == true)
+  {
+    menu_db_accnt_delete(menu);
+  }
+
+  win->answer = false;
 
   win->head.active = false;
 }
@@ -31,9 +47,15 @@ int menu_db_win_delete_event(win_head_t* win_head, int key)
 
   switch(key)
   {
+    case KEY_ESC: case KEY_CTRLZ:
+      win->answer = false;
+
+      win->head.active = false;
+      return 2;
+
     case KEY_ENTR:
       menu_db_win_delete_event_enter(menu, win);
-      return 2;
+      return 3;
 
     default:
       return 0;

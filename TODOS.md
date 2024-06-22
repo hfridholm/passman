@@ -9,14 +9,17 @@
 - create bool screen_win_is_focus function,
   add hash variable in screen struct of the focus win (for comparison)
 - change buffer_size and item_count from int to size_t
-- add end_string to win_list_item_t
 
 ## Must
+- BUG: input delete when scroll has occured
 
 ## Maybe
 - rename inpwin scroll to shift?
 - create win_head_t (ish) struct to pass to win_***_create
 - send debug messages over socket to console client socket process
+- add "end_string" to win_list_item_t
+- add "active"     to win_list_item_t
+- remove "_name" from function names, ex screen_name_menu_name_win
 
 ## Future
 - add status codes to inpwin symbol_add and del,

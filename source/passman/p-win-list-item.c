@@ -106,6 +106,8 @@ void win_list_item_delete(win_list_t* win, int item_index)
   win->items = realloc(win->items, sizeof(win_list_item_t) * (win->item_count - 1));
 
   win->item_count--;
+
+  win->item_index = MAX(MIN(win->item_index, win->item_count - 1), 0);
 }
 
 void win_list_hover_item_delete(win_list_t* win)
@@ -113,4 +115,24 @@ void win_list_hover_item_delete(win_list_t* win)
   if(!win) return;
 
   win_list_item_delete(win, win->item_index);
+}
+
+bool win_list_hover_item_exists(win_list_t* win)
+{
+  if(!win || !win->items) return false;
+
+  return (win->item_index >= 0 && win->item_index < win->item_count);
+}
+
+bool win_list_string_item_exists(win_list_t* win, const char* string)
+{
+  if(!win || !string) return false;
+
+  for(int index = 0; index < win->item_count; index++)
+  {
+    win_list_item_t item = win->items[index];
+
+    if(strcmp(item.string, string)) return true;
+  }
+  return false;
 }

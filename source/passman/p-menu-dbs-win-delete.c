@@ -1,16 +1,32 @@
 #include "../passman.h"
 
-static void menu_dbs_win_delete_event_enter(menu_dbs_t* menu, win_confirm_t* win)
+static void menu_dbs_dbase_delete(menu_dbs_t* menu)
 {
   win_list_t* win_dbs = menu_name_win_list_get((menu_t*) menu, "dbs");
 
   char* item = win_list_hover_item_string_get(win_dbs);
 
-  refresh();
 
-  printf("Deleting: %s\n", item ? item : "unknown");
+  screen_t* screen = menu->head.screen;
 
-  getch();
+
+  int status = dbase_file_remove(item);
+
+  if(status == 0)
+  {
+    win_list_hover_item_delete(win_dbs);
+  }
+  else screen_text_popup(menu->head.screen, "Error", "Could not delete database");
+}
+
+static void menu_dbs_win_delete_event_enter(menu_dbs_t* menu, win_confirm_t* win)
+{
+  if(win->answer == true)
+  {
+    menu_dbs_dbase_delete(menu); 
+  }
+
+  win->answer = false;
 
   win->head.active = false;
 }
@@ -33,9 +49,15 @@ int menu_dbs_win_delete_event(win_head_t* win_head, int key)
 
   switch(key)
   {
+    case KEY_ESC: case KEY_CTRLZ:
+      win->answer = false;
+
+      win->head.active = false;
+      return 2;
+
     case KEY_ENTR:
       menu_dbs_win_delete_event_enter(menu, win);
-      return 2;
+      return 3;
 
     default:
       return 0;

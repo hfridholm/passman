@@ -53,6 +53,8 @@ static void screen_menus_create(screen_t* screen, int xmax, int ymax)
   screen_menu_psw_create(screen, "psw", xmax, ymax);
 
   screen_menu_db_create(screen, "db", xmax, ymax);
+
+  screen_menu_act_create(screen, "act", xmax, ymax);
 }
 
 /*
@@ -179,17 +181,20 @@ int screen_event(screen_t* screen, int key)
 {
   win_t* win = screen_active_win_get(screen);
 
-  if(win && win->event && win->event(win, key)) return 1;
-
-
   menu_t* menu = screen_menu_get(screen);
 
-  if(menu && menu_event(menu, key)) return 2;
+  // 1. Interact with screen popup
+  if(win && win->event)
+  {
+    if(win->event(win, key)) return 1;
+  }
+  // 2. Interact with menu
+  else if(menu && menu_event(menu, key)) return 2;
 
-
+  // Always handle screen events
   if(screen_base_event(screen, key)) return 3;
 
-  return 0;
+  else return 0;
 }
 
 /*

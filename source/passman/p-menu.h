@@ -8,6 +8,7 @@ typedef enum
   MENU_DB,
   MENU_DBS,
   MENU_PSW,
+  MENU_ACT,
   MENU_COUNT
 } menu_type_t;
 
@@ -48,5 +49,6 @@ extern void menus_free(menu_t** menus, int count);
 #include "p-menu-db.h"
 #include "p-menu-dbs.h"
 #include "p-menu-psw.h"
+#include "p-menu-act.h"
 
 #endif // P_MENU_H

@@ -33,4 +33,8 @@ extern void  win_list_item_delete(win_list_t* win, int item_index);
 
 extern void win_list_hover_item_delete(win_list_t* win);
 
+extern bool win_list_hover_item_exists(win_list_t* win);
+
+extern bool win_list_string_item_exists(win_list_t* win, const char* string);
+
 #endif // P_WIN_LIST_ITEM_H

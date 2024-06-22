@@ -49,6 +49,8 @@ extern int menu_dbs_win_new_event(win_head_t* win_head, int key);
 
 extern int menu_dbs_win_rename_event(win_head_t* win_head, int key);
 
+extern int menu_dbs_win_search_event(win_head_t* win_head, int key);
+
 
 menu_dbs_t* menu_dbs_create(char* name, int xmax, int ymax)
 {
@@ -69,7 +71,7 @@ menu_dbs_t* menu_dbs_create(char* name, int xmax, int ymax)
   int w = xmax - 12;
   int h = ymax - 10;
 
-  menu_win_input_create((menu_t*) menu, "search", true, true, x, 5, w, menu->buffer_search, sizeof(menu->buffer_search), NULL, false, win_input_event);
+  menu_win_input_create((menu_t*) menu, "search", true, true, x, 5, w, menu->buffer_search, sizeof(menu->buffer_search), NULL, false, menu_dbs_win_search_event);
   
   menu_dbs_win_dbs_create(menu, x, y, w, h);
 
@@ -80,6 +82,9 @@ menu_dbs_t* menu_dbs_create(char* name, int xmax, int ymax)
   menu_win_input_create((menu_t*) menu, "new", false, false, x, y, 50, menu->buffer_name, sizeof(menu->buffer_name), "New", false, menu_dbs_win_new_event);
 
   menu_win_input_create((menu_t*) menu, "rename", false, false, x, y, 50, menu->buffer_name, sizeof(menu->buffer_name), "Rename", false, menu_dbs_win_rename_event);
+
+
+  menu_name_win_focus_set((menu_t*) menu, "dbs");
 
   return menu;
 }

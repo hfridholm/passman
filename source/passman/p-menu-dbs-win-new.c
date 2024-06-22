@@ -2,17 +2,11 @@
 
 static void menu_dbs_win_new_event_enter(menu_dbs_t* menu, win_input_t* win)
 {
-  strcpy(menu->dbase->name, win->buffer);
-
-
-  win_list_t* win_list = menu_name_win_list_get((menu_t*) menu, "dbs");
-
-  win_list_item_add(win_list, win->buffer, NULL);
-
-
   screen_t* screen = menu->head.screen;
 
   if(!screen) return;
+
+  strcpy(screen->dbase->name, win->buffer);
 
   screen_name_menu_db_dbase_set(screen, "db", screen->dbase);
 
@@ -40,9 +34,15 @@ int menu_dbs_win_new_event(win_head_t* win_head, int key)
 
   switch(key)
   {
+    case KEY_ESC: case KEY_CTRLZ:
+      win_input_buffer_clear(win);
+
+      win->head.active = false;
+      return 2;
+
     case KEY_ENTR:
       menu_dbs_win_new_event_enter(menu, win);
-      return 2;
+      return 3;
 
     default:
       return 0;

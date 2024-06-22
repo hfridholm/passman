@@ -51,6 +51,10 @@ void menu_resize(menu_t* menu, int xmax, int ymax)
       menu_psw_resize((menu_psw_t*) menu, xmax, ymax);
       break;
 
+    case MENU_ACT:
+      menu_act_resize((menu_act_t*) menu, xmax, ymax);
+      break;
+
     default:
       break;
   }
@@ -70,6 +74,10 @@ void menu_free(menu_t* menu)
 
     case MENU_PSW:
       menu_psw_free((menu_psw_t*) menu);
+      break;
+
+    case MENU_ACT:
+      menu_act_free((menu_act_t*) menu);
       break;
 
     default:
@@ -119,13 +127,14 @@ int menu_event(menu_t* menu, int key)
 {
   win_t* win = menu_active_win_get(menu);
 
+  // 1. Interact with window
   if(win && win->event && win->event(win, key)) return 1;
 
+  // 2. Special menu commands
+  else if(menu && menu->event && menu->event(menu, key)) return 2;
 
-  if(menu && menu->event && menu->event(menu, key)) return 2;
+  // 3. Tabbing between windows
+  else if(win && win->tab_ability && menu_tab_event(menu, key)) return 3;
 
-
-  if(win && win->tab_ability && menu_tab_event(menu, key)) return 3;
-
-  return 0;
+  else return 0;
 }

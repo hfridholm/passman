@@ -136,6 +136,20 @@ int file_read(void* pointer, size_t size, size_t nmemb, const char* filepath)
 }
 
 /*
+ * RETURN (same as remove)
+ */
+int dir_file_remove(const char* dirpath, const char* name)
+{
+  size_t path_size = strlen(dirpath) + 1 + strlen(name);
+
+  char filepath[path_size + 1];
+
+  sprintf(filepath, "%s/%s", dirpath, name);
+
+  return remove(filepath);
+}
+
+/*
  * RETURN (same as rename)
  */
 int dir_file_rename(const char* dirpath, const char* old_name, const char* new_name)

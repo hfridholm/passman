@@ -2,38 +2,36 @@
 
 void menu_dbs_win_dbs_event_delete(menu_dbs_t* menu, win_list_t* win)
 {
-  win_confirm_t* win_delete = menu_name_win_confirm_get((menu_t*) menu, "delete");
+  if(!win_list_hover_item_exists(win)) return;
 
-  if(win_delete) win_delete->answer = false;
+  menu_name_win_confirm_answer_set((menu_t*) menu, "delete", false);
 
   menu_name_win_focus_set((menu_t*) menu, "delete");
 }
 
 void menu_dbs_win_dbs_event_new(menu_dbs_t* menu, win_list_t* win)
 {
-  win_input_t* win_new = menu_name_win_input_get((menu_t*) menu, "new");
-
-  memset(menu->buffer_name, '\0', sizeof(menu->buffer_name));
-
-  if(win_new) win_input_buffer_update(win_new);
+  menu_name_win_input_buffer_clear((menu_t*) menu, "new");
 
   menu_name_win_focus_set((menu_t*) menu, "new");
 }
 
 void menu_dbs_win_dbs_event_open(menu_dbs_t* menu, win_list_t* win)
 {
+  if(!win_list_hover_item_exists(win)) return;
+
   menu_name_win_focus_set((menu_t*) menu, "open");
 }
 
 void menu_dbs_win_dbs_event_rename(menu_dbs_t* menu, win_list_t* win)
 {
+  if(!win_list_hover_item_exists(win)) return;
+
   win_input_t* win_rename = menu_name_win_input_get((menu_t*) menu, "rename");
 
   if(!win_rename) return;
 
   char* item = win_list_hover_item_string_get(win);
-
-  if(!item) return;
 
   win_input_buffer_paste(win_rename, item);
 
@@ -58,19 +56,19 @@ int menu_dbs_win_dbs_event(win_head_t* win_head, int key)
 
   switch(key)
   {
-    case 'o': case KEY_ENTR:
+    case 'o': case 'O': case KEY_ENTR:
       menu_dbs_win_dbs_event_open(menu, win);
       return 2;
 
-    case 'd':
+    case 'd': case 'D':
       menu_dbs_win_dbs_event_delete(menu, win);
       return 3;
 
-    case 'n':
+    case 'n': case 'N':
       menu_dbs_win_dbs_event_new(menu, win);
       return 4;
 
-    case 'r':
+    case 'r': case 'R':
       menu_dbs_win_dbs_event_rename(menu, win);
       return 5;
 

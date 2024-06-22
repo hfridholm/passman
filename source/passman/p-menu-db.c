@@ -6,11 +6,22 @@
 void menu_db_resize(menu_db_t* menu, int xmax, int ymax)
 {
   int x = xmax / 2;
+  int y = ymax / 2;
   int w = xmax - 12;
 
   menu_win_input_resize((menu_t*) menu, "name", x, 5, w);
 
   menu_win_input_resize((menu_t*) menu, "email", x, 9, w);
+
+  menu_win_input_resize((menu_t*) menu, "save", x, y, 50);
+
+  menu_win_input_resize((menu_t*) menu, "rename", x, y, 50);
+
+  menu_win_input_resize((menu_t*) menu, "new", x, y, 50);
+
+  menu_win_confirm_resize((menu_t*) menu, "delete", x, y, 40);
+
+  menu_win_list_resize((menu_t*) menu, "acs", x, y + 5, w, ymax - 14); 
 }
 
 /*
@@ -77,7 +88,10 @@ menu_db_t* menu_db_create(char* name, int xmax, int ymax)
 
   menu_win_input_create((menu_t*) menu, "new", false, false, x, y, 50, menu->buffer_name, sizeof(menu->buffer_name), "New", false, menu_db_win_new_event);
 
-  menu_win_confirm_create((menu_t*) menu, "delete", false, false, x, y, 50, "Delete", "Yes", "No", menu_db_win_delete_event);
+  menu_win_confirm_create((menu_t*) menu, "delete", false, false, x, y, 40, "Delete?", "Yes", "No", menu_db_win_delete_event);
+
+  
+  menu_name_win_focus_set((menu_t*) menu, "acs");
 
   return menu;
 }

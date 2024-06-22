@@ -33,9 +33,15 @@ int menu_dbs_win_rename_event(win_head_t* win_head, int key)
 
   switch(key)
   {
+    case KEY_ESC: case KEY_CTRLZ:
+      win_input_buffer_clear(win);
+
+      win->head.active = false;
+      return 2;
+
     case KEY_ENTR:
       menu_dbs_win_rename_event_enter(menu, win);
-      return 2;
+      return 3;
 
     default:
       return 0;

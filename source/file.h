@@ -21,6 +21,8 @@ extern int    dir_file_read(void* pointer, size_t size, size_t nmemb, const char
 
 extern int    dir_file_rename(const char* dirpath, const char* old_name, const char* new_name);
 
+extern int    dir_file_remove(const char* dirpath, const char* name);
+
 
 extern int dir_file_names(char*** names, size_t* count, const char* dirpath);
 
