@@ -115,6 +115,15 @@ screen_t* screen_create(void)
   raw();
   keypad(stdscr, TRUE);
 
+  if(start_color() == ERR || !has_colors() || !can_change_color())
+  {
+    endwin();
+  
+    return NULL;
+  }
+  
+  init_pair(TEXT_RED_PAIR, COLOR_RED, 0);
+
   screen->dbase = malloc(sizeof(dbase_t));
 
   int xmax = getmaxx(stdscr);
@@ -181,7 +190,7 @@ int screen_event(screen_t* screen, int key)
 {
   win_t* win = screen_active_win_get(screen);
 
-  menu_t* menu = screen_menu_get(screen);
+  menu_t* menu = screen_active_menu_get(screen);
 
   // 1. Interact with screen popup
   if(win && win->event)
@@ -209,4 +218,32 @@ void screen_text_popup(screen_t* screen, char* title, char* text)
   win_text_text_set(win, text);
 
   screen_win_focus_set(screen, "info");
+}
+
+win_t* active_win_get(screen_t* screen)
+{
+  win_t* screen_win = screen_active_win_get(screen);
+
+  if(screen_win) return screen_win;
+
+  menu_t* menu = screen_active_menu_get(screen);
+
+  if(menu) return menu_active_win_get(menu);
+
+  return NULL;
+}
+
+bool win_is_active_win(win_t* win)
+{
+  if(!win) return false;
+
+  screen_t* screen = win->screen;
+
+  if(!screen) return false;
+
+  win_t* active_win = active_win_get(screen);
+
+  if(!active_win) return false;
+
+  return (strcmp(active_win->name, win->name) == 0);
 }

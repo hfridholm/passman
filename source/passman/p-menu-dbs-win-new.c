@@ -8,9 +8,9 @@ static void menu_dbs_win_new_event_enter(menu_dbs_t* menu, win_input_t* win)
 
   strcpy(screen->dbase->name, win->buffer);
 
-  screen_name_menu_db_dbase_set(screen, "db", screen->dbase);
+  screen_menu_db_dbase_set(screen, "db", screen->dbase);
 
-  screen_name_menu_focus_set(screen, "db");
+  screen_menu_focus_set(screen, "db");
 
 
   win->head.active = false;

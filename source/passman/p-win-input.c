@@ -191,19 +191,17 @@ static void win_input_title_print(win_input_t* win)
  */
 void win_input_refresh(win_input_t* win)
 {
-  if(!win->head.active) return;
+  if(!win->head.active || !win->head.window) return;
 
   win_head_clean((win_head_t*) win);
 
-  WINDOW* window = win->head.window;
-
-  if(window == NULL) return;
-
-  box(window, 0, 0);
+  win_border_print((win_t*) win);
 
   win_input_title_print(win);
 
   win_input_length_print(win);
+
+  WINDOW* window = win->head.window;
 
   if(win->buffer)
   {

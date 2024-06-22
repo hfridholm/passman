@@ -168,7 +168,7 @@ void win_text_refresh(win_text_t* win)
 
   if(window == NULL) return;
 
-  box(window, 0, 0);
+  win_border_print((win_t*) win);
 
   win_text_title_print(win);
 

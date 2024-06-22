@@ -6,8 +6,6 @@
   change back to previous name
 - ability to change database password in mendbe
 - add "Press enter to continue..." text to infwin
-- create bool screen_win_is_focus function,
-  add hash variable in screen struct of the focus win (for comparison)
 - change buffer_size and item_count from int to size_t
 
 ## Must
@@ -19,7 +17,9 @@
 - send debug messages over socket to console client socket process
 - add "end_string" to win_list_item_t
 - add "active"     to win_list_item_t
+- add hash variable in screen struct of the focus win (for comparison)
 
 ## Future
 - add status codes to inpwin symbol_add and del,
   and make a error sound if the user could not del symbol for example
+- change red outline to thicker outline

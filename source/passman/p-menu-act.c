@@ -13,7 +13,7 @@ static int menu_act_event(menu_head_t* menu_head, int key)
       return 1;
 
     case KEY_CTRLZ:
-      screen_name_menu_focus_set(menu->head.screen, "db");
+      screen_menu_focus_set(menu->head.screen, "db");
       return 2;
 
     default:

@@ -4,7 +4,7 @@ static void menu_db_win_acs_event_open(menu_db_t* menu, win_list_t* win)
 {
   if(!win_list_hover_item_exists(win)) return;
 
-  screen_name_menu_focus_set(menu->head.screen, "act");
+  screen_menu_focus_set(menu->head.screen, "act");
 }
 
 static void menu_db_win_acs_event_delete(menu_db_t* menu, win_list_t* win)

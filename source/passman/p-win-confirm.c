@@ -166,7 +166,7 @@ void win_confirm_refresh(win_confirm_t* win)
 
   if(window == NULL) return;
 
-  box(window, 0, 0);
+  win_border_print((win_t*) win);
 
   win_confirm_prompt_print(win);
 

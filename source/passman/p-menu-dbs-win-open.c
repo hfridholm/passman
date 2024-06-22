@@ -12,9 +12,9 @@ static void menu_dbs_win_open_event_enter(menu_dbs_t* menu, win_input_t* win)
 
   if(status == 0)
   {
-    screen_name_menu_db_dbase_set(screen, "db", menu->dbase);
+    screen_menu_db_dbase_set(screen, "db", menu->dbase);
 
-    screen_name_menu_focus_set(screen, "db");
+    screen_menu_focus_set(screen, "db");
   }
   else screen_text_popup(screen, "Error", "Could not open database");
 

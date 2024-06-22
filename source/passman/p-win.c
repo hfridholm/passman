@@ -240,3 +240,20 @@ void wins_name_win_focus_set(win_t** wins, int count, char* name)
 
   wins_index_win_focus_set(wins, count, index);
 }
+
+void win_border_print(win_t* win)
+{
+  if(!win || !win->window) return;
+
+  WINDOW* window = win->window;
+
+  if(win_is_active_win(win))
+  {
+    wattron(window, COLOR_PAIR(TEXT_RED_PAIR));
+
+    box(window, 0, 0);
+
+    wattroff(window, COLOR_PAIR(TEXT_RED_PAIR));
+  }
+  else box(window, 0, 0);
+}

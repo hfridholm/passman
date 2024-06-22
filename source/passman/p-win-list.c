@@ -114,7 +114,7 @@ void win_list_refresh(win_list_t* win)
     wattroff(window, A_REVERSE);
   }
 
-  box(window, 0, 0);
+  win_border_print((win_t*) win);
 
   win_list_count_print(win);
 

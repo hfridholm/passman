@@ -1,6 +1,6 @@
 #include "../passman.h"
 
-menu_t* screen_menu_get(screen_t* screen)
+menu_t* screen_active_menu_get(screen_t* screen)
 {
   if(screen->menu_index >= 0 && screen->menu_index < screen->menu_count)
   {
@@ -9,7 +9,7 @@ menu_t* screen_menu_get(screen_t* screen)
   return NULL;
 }
 
-void screen_name_menu_focus_set(screen_t* screen, char* menu_name)
+void screen_menu_focus_set(screen_t* screen, char* menu_name)
 {
   for(size_t index = 0; index < screen->menu_count; index++)
   {
@@ -69,7 +69,7 @@ void screen_menu_psw_create(screen_t* screen, char* name, int xmax, int ymax)
   screen_menu_add(screen, (menu_t*) menu);
 }
 
-menu_t* screen_name_menu_get(screen_t* screen, char* menu_name)
+menu_t* screen_menu_get(screen_t* screen, char* menu_name)
 {
   if(!screen || !screen->menus) return NULL;
 
@@ -85,25 +85,25 @@ menu_t* screen_name_menu_get(screen_t* screen, char* menu_name)
   return NULL;
 }
 
-menu_db_t* screen_name_menu_db_get(screen_t* screen, char* menu_name)
+menu_db_t* screen_menu_db_get(screen_t* screen, char* menu_name)
 {
-  menu_t* menu = screen_name_menu_get(screen, menu_name);
+  menu_t* menu = screen_menu_get(screen, menu_name);
 
   if(!menu || menu->type != MENU_DB) return NULL;
 
   return (menu_db_t*) menu;
 }
 
-void screen_name_menu_db_dbase_set(screen_t* screen, char* menu_name, dbase_t* dbase)
+void screen_menu_db_dbase_set(screen_t* screen, char* menu_name, dbase_t* dbase)
 {
-  menu_db_t* menu = screen_name_menu_db_get(screen, menu_name);
+  menu_db_t* menu = screen_menu_db_get(screen, menu_name);
 
   menu_db_dbase_set(menu, dbase);
 }
 
 win_list_t* screen_menu_win_list_get(screen_t* screen, char* menu_name, char* win_name)
 {
-  menu_t* menu = screen_name_menu_get(screen, menu_name);
+  menu_t* menu = screen_menu_get(screen, menu_name);
 
   return menu_win_list_get(menu, win_name);
 }
