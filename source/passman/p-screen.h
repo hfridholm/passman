@@ -12,7 +12,7 @@ typedef struct screen_t
   win_t**  wins;
   int      win_count;
   bool     running;
-  dbase_t  dbase;
+  dbase_t* dbase;
 } screen_t;
 
 extern screen_t* screen_create(void);

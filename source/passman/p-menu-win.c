@@ -39,6 +39,27 @@ void menu_name_win_input_buffer_clear(menu_t* menu, char* win_name)
   win_input_buffer_clear(win);
 }
 
+void menu_name_win_input_buffer_update(menu_t* menu, char* win_name)
+{
+  win_input_t* win = menu_name_win_input_get(menu, win_name);
+
+  win_input_buffer_update(win);
+}
+
+void menu_name_win_confirm_answer_set(menu_t* menu, char* win_name, bool answer)
+{
+  win_confirm_t* win = menu_name_win_confirm_get(menu, win_name);
+
+  if(win) win->answer = answer;
+}
+
+bool menu_name_win_confirm_answer_get(menu_t* menu, char* win_name)
+{
+  win_confirm_t* win = menu_name_win_confirm_get(menu, win_name);
+
+  return win ? win->answer : false;
+}
+
 void menu_win_add(menu_t* menu, win_t* win)
 {
   menu->wins = realloc(menu->wins, sizeof(menu_t*) * (menu->win_count + 1));

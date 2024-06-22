@@ -28,6 +28,8 @@ size_t dbase_file_size(const char* name)
  */
 int dbase_read(dbase_t* dbase, const char* name, const char* password)
 {
+  if(!dbase || !name || !password) return 1;
+
   size_t size = dbase_file_size(name);
 
   if(size != DBASE_ENCRYPT_SIZE) return 1;
@@ -61,6 +63,8 @@ int dbase_read(dbase_t* dbase, const char* name, const char* password)
  */
 int dbase_write(dbase_t* dbase, const char* name, const char* password)
 {
+  if(!dbase || !name || !password) return 1;
+
   char buffer[DBASE_ENCRYPT_SIZE];
   memset(buffer, '\0', sizeof(buffer));
 

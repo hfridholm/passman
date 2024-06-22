@@ -110,6 +110,8 @@ screen_t* screen_create(void)
   raw();
   keypad(stdscr, TRUE);
 
+  screen->dbase = malloc(sizeof(dbase_t));
+
   int xmax = getmaxx(stdscr);
   int ymax = getmaxy(stdscr);
 
@@ -124,19 +126,23 @@ screen_t* screen_create(void)
 
 void screen_free(screen_t* screen)
 {
-  if(screen->menus != NULL)
+  if(!screen) return;
+
+  if(screen->menus)
   {
     menus_free(screen->menus, screen->menu_count);
 
     free(screen->menus);
   }
 
-  if(screen->wins != NULL)
+  if(screen->wins)
   {
     wins_free(screen->wins, screen->win_count);
 
     free(screen->wins);
   }
+
+  if(screen->dbase) free(screen->dbase);
 
   free(screen);
 

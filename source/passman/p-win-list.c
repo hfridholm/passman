@@ -61,6 +61,20 @@ void win_list_free(win_list_t* win)
   free(win);
 }
 
+void win_list_count_print(win_list_t* win)
+{
+  if(!win || !win->head.window) return;
+
+  if(win->max_count < 0) return;
+
+  WINDOW* window = win->head.window;
+
+  int y = win->head.ymax - 1;
+  int x = win->head.xmax - 8;
+
+  mvwprintw(window, y, x, "%03d/%03d", win->item_count, win->max_count);
+}
+
 void win_list_refresh(win_list_t* win)
 {
   if(!win->head.active) return;
@@ -90,6 +104,8 @@ void win_list_refresh(win_list_t* win)
   }
 
   box(window, 0, 0);
+
+  win_list_count_print(win);
 
   wrefresh(window);
 }

@@ -7,6 +7,8 @@ typedef struct
 {
   menu_head_t head;
   char        password[64];
+  char        buffer_name[64];
+  dbase_t*    dbase;
 } menu_db_t;
 
 extern menu_db_t* menu_db_create(char* name, int xmax, int ymax);

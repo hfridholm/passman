@@ -39,8 +39,7 @@ void menu_db_win_save_event(win_head_t* win_head, int key)
 
   if(!screen) return;
 
-
-  dbase_write(&screen->dbase, screen->dbase.name, menu->password);
+  dbase_write(menu->dbase, menu->dbase->name, menu->password);
 
   screen_text_popup(screen, "Save", "Saved dbase");
 
@@ -72,7 +71,155 @@ void menu_db_event(menu_head_t* menu_head, int key)
 
 void menu_db_win_acs_event(win_head_t* win_head, int key)
 {
+  if(!win_head || win_head->type != WIN_LIST) return;
 
+  win_list_event(win_head, key);
+
+  win_list_t* win = (win_list_t*) win_head;
+
+
+  menu_t* menu_head = win_head->menu;
+
+  if(!menu_head || menu_head->type != MENU_DB) return;
+
+  menu_db_t* menu = (menu_db_t*) menu_head;
+
+
+  screen_t* screen = win_head->screen;
+
+  switch(key)
+  {
+    case 'o': case KEY_ENTR:
+      screen_name_menu_focus_set(screen, "act");
+      break;
+
+    case 'd':
+      menu_name_win_confirm_answer_set((menu_t*) menu, "delete", false);
+
+      menu_name_win_focus_set((menu_t*) menu, "delete");
+      break;
+
+    case 'n':
+      menu_name_win_input_buffer_clear((menu_t*) menu, "new");
+
+      menu_name_win_focus_set((menu_t*) menu, "new");
+      break;
+
+    case 'r':
+      char* item = win_list_item_get(win);
+
+      if(!item) break;
+
+      strncpy(menu->buffer_name, item, sizeof(menu->buffer_name));
+
+      menu_name_win_input_buffer_update((menu_t*) menu, "rename");
+
+      menu_name_win_focus_set((menu_t*) menu, "rename");
+      break;
+
+    default:
+      break;
+  }
+}
+
+void menu_db_win_rename_enter(menu_db_t* menu, win_input_t* win)
+{
+  win_list_t* win_list = menu_name_win_list_get((menu_t*) menu, "dbs");
+
+  char* new_name = win->buffer;
+
+  win_list_item_rename(win_list, new_name);
+
+  win_input_buffer_clear(win);
+
+  win->head.active = false;
+}
+
+void menu_db_win_rename_event(win_head_t* win_head, int key)
+{
+  if(!win_head || win_head->type != WIN_INPUT) return;
+
+  win_input_event(win_head, key);
+
+  win_input_t* win = (win_input_t*) win_head;
+
+
+  menu_head_t* menu_head = win_head->menu;
+
+  if(!menu_head || menu_head->type != MENU_DB) return;
+
+  menu_db_t* menu = (menu_db_t*) menu_head;
+
+  switch(key)
+  {
+    case KEY_ESC: case KEY_CTRLZ:
+      win_input_buffer_clear(win);
+
+      win_head->active = false;
+      break;
+
+    case KEY_ENTR:
+      menu_db_win_rename_enter(menu, win);
+      break;
+
+    default:
+      break;
+  }
+}
+
+void menu_db_win_new_enter(menu_db_t* menu, win_input_t* win)
+{
+  if(!menu || !win) return;
+
+  dbase_t* dbase = menu->dbase;
+
+  if(!dbase) return;
+
+  if(dbase->accnt_count >= 120) return;
+
+  accnt_t* accnt = &dbase->accnts[dbase->accnt_count];
+
+  strncpy(accnt->name, win->buffer, sizeof(accnt->name));
+
+  dbase->accnt_count++;
+
+  menu_name_win_list_item_add((menu_t*) menu, "acs", accnt->name);
+
+  win_input_buffer_clear(win);
+
+  win->head.active = false;
+}
+
+void menu_db_win_new_event(win_head_t* win_head, int key)
+{
+  if(!win_head || win_head->type != WIN_INPUT) return;
+
+  win_input_event(win_head, key);
+
+  win_input_t* win = (win_input_t*) win_head;
+
+
+  menu_head_t* menu_head = win_head->menu;
+
+  if(!menu_head || menu_head->type != MENU_DB) return;
+
+  menu_db_t* menu = (menu_db_t*) menu_head;
+
+  switch(key)
+  {
+    case KEY_ESC: case KEY_CTRLZ:
+      win_input_buffer_clear(win);
+
+      win_head->active = false;
+      break;
+
+    case KEY_ENTR:
+      menu_db_win_new_enter(menu, win);
+      break;
+
+    default:
+      break;
+  }
 }
 
 /*
@@ -84,23 +231,27 @@ menu_db_t* menu_db_create(char* name, int xmax, int ymax)
 
   menu->head = menu_head_create(MENU_DB, name, menu_db_event);
 
+  menu->dbase = NULL;
+
   int x = xmax / 2;
   int y = ymax / 2;
   int w = xmax - 12;
 
-  menu_win_input_create((menu_t*) menu, "name", true, true,
-    x, 5, w, NULL, 0, "Name", false, win_input_event);
+  menu_win_input_create((menu_t*) menu, "name", true, true, x, 5, w, NULL, 0, "Name", false, win_input_event);
   
-  menu_win_input_create((menu_t*) menu, "email", true, true,
-    x, 9, w, NULL, 0, "Email", false, win_input_event);
+  menu_win_input_create((menu_t*) menu, "email", true, true, x, 9, w, NULL, 0, "Email", false, win_input_event);
 
-  menu_win_input_create((menu_t*) menu, "save", false, false,
-    x, y, w, menu->password, sizeof(menu->password), "Password", true, menu_db_win_save_event);
+  menu_win_input_create((menu_t*) menu, "save", false, false, x, y, 50, menu->password, sizeof(menu->password), "Password", true, menu_db_win_save_event);
 
-  int h = ymax - 12;
+  int h = ymax - 14;
 
-  menu_win_list_create((menu_t*) menu, "acs", true, true,
-    x, (h / 2) + 12, w, h, 120, menu_db_win_acs_event);
+  menu_win_list_create((menu_t*) menu, "acs", true, true, x, (h / 2) + 12, w, h, 120, menu_db_win_acs_event);
+
+  menu_win_input_create((menu_t*) menu, "rename", false, false, x, y, 50, menu->buffer_name, sizeof(menu->buffer_name), "Rename", false, menu_db_win_rename_event);
+
+  menu_win_input_create((menu_t*) menu, "new", false, false, x, y, 50, menu->buffer_name, sizeof(menu->buffer_name), "New", false, menu_db_win_new_event);
+
+  // menu_win_confirm_create((menu_t*) menu, "delete", false, false, x, y, 50, "Delete", menu_db_win_delete_event);
 
   return menu;
 }

@@ -8,6 +8,7 @@
 - add "Press enter to continue..." text to infwin
 - create bool screen_win_is_focus function,
   add hash variable in screen struct of the focus win (for comparison)
+- dettach win list items from outer array and give win list it's own array
 
 ## Must
 

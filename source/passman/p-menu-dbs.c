@@ -150,20 +150,23 @@ void menu_dbs_win_delete_event(win_head_t* win_head, int key)
 
 void menu_dbs_win_open_enter(menu_dbs_t* menu, win_input_t* win)
 {
-  win_list_t* win_list = menu_name_win_list_get((menu_t*) menu, "dbs");
-
-  char* item = win_list_item_get(win_list);
-
+  char* item = menu_name_win_list_item_get((menu_t*) menu, "dbs");
 
   screen_t* screen = menu->head.screen;
 
   if(!screen) return;
 
-  int status = dbase_read(&screen->dbase, item, menu->password);
+  refresh();
+
+  printf("dbase: %p\n", menu->dbase);
+
+  getch();
+
+  int status = dbase_read(menu->dbase, item, menu->password);
 
   if(status == 0)
   {
-    screen_name_menu_db_dbase_set(screen, "db", &screen->dbase);
+    screen_name_menu_db_dbase_set(screen, "db", menu->dbase);
 
     screen_name_menu_focus_set(screen, "db");
   }
@@ -224,23 +227,23 @@ void menu_dbs_win_new_event(win_head_t* win_head, int key)
 
   if(!menu_head || menu_head->type != MENU_DBS) return;
 
-
-  screen_t* screen = win_head->screen;
-
-  if(!screen) return;
+  menu_dbs_t* menu = (menu_dbs_t*) menu_head;
 
 
-  screen->dbase = (dbase_t) {0};
-
-  strcpy(screen->dbase.name, win->buffer);
+  strcpy(menu->dbase->name, win->buffer);
 
 
+  // This needs to be fixed (not adding the buffer, but adding dbs_names[...])
   win_list_t* win_list = menu_name_win_list_get(menu_head, "dbs");
 
   win_list_item_add(win_list, win->buffer);
 
 
-  screen_name_menu_db_dbase_set(screen, "db", &screen->dbase);
+  screen_t* screen = menu_head->screen;
+
+  if(!screen) return;
+
+  screen_name_menu_db_dbase_set(screen, "db", screen->dbase);
 
   screen_name_menu_focus_set(screen, "db");
 
@@ -329,6 +332,8 @@ menu_dbs_t* menu_dbs_create(char* name, int xmax, int ymax)
 
   memset(menu->buffer_name, '\0', sizeof(menu->buffer_name));
 
+  menu->dbase = NULL;
+
 
   menu_win_input_create((menu_t*) menu, "search", true, true,
     x, 5, w, menu->buffer_search, sizeof(menu->buffer_search), NULL, false, win_input_event);
@@ -338,11 +343,9 @@ menu_dbs_t* menu_dbs_create(char* name, int xmax, int ymax)
   menu_win_confirm_create((menu_t*) menu, "delete", false, false,
     x, y, 30, "Delete Database?", "Yes", "No", menu_dbs_win_delete_event);
 
-  menu_win_input_create((menu_t*) menu, "open", false, false,
-    x, y, 50, menu->password, sizeof(menu->password), "Password", true, menu_dbs_win_open_event);
+  menu_win_input_create((menu_t*) menu, "open", false, false, x, y, 50, menu->password, sizeof(menu->password), "Password", true, menu_dbs_win_open_event);
 
-  menu_win_input_create((menu_t*) menu, "new", false, false,
-    x, y, 50, menu->buffer_name, sizeof(menu->buffer_name), "New", false, menu_dbs_win_new_event);
+  menu_win_input_create((menu_t*) menu, "new", false, false, x, y, 50, menu->buffer_name, sizeof(menu->buffer_name), "New", false, menu_dbs_win_new_event);
 
   menu_win_input_create((menu_t*) menu, "rename", false, false,
     x, y, 50, menu->buffer_name, sizeof(menu->buffer_name), "Rename", false, menu_dbs_win_rename_event);
