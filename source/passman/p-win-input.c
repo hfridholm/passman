@@ -44,6 +44,15 @@ void win_input_buffer_update(win_input_t* win)
   win->scroll = MAX(0, win->buffer_len - (xmax - 2) + 1);
 }
 
+void win_input_buffer_paste(win_input_t* win, const char* string)
+{
+  if(!win || !string || !win->buffer) return;
+
+  strncpy(win->buffer, string, win->buffer_size);
+
+  win_input_buffer_update(win);
+}
+
 /*
  * Sync the input window with a new buffer and update cursor
  */

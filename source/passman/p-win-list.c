@@ -43,16 +43,27 @@ win_list_t* win_list_create(char* name, bool active, bool tab_ability, int x, in
   win->head = win_head_create(WIN_LIST, name, active, tab_ability, x, y, w, h, event);
 
   win->items      = NULL;
-  win->item_count = 0;
+  win->item_count = win->item_index = 0;
 
   win->max_count = max_count;
 
   return win;
 }
 
+void win_list_items_clear(win_list_t* win)
+{
+  if(!win) return;
+
+  if(win->items) free(win->items);
+
+  win->items = NULL;
+
+  win->item_count = win->item_index = 0;
+}
+
 void win_list_free(win_list_t* win)
 {
-  if(win == NULL) return;
+  if(!win) return;
 
   win_head_free(win->head);
 
@@ -98,7 +109,7 @@ void win_list_refresh(win_list_t* win)
       wattron(window, A_REVERSE);
     }
 
-    mvwprintw(window, index + 1, 1, "#%02d: %s", index + 1, win->items[print_index]);
+    mvwprintw(window, index + 1, 1, "#%02d: %s", index + 1, win->items[print_index].banner);
 
     wattroff(window, A_REVERSE);
   }
@@ -147,28 +158,6 @@ void win_list_event(win_head_t* win_head, int key)
   }
 }
 
-void win_list_item_rename(win_list_t* win, char* new_name)
-{
-  if(!win || !win->items) return;
-
-  if(win->item_index < 0 || win->item_index >= win->item_count) return;
-
-  char* item = win->items[win->item_index];
-
-  win->items[win->item_index] = realloc(item, sizeof(char) * strlen(new_name) + 1);
-
-  strcpy(win->items[win->item_index], new_name);
-}
-
-char* win_list_item_get(win_list_t* win)
-{
-  if(!win || !win->items) return NULL;
-
-  if(win->item_index < 0 || win->item_index >= win->item_count) return NULL;
-
-  return win->items[win->item_index];
-}
-
 win_list_t* wins_name_win_list_get(win_t** wins, int count, char* name)
 {
   win_t* win = wins_name_win_get(wins, count, name);
@@ -176,33 +165,4 @@ win_list_t* wins_name_win_list_get(win_t** wins, int count, char* name)
   if(!win || win->type != WIN_LIST) return NULL;
 
   return (win_list_t*) win;
-}
-
-void win_list_item_add(win_list_t* win, char* item)
-{
-  if(!win || !item) return;
-
-  win->items = realloc(win->items, sizeof(char*) * (win->item_count + 1));
-
-  win->items[win->item_count] = item;
-
-  win->item_index = win->item_count;
-
-  win->item_count++;
-}
-
-void win_list_item_delete(win_list_t* win, int item_index)
-{
-  if(!win || !win->items) return;
-
-  if(item_index < 0 || item_index >= win->item_count) return;
-
-  for(int index = item_index; index < (win->item_count - 1); index++)
-  {
-    win->items[index] = win->items[index + 1];
-  }
-
-  win->items = realloc(win->items, sizeof(char*) * (win->item_count - 1));
-
-  win->item_count--;
 }

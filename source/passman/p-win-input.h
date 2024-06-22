@@ -32,6 +32,9 @@ extern void win_input_buffer_clear(win_input_t* win);
 
 extern void win_input_buffer_set(win_input_t* win, char* buffer, size_t size);
 
+extern void win_input_buffer_paste(win_input_t* win, const char* string);
+
+
 extern void win_input_title_set(win_input_t* win, char* title);
 
 

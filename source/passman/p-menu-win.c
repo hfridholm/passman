@@ -155,16 +155,16 @@ void menu_win_tab(menu_t* menu, bool reverse)
   }
 }
 
-char* menu_name_win_list_item_get(menu_t* menu, char* win_name)
+char* menu_name_win_list_hover_item_string_get(menu_t* menu, char* win_name)
 {
   win_list_t* win = menu_name_win_list_get(menu, win_name);
 
-  return win_list_item_get(win);
+  return win_list_hover_item_string_get(win);
 }
 
-void menu_name_win_list_item_add(menu_t* menu, char* win_name, char* item)
+void menu_name_win_list_item_add(menu_t* menu, char* win_name, const char* string, const char* banner)
 {
   win_list_t* win = menu_name_win_list_get(menu, win_name);
 
-  win_list_item_add(win, item);
+  win_list_item_add(win, string, banner);
 }

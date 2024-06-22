@@ -3,12 +3,18 @@
 
 typedef struct
 {
-  win_head_t head;
-  char**     items;      // The items in the list
-  int        item_count; // The number of items
-  int        item_index; // Which item the user hovers over
-  int        scroll;     // How many lines has been scrolled down
-  int        max_count;  // Maximum amount of items
+  char string[64];
+  char banner[64];
+} win_list_item_t;
+
+typedef struct
+{
+  win_head_t       head;
+  win_list_item_t* items;      // The items in the list
+  int              item_count; // The number of items
+  int              item_index; // Which item the user hovers over
+  int              scroll;     // How many lines has been scrolled down
+  int              max_count;  // Maximum amount of items
 } win_list_t;
 
 extern win_list_t* win_list_create(char* name, bool active, bool tab_ability, int x, int y, int w, int h, int max_count, win_event_t* event);
@@ -19,19 +25,14 @@ extern void        win_list_resize(win_list_t* win, int x, int y, int w, int h);
 
 extern void        win_list_refresh(win_list_t* win);
 
+extern void        win_list_event(win_head_t* win_head, int key);
 
-extern void  win_list_event(win_head_t* win_head, int key);
 
-
-extern char* win_list_item_get(win_list_t* win);
-
-extern void  win_list_item_add(win_list_t* win, char* item);
-
-extern void  win_list_item_delete(win_list_t* win, int item_index);
-
-extern void  win_list_item_rename(win_list_t* win, char* new_name);
+extern void win_list_items_clear(win_list_t* win);
 
 
 extern win_list_t* wins_name_win_list_get(win_t** wins, int count, char* name);
+
+#include "p-win-list-item.h"
 
 #endif // P_WIN_LIST_H

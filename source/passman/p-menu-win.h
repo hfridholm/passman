@@ -45,9 +45,9 @@ extern void menu_name_win_input_buffer_clear(menu_t* menu, char* win_name);
 extern void menu_name_win_input_buffer_update(menu_t* menu, char* win_name);
 
 
-extern char* menu_name_win_list_item_get(menu_t* menu, char* win_name);
+extern char* menu_name_win_list_hover_item_string_get(menu_t* menu, char* win_name);
 
-extern void  menu_name_win_list_item_add(menu_t* menu, char* win_name, char* item);
+extern void  menu_name_win_list_item_add(menu_t* menu, char* win_name, const char* string, const char* banner);
 
 
 extern void menu_name_win_confirm_answer_set(menu_t* menu, char* win_name, bool answer);

@@ -6,8 +6,6 @@
 typedef struct
 {
   menu_head_t head;
-  char**      dbs_names;
-  size_t      dbs_count;
   char        buffer_search[64];
   char        buffer_name[64];
   char        password[64];
