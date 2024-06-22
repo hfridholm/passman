@@ -162,7 +162,7 @@ int screen_base_event(screen_t* screen, int key)
   switch(key)
   {
     case KEY_CTRLC:
-      screen_name_win_focus_set(screen, "exit");
+      screen_win_focus_set(screen, "exit");
       return 1;
 
     case KEY_RESIZE:
@@ -202,11 +202,11 @@ int screen_event(screen_t* screen, int key)
  */
 void screen_text_popup(screen_t* screen, char* title, char* text)
 {
-  win_text_t* win = screen_name_win_text_get(screen, "info");
+  win_text_t* win = screen_win_text_get(screen, "info");
 
   win_text_title_set(win, title);
 
   win_text_text_set(win, text);
 
-  screen_name_win_focus_set(screen, "info");
+  screen_win_focus_set(screen, "info");
 }

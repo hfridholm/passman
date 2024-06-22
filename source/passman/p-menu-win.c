@@ -1,61 +1,61 @@
 #include "../passman.h"
 
-win_t* menu_name_win_get(menu_t* menu, char* win_name)
+win_t* menu_win_get(menu_t* menu, char* win_name)
 {
   return wins_name_win_get(menu->wins, menu->win_count, win_name);
 }
 
-win_list_t* menu_name_win_list_get(menu_t* menu, char* win_name)
+win_list_t* menu_win_list_get(menu_t* menu, char* win_name)
 {
   return wins_name_win_list_get(menu->wins, menu->win_count, win_name);
 }
 
-win_confirm_t* menu_name_win_confirm_get(menu_t* menu, char* win_name)
+win_confirm_t* menu_win_confirm_get(menu_t* menu, char* win_name)
 {
   return wins_name_win_confirm_get(menu->wins, menu->win_count, win_name);
 }
 
-win_text_t* menu_name_win_text_get(menu_t* menu, char* win_name)
+win_text_t* menu_win_text_get(menu_t* menu, char* win_name)
 {
   return wins_name_win_text_get(menu->wins, menu->win_count, win_name);
 }
 
-win_input_t* menu_name_win_input_get(menu_t* menu, char* win_name)
+win_input_t* menu_win_input_get(menu_t* menu, char* win_name)
 {
   return wins_name_win_input_get(menu->wins, menu->win_count, win_name);
 }
 
-void menu_name_win_input_buffer_set(menu_t* menu, char* win_name, char* buffer, size_t size)
+void menu_win_input_buffer_set(menu_t* menu, char* win_name, char* buffer, size_t size)
 {
-  win_input_t* win = menu_name_win_input_get(menu, win_name);
+  win_input_t* win = menu_win_input_get(menu, win_name);
 
   win_input_buffer_set(win, buffer, size);
 }
 
-void menu_name_win_input_buffer_clear(menu_t* menu, char* win_name)
+void menu_win_input_buffer_clear(menu_t* menu, char* win_name)
 {
-  win_input_t* win = menu_name_win_input_get(menu, win_name);
+  win_input_t* win = menu_win_input_get(menu, win_name);
 
   win_input_buffer_clear(win);
 }
 
-void menu_name_win_input_buffer_update(menu_t* menu, char* win_name)
+void menu_win_input_buffer_update(menu_t* menu, char* win_name)
 {
-  win_input_t* win = menu_name_win_input_get(menu, win_name);
+  win_input_t* win = menu_win_input_get(menu, win_name);
 
   win_input_buffer_update(win);
 }
 
-void menu_name_win_confirm_answer_set(menu_t* menu, char* win_name, bool answer)
+void menu_win_confirm_answer_set(menu_t* menu, char* win_name, bool answer)
 {
-  win_confirm_t* win = menu_name_win_confirm_get(menu, win_name);
+  win_confirm_t* win = menu_win_confirm_get(menu, win_name);
 
   if(win) win->answer = answer;
 }
 
-bool menu_name_win_confirm_answer_get(menu_t* menu, char* win_name)
+bool menu_win_confirm_answer_get(menu_t* menu, char* win_name)
 {
-  win_confirm_t* win = menu_name_win_confirm_get(menu, win_name);
+  win_confirm_t* win = menu_win_confirm_get(menu, win_name);
 
   return win ? win->answer : false;
 }
@@ -74,28 +74,28 @@ win_t* menu_active_win_get(menu_t* menu)
   return wins_active_win_get(menu->wins, menu->win_count);
 }
 
-void menu_name_win_focus_set(menu_t* menu, char* win_name)
+void menu_win_focus_set(menu_t* menu, char* win_name)
 {
   wins_name_win_focus_set(menu->wins, menu->win_count, win_name);
 }
 
 void menu_win_input_resize(menu_t* menu, char* win_name, int x, int y, int w)
 {
-  win_input_t* win = menu_name_win_input_get(menu, win_name);
+  win_input_t* win = menu_win_input_get(menu, win_name);
 
   win_input_resize(win, x, y, w);
 }
 
 void menu_win_list_resize(menu_t* menu, char* win_name, int x, int y, int w, int h)
 {
-  win_list_t* win = menu_name_win_list_get(menu, win_name);
+  win_list_t* win = menu_win_list_get(menu, win_name);
 
   win_list_resize(win, x, y, w, h);
 }
 
 void menu_win_confirm_resize(menu_t* menu, char* win_name, int x, int y, int w)
 {
-  win_confirm_t* win = menu_name_win_confirm_get(menu, win_name);
+  win_confirm_t* win = menu_win_confirm_get(menu, win_name);
 
   win_confirm_resize(win, x, y, w);
 }
@@ -155,16 +155,16 @@ void menu_win_tab(menu_t* menu, bool reverse)
   }
 }
 
-char* menu_name_win_list_hover_item_string_get(menu_t* menu, char* win_name)
+char* menu_win_list_hover_item_string_get(menu_t* menu, char* win_name)
 {
-  win_list_t* win = menu_name_win_list_get(menu, win_name);
+  win_list_t* win = menu_win_list_get(menu, win_name);
 
   return win_list_hover_item_string_get(win);
 }
 
-void menu_name_win_list_item_add(menu_t* menu, char* win_name, const char* string, const char* banner)
+void menu_win_list_item_add(menu_t* menu, char* win_name, const char* string, const char* banner)
 {
-  win_list_t* win = menu_name_win_list_get(menu, win_name);
+  win_list_t* win = menu_win_list_get(menu, win_name);
 
   win_list_item_add(win, string, banner);
 }

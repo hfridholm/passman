@@ -2,7 +2,7 @@
 
 static void menu_dbs_dbase_delete(menu_dbs_t* menu)
 {
-  win_list_t* win_dbs = menu_name_win_list_get((menu_t*) menu, "dbs");
+  win_list_t* win_dbs = menu_win_list_get((menu_t*) menu, "dbs");
 
   char* item = win_list_hover_item_string_get(win_dbs);
 

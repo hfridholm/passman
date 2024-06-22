@@ -2,11 +2,11 @@
 
 static void menu_dbs_win_search_event_enter(menu_dbs_t* menu, win_input_t* win)
 {
-  win_list_t* win_list = menu_name_win_list_get((menu_t*) menu, "dbs");
+  win_list_t* win_list = menu_win_list_get((menu_t*) menu, "dbs");
 
 
 
-  menu_name_win_focus_set((menu_t*) menu, "dbs");
+  menu_win_focus_set((menu_t*) menu, "dbs");
 }
 
 int menu_dbs_win_search_event(win_head_t* win_head, int key)

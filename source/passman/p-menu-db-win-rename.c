@@ -5,7 +5,7 @@
  */
 static void menu_db_win_rename_event_enter(menu_db_t* menu, win_input_t* win)
 {
-  win_list_t* win_list = menu_name_win_list_get((menu_t*) menu, "acs");
+  win_list_t* win_list = menu_win_list_get((menu_t*) menu, "acs");
 
   char* new_name = win->buffer;
 

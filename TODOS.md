@@ -19,7 +19,6 @@
 - send debug messages over socket to console client socket process
 - add "end_string" to win_list_item_t
 - add "active"     to win_list_item_t
-- remove "_name" from function names, ex screen_name_menu_name_win
 
 ## Future
 - add status codes to inpwin symbol_add and del,

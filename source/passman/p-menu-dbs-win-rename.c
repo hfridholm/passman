@@ -2,7 +2,7 @@
 
 static void menu_dbs_win_rename_event_enter(menu_dbs_t* menu, win_input_t* win)
 {
-  win_list_t* win_list = menu_name_win_list_get((menu_t*) menu, "dbs");
+  win_list_t* win_list = menu_win_list_get((menu_t*) menu, "dbs");
 
   char* old_name = win_list_hover_item_string_get(win_list);
 

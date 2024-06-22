@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
 
   screen->menu_index = 0;
 
-  // screen_name_win_focus_set(screen, "size");
+  // screen_win_focus_set(screen, "size");
 
   screen_refresh(screen);
 

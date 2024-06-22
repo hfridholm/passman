@@ -31,7 +31,7 @@ static int menu_dbs_event(menu_head_t* menu_head, int key)
   switch(key)
   {
     case KEY_CTRLZ:
-      screen_name_win_focus_set(screen, "exit");
+      screen_win_focus_set(screen, "exit");
       return 1;
 
     default:
@@ -84,7 +84,7 @@ menu_dbs_t* menu_dbs_create(char* name, int xmax, int ymax)
   menu_win_input_create((menu_t*) menu, "rename", false, false, x, y, 50, menu->buffer_name, sizeof(menu->buffer_name), "Rename", false, menu_dbs_win_rename_event);
 
 
-  menu_name_win_focus_set((menu_t*) menu, "dbs");
+  menu_win_focus_set((menu_t*) menu, "dbs");
 
   return menu;
 }

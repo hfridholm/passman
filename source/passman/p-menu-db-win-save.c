@@ -9,7 +9,7 @@ static void menu_db_win_save_event_enter(menu_db_t* menu, win_input_t* win)
 
   char* name = menu->dbase->name;
 
-  win_list_t* win_dbs = screen_name_menu_name_win_list_get(screen, "dbs", "dbs");
+  win_list_t* win_dbs = screen_menu_win_list_get(screen, "dbs", "dbs");
 
   if(!win_list_string_item_exists(win_dbs, name))
   {

@@ -42,31 +42,31 @@ void screen_win_list_create(screen_t* screen, char* name, bool active, bool tab_
   screen_win_add(screen, (win_t*) win);
 }
 
-win_confirm_t* screen_name_win_confirm_get(screen_t* screen, char* win_name)
+win_confirm_t* screen_win_confirm_get(screen_t* screen, char* win_name)
 {
   return wins_name_win_confirm_get(screen->wins, screen->win_count, win_name);
 }
 
-win_text_t* screen_name_win_text_get(screen_t* screen, char* win_name)
+win_text_t* screen_win_text_get(screen_t* screen, char* win_name)
 {
   return wins_name_win_text_get(screen->wins, screen->win_count, win_name);
 }
 
 void screen_win_confirm_resize(screen_t* screen, char* name, int x, int y, int w)
 {
-  win_confirm_t* win = screen_name_win_confirm_get(screen, name);
+  win_confirm_t* win = screen_win_confirm_get(screen, name);
 
   win_confirm_resize(win, x, y, w);
 }
 
 void screen_win_text_resize(screen_t* screen, char* name, int x, int y, int w, int h)
 {
-  win_text_t* win = screen_name_win_text_get(screen, name);
+  win_text_t* win = screen_win_text_get(screen, name);
 
   win_text_resize(win, x, y, w, h);
 }
 
-void screen_name_win_focus_set(screen_t* screen, char* win_name)
+void screen_win_focus_set(screen_t* screen, char* win_name)
 {
   wins_name_win_focus_set(screen->wins, screen->win_count, win_name);
 }

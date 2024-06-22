@@ -2,7 +2,7 @@
 
 static void menu_dbs_win_open_event_enter(menu_dbs_t* menu, win_input_t* win)
 {
-  char* item = menu_name_win_list_hover_item_string_get((menu_t*) menu, "dbs");
+  char* item = menu_win_list_hover_item_string_get((menu_t*) menu, "dbs");
 
 
   screen_t* screen = menu->head.screen;
@@ -19,7 +19,7 @@ static void menu_dbs_win_open_event_enter(menu_dbs_t* menu, win_input_t* win)
   else screen_text_popup(screen, "Error", "Could not open database");
 
 
-  menu_name_win_input_buffer_clear((menu_t*) menu, "open");
+  menu_win_input_buffer_clear((menu_t*) menu, "open");
 
   win->head.active = false;
 }

@@ -101,9 +101,9 @@ void screen_name_menu_db_dbase_set(screen_t* screen, char* menu_name, dbase_t* d
   menu_db_dbase_set(menu, dbase);
 }
 
-win_list_t* screen_name_menu_name_win_list_get(screen_t* screen, char* menu_name, char* win_name)
+win_list_t* screen_menu_win_list_get(screen_t* screen, char* menu_name, char* win_name)
 {
   menu_t* menu = screen_name_menu_get(screen, menu_name);
 
-  return menu_name_win_list_get(menu, win_name);
+  return menu_win_list_get(menu, win_name);
 }

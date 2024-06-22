@@ -36,7 +36,7 @@ int menu_db_event(menu_head_t* menu_head, int key)
   switch(key)
   {
     case KEY_CTRLS:
-      menu_name_win_focus_set((menu_t*) menu, "save");
+      menu_win_focus_set((menu_t*) menu, "save");
       return 1;
 
     case KEY_CTRLZ:
@@ -91,7 +91,7 @@ menu_db_t* menu_db_create(char* name, int xmax, int ymax)
   menu_win_confirm_create((menu_t*) menu, "delete", false, false, x, y, 40, "Delete?", "Yes", "No", menu_db_win_delete_event);
 
   
-  menu_name_win_focus_set((menu_t*) menu, "acs");
+  menu_win_focus_set((menu_t*) menu, "acs");
 
   return menu;
 }
@@ -110,11 +110,11 @@ void menu_db_free(menu_db_t* menu)
 
 void menu_db_dbase_set(menu_db_t* menu, dbase_t* dbase)
 {
-  menu_name_win_input_buffer_set((menu_t*) menu, "name", dbase->name, sizeof(dbase->name));
+  menu_win_input_buffer_set((menu_t*) menu, "name", dbase->name, sizeof(dbase->name));
 
-  menu_name_win_input_buffer_set((menu_t*) menu, "email", dbase->email, sizeof(dbase->email));
+  menu_win_input_buffer_set((menu_t*) menu, "email", dbase->email, sizeof(dbase->email));
 
-  win_list_t* win_acs = menu_name_win_list_get((menu_t*) menu, "acs");
+  win_list_t* win_acs = menu_win_list_get((menu_t*) menu, "acs");
 
   win_list_items_clear(win_acs);
 

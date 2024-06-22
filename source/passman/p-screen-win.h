@@ -5,12 +5,12 @@ extern void screen_win_add(screen_t* screen, win_t* win);
 
 extern win_t* screen_active_win_get(screen_t* screen);
 
-extern void screen_name_win_focus_set(screen_t* screen, char* win_name);
+extern void screen_win_focus_set(screen_t* screen, char* win_name);
 
 
-extern win_text_t*    screen_name_win_text_get(screen_t* screen, char* win_name);
+extern win_text_t*    screen_win_text_get(screen_t* screen, char* win_name);
 
-extern win_confirm_t* screen_name_win_confirm_get(screen_t* screen, char* win_name);
+extern win_confirm_t* screen_win_confirm_get(screen_t* screen, char* win_name);
 
 
 extern void screen_win_input_create(screen_t* screen, char* name, bool ability, bool tab_ability, int x, int y, int w, char* buffer, size_t size, char* title, bool secret, win_event_t* event);

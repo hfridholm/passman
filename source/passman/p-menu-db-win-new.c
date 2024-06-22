@@ -17,7 +17,7 @@ static void menu_db_win_new_event_enter(menu_db_t* menu, win_input_t* win)
 
   dbase->accnt_count++;
 
-  menu_name_win_list_item_add((menu_t*) menu, "acs", accnt->name, NULL);
+  menu_win_list_item_add((menu_t*) menu, "acs", accnt->name, NULL);
 
   win_input_buffer_clear(win);
 

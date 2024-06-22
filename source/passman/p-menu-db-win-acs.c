@@ -11,23 +11,23 @@ static void menu_db_win_acs_event_delete(menu_db_t* menu, win_list_t* win)
 {
   if(!win_list_hover_item_exists(win)) return;
 
-  menu_name_win_confirm_answer_set((menu_t*) menu, "delete", false);
+  menu_win_confirm_answer_set((menu_t*) menu, "delete", false);
 
-  menu_name_win_focus_set((menu_t*) menu, "delete");
+  menu_win_focus_set((menu_t*) menu, "delete");
 }
 
 static void menu_db_win_acs_event_new(menu_db_t* menu, win_list_t* win)
 {
-  menu_name_win_input_buffer_clear((menu_t*) menu, "new");
+  menu_win_input_buffer_clear((menu_t*) menu, "new");
 
-  menu_name_win_focus_set((menu_t*) menu, "new");
+  menu_win_focus_set((menu_t*) menu, "new");
 }
 
 static void menu_db_win_acs_event_rename(menu_db_t* menu, win_list_t* win)
 {
   if(!win_list_hover_item_exists(win)) return;
 
-  win_input_t* win_rename = menu_name_win_input_get((menu_t*) menu, "rename");
+  win_input_t* win_rename = menu_win_input_get((menu_t*) menu, "rename");
 
   if(!win_rename) return;
 
@@ -35,7 +35,7 @@ static void menu_db_win_acs_event_rename(menu_db_t* menu, win_list_t* win)
 
   win_input_buffer_paste(win_rename, item);
 
-  menu_name_win_focus_set((menu_t*) menu, "rename");
+  menu_win_focus_set((menu_t*) menu, "rename");
 }
 
 /*

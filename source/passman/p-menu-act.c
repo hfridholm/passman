@@ -9,7 +9,7 @@ static int menu_act_event(menu_head_t* menu_head, int key)
   switch(key)
   {
     case KEY_CTRLS:
-      // menu_name_win_focus_set((menu_t*) menu, "save");
+      // menu_win_focus_set((menu_t*) menu, "save");
       return 1;
 
     case KEY_CTRLZ:

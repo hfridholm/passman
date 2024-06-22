@@ -5,7 +5,7 @@
  */
 static void menu_db_accnt_delete(menu_db_t* menu)
 {
-  win_list_t* win_acs = menu_name_win_list_get((menu_t*) menu, "acs");
+  win_list_t* win_acs = menu_win_list_get((menu_t*) menu, "acs");
 
   char* item = win_list_hover_item_string_get(win_acs);
 
