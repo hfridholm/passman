@@ -140,21 +140,22 @@ static void win_list_scroll_up(win_list_t* win)
   win->scroll = MIN(win->scroll, win->item_index);
 }
 
-void win_list_event(win_head_t* win_head, int key)
+int win_list_event(win_head_t* win_head, int key)
 {
-  if(win_head == NULL || win_head->type != WIN_LIST) return;
-
-  win_list_t* win = (win_list_t*) win_head;
+  if(win_head == NULL || win_head->type != WIN_LIST) return 0;
 
   switch(key)
   {
     case 'j':
-      win_list_scroll_down(win);
-      break;
+      win_list_scroll_down((win_list_t*) win_head);
+      return 1;
 
     case 'k':
-      win_list_scroll_up(win);
-      break;
+      win_list_scroll_up((win_list_t*) win_head);
+      return 2;
+
+    default:
+      return 0;
   }
 }
 

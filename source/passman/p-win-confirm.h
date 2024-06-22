@@ -21,10 +21,10 @@ extern void           win_confirm_refresh(win_confirm_t* win);
 
 extern void           win_confirm_resize(win_confirm_t* win, int x, int y, int w);
 
+extern int            win_confirm_event(win_head_t* win_head, int key);
+
 
 extern void win_confirm_prompt_set(win_confirm_t* win, char* prompt);
-
-extern void win_confirm_event(win_head_t* win_head, int key);
 
 
 extern win_confirm_t* wins_name_win_confirm_get(win_t** wins, int count, char* name);

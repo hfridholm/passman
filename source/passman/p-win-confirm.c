@@ -178,9 +178,9 @@ void win_confirm_refresh(win_confirm_t* win)
 /*
  *
  */
-void win_confirm_event(win_head_t* win_head, int key)
+int win_confirm_event(win_head_t* win_head, int key)
 {
-  if(win_head == NULL || win_head->type != WIN_CONFIRM) return;
+  if(win_head == NULL || win_head->type != WIN_CONFIRM) return 0;
 
   win_confirm_t* win = (win_confirm_t*) win_head;
 
@@ -188,21 +188,32 @@ void win_confirm_event(win_head_t* win_head, int key)
   {
     case 'l':
       win->answer = false;
-      break;
+      return 1;
 
     case 'h':
       win->answer = true;
-      break;
+      return 2;
+
+    default:
+      return 0;
   }
 }
 
-void pop_confirm_event(win_head_t* win_head, int key)
+int pop_confirm_event(win_head_t* win_head, int key)
 {
-  if(win_head == NULL || win_head->type != WIN_CONFIRM) return;
+  if(win_head == NULL || win_head->type != WIN_CONFIRM) return 0;
 
-  win_confirm_event(win_head, key);
+  if(win_confirm_event(win_head, key)) return 1;
 
-  if(key == KEY_ENTR) win_head->active = false;
+  switch(key)
+  {
+    case KEY_ENTR:
+      win_head->active = false;
+      return 2;
+    
+    default:
+      return 0;
+  }
 }
 
 win_confirm_t* wins_name_win_confirm_get(win_t** wins, int count, char* name)

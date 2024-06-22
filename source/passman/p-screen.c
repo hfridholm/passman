@@ -55,27 +55,30 @@ static void screen_menus_create(screen_t* screen, int xmax, int ymax)
   screen_menu_db_create(screen, "db", xmax, ymax);
 }
 
-void screen_win_exit_event(win_head_t* win_head, int key)
+/*
+ *
+ */
+int screen_win_exit_event(win_head_t* win_head, int key)
 {
-  if(win_head == NULL || win_head->type != WIN_CONFIRM) return;
+  if(win_head == NULL || win_head->type != WIN_CONFIRM) return 0;
 
-  win_confirm_event(win_head, key);
+  if(win_confirm_event(win_head, key)) return 1;
 
   win_confirm_t* win = (win_confirm_t*) win_head;
 
   switch(key)
   {
     case KEY_ENTR:
-      if(win->answer == true)
+      if(win->answer == true && win_head->screen)
       {
-        if(win_head->screen)
-        {
-          win_head->screen->running = false;
-        }
+        win_head->screen->running = false;
       }
   
       win_head->active = false;
-      break;
+      return 2;
+
+    default:
+      return 0;
   }
 }
 
@@ -149,36 +152,44 @@ void screen_free(screen_t* screen)
   endwin();
 }
 
-void screen_base_event(screen_t* screen, int key)
+/*
+ *
+ */
+int screen_base_event(screen_t* screen, int key)
 {
   switch(key)
   {
     case KEY_CTRLC:
       screen_name_win_focus_set(screen, "exit");
-      break;
+      return 1;
 
     case KEY_RESIZE:
       screen_resize(screen);
-      break;
+      return 2;
+
+    default:
+      return 0;
   }
 }
 
-void screen_event(screen_t* screen, int key)
+/*
+ *
+ */
+int screen_event(screen_t* screen, int key)
 {
-  screen_base_event(screen, key);
-
   win_t* win = screen_active_win_get(screen);
+
+  if(win && win->event && win->event(win, key)) return 1;
+
 
   menu_t* menu = screen_menu_get(screen);
 
-  if(win && win->event)
-  {
-    win->event(win, key);
-  }
-  else if(menu)
-  {
-    menu_event(menu, key);
-  }
+  if(menu && menu_event(menu, key)) return 2;
+
+
+  if(screen_base_event(screen, key)) return 3;
+
+  return 0;
 }
 
 /*

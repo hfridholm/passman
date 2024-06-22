@@ -95,39 +95,37 @@ void menu_head_free(menu_head_t menu)
   }
 }
 
-void menu_tab_event(menu_head_t* menu, int key)
+int menu_tab_event(menu_head_t* menu, int key)
 {
   switch(key)
   {
     case KEY_TAB:
       menu_win_tab(menu, false);
-      break;
+      return 1;
     
     case KEY_BTAB:
       menu_win_tab(menu, true);
-      break;
+      return 2;
 
     default:
-      break;
+      return 0;
   }
 }
 
-void menu_event(menu_t* menu, int key)
+/*
+ *
+ */
+int menu_event(menu_t* menu, int key)
 {
-  if(menu && menu->event)
-  {
-    menu->event(menu, key);
-  }
-
   win_t* win = menu_active_win_get(menu);
 
-  if(win && win->tab_ability)
-  {
-    menu_tab_event(menu, key);
-  }
+  if(win && win->event && win->event(win, key)) return 1;
 
-  if(win && win->event)
-  {
-    win->event(win, key);
-  }
+
+  if(menu && menu->event && menu->event(menu, key)) return 2;
+
+
+  if(win && win->tab_ability && menu_tab_event(menu, key)) return 3;
+
+  return 0;
 }

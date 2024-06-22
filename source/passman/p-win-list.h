@@ -25,7 +25,7 @@ extern void        win_list_resize(win_list_t* win, int x, int y, int w, int h);
 
 extern void        win_list_refresh(win_list_t* win);
 
-extern void        win_list_event(win_head_t* win_head, int key);
+extern int         win_list_event(win_head_t* win_head, int key);
 
 
 extern void win_list_items_clear(win_list_t* win);

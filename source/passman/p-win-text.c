@@ -177,11 +177,19 @@ void win_text_refresh(win_text_t* win)
   wrefresh(window);
 }
 
-void pop_text_event(win_head_t* win_head, int key)
+int pop_text_event(win_head_t* win_head, int key)
 {
-  if(win_head == NULL || win_head->type != WIN_TEXT) return;
+  if(win_head == NULL || win_head->type != WIN_TEXT) return 0;
 
-  if(key == KEY_ENTR) win_head->active = false;
+  switch(key)
+  {
+    case KEY_ENTR:
+      win_head->active = false;
+      return 1;
+
+    default:
+      return 0;
+  }
 }
 
 win_text_t* wins_name_win_text_get(win_t** wins, int count, char* name)

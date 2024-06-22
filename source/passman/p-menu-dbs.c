@@ -20,33 +20,34 @@ void menu_dbs_resize(menu_dbs_t* menu, int xmax, int ymax)
   menu_win_input_resize((menu_t*) menu, "rename", x, y, 50);
 }
 
-static void menu_dbs_event(menu_head_t* menu_head, int key)
+static int menu_dbs_event(menu_head_t* menu_head, int key)
 {
-  if(!menu_head || menu_head->type != MENU_DBS) return;
-
-  menu_dbs_t* menu = (menu_dbs_t*) menu_head;
+  if(!menu_head || menu_head->type != MENU_DBS) return 0;
 
   screen_t* screen = menu_head->screen;
 
-  if(!screen) return;
+  if(!screen) return 0;
 
   switch(key)
   {
     case KEY_CTRLZ:
       screen_name_win_focus_set(screen, "exit");
-      break;
+      return 1;
+
+    default:
+      return 0;
   }
 }
 
-extern void menu_dbs_win_delete_event(win_head_t* win_head, int key);
+extern int menu_dbs_win_delete_event(win_head_t* win_head, int key);
 
-extern void menu_dbs_win_dbs_create(menu_dbs_t* menu, int x, int y, int w, int h);
+extern int menu_dbs_win_dbs_create(menu_dbs_t* menu, int x, int y, int w, int h);
 
-extern void menu_dbs_win_open_event(win_head_t* win_head, int key);
+extern int menu_dbs_win_open_event(win_head_t* win_head, int key);
 
-extern void menu_dbs_win_new_event(win_head_t* win_head, int key);
+extern int menu_dbs_win_new_event(win_head_t* win_head, int key);
 
-extern void menu_dbs_win_rename_event(win_head_t* win_head, int key);
+extern int menu_dbs_win_rename_event(win_head_t* win_head, int key);
 
 
 menu_dbs_t* menu_dbs_create(char* name, int xmax, int ymax)

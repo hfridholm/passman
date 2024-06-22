@@ -16,7 +16,7 @@ typedef struct menu_head_t menu_head_t;
 typedef struct menu_head_t menu_t;
 
 
-typedef void menu_event_t(menu_head_t*, int);
+typedef int menu_event_t(menu_head_t*, int);
 
 typedef struct menu_head_t
 {
@@ -38,7 +38,7 @@ extern void menu_resize(menu_t* menu, int xmax, int ymax);
 
 extern void menu_refresh(menu_t* menu);
 
-extern void menu_event(menu_t* menu, int key);
+extern int  menu_event(menu_t* menu, int key);
 
 
 extern void menus_free(menu_t** menus, int count);

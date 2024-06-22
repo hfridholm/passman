@@ -40,42 +40,42 @@ void menu_dbs_win_dbs_event_rename(menu_dbs_t* menu, win_list_t* win)
   menu_name_win_focus_set((menu_t*) menu, "rename");
 }
 
-void menu_dbs_win_dbs_event(win_head_t* win_head, int key)
+int menu_dbs_win_dbs_event(win_head_t* win_head, int key)
 {
-  if(!win_head || win_head->type != WIN_LIST) return;
-
-  win_list_event(win_head, key);
-
-  win_list_t* win = (win_list_t*) win_head;
-
+  if(!win_head || win_head->type != WIN_LIST) return 0;
 
   menu_t* menu_head = win_head->menu;
 
-  if(!menu_head || menu_head->type != MENU_DBS) return;
+  if(!menu_head || menu_head->type != MENU_DBS) return 0;
+
+
+  if(win_list_event(win_head, key)) return 1;
+
 
   menu_dbs_t* menu = (menu_dbs_t*) menu_head;
 
+  win_list_t* win = (win_list_t*) win_head;
 
   switch(key)
   {
     case 'o': case KEY_ENTR:
       menu_dbs_win_dbs_event_open(menu, win);
-      break;
+      return 2;
 
     case 'd':
       menu_dbs_win_dbs_event_delete(menu, win);
-      break;
+      return 3;
 
     case 'n':
       menu_dbs_win_dbs_event_new(menu, win);
-      break;
+      return 4;
 
     case 'r':
       menu_dbs_win_dbs_event_rename(menu, win);
-      break;
+      return 5;
 
     default:
-      break;
+      return 0;
   }
 }
 

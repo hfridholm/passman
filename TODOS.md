@@ -9,7 +9,6 @@
 - create bool screen_win_is_focus function,
   add hash variable in screen struct of the focus win (for comparison)
 - change buffer_size and item_count from int to size_t
-- make sure only one key event is called (with return values)
 - add end_string to win_list_item_t
 
 ## Must

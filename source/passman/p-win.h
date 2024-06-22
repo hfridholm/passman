@@ -21,7 +21,7 @@ typedef struct win_head_t win_head_t;
 typedef struct win_head_t win_t;
 
 
-typedef void win_event_t(win_head_t*, int);
+typedef int win_event_t(win_head_t*, int);
 
 typedef struct win_head_t
 {

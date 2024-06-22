@@ -25,6 +25,10 @@ extern void         win_input_free(win_input_t* win);
 
 extern void         win_input_refresh(win_input_t* win);
 
+extern int          win_input_event(win_head_t* win_head, int key);
+
+extern int          pop_input_event(win_head_t* win_head, int key);
+
 
 extern void win_input_buffer_update(win_input_t* win);
 
@@ -36,11 +40,6 @@ extern void win_input_buffer_paste(win_input_t* win, const char* string);
 
 
 extern void win_input_title_set(win_input_t* win, char* title);
-
-
-extern void win_input_event(win_head_t* win_head, int key);
-
-extern void pop_input_event(win_head_t* win_head, int key);
 
 
 extern win_input_t* wins_name_win_input_get(win_t** wins, int count, char* name);

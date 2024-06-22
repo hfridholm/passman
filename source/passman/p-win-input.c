@@ -312,46 +312,54 @@ static void win_input_scroll_left(win_input_t* win)
 /*
  * Note: If input window has no buffer, nothing should be done
  */
-void win_input_event(win_head_t* win_head, int key)
+int win_input_event(win_head_t* win_head, int key)
 {
-  if(win_head == NULL || win_head->type != WIN_INPUT) return;
+  if(win_head == NULL || win_head->type != WIN_INPUT) return 0;
 
   win_input_t* win = (win_input_t*) win_head;
 
-
-  if(!win->buffer) return;
+  if(!win->buffer) return 0;
 
   switch(key)
   {
     case KEY_CTRLH:
       if(win->secret) win->hidden = !win->hidden;
-      break;
+      return 1;
 
     case KEY_RIGHT:
       win_input_scroll_right(win);
-      break;
+      return 2;
 
     case KEY_LEFT:
       win_input_scroll_left(win);
-      break;
+      return 3;
 
     case KEY_BACKSPACE:
       win_input_symbol_del(win);
-      break;
+      return 4;
     
     default:
-      win_input_symbol_add(win, key);
-      break;
+      int status = win_input_symbol_add(win, key);
+
+      return (status == 0) ? 5 : 0;
   }
 }
 
-void pop_input_event(win_head_t* win_head, int key)
+int pop_input_event(win_head_t* win_head, int key)
 {
-  if(win_head == NULL || win_head->type != WIN_INPUT) return;
+  if(win_head == NULL || win_head->type != WIN_INPUT) return 0;
 
-  win_input_event(win_head, key);
+  if(win_input_event(win_head, key)) return 1;
 
-  if(key == KEY_ENTR) win_head->active = false;
+  switch(key)
+  {
+    case KEY_ENTR:
+      win_head->active = false;
+      return 2;
+    
+    default:
+      return 0;
+  }
 }
 
 win_input_t* wins_name_win_input_get(win_t** wins, int count, char* name)
