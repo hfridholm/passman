@@ -103,6 +103,17 @@ void menu_head_free(menu_head_t menu)
   }
 }
 
+int menu_win_enter_tab(menu_head_t* menu)
+{
+  win_t* win = menu_active_win_get(menu);
+
+  if(!win || win->type != WIN_INPUT) return 0;
+
+  menu_win_tab(menu, false);
+
+  return 1;
+}
+
 int menu_tab_event(menu_head_t* menu, int key)
 {
   switch(key)
@@ -114,6 +125,9 @@ int menu_tab_event(menu_head_t* menu, int key)
     case KEY_BTAB:
       menu_win_tab(menu, true);
       return 2;
+
+    case KEY_ENTR:
+      return menu_win_enter_tab(menu) ? 3 : 0;
 
     default:
       return 0;

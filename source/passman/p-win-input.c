@@ -193,8 +193,6 @@ void win_input_refresh(win_input_t* win)
 {
   if(!win->head.active || !win->head.window) return;
 
-  win_head_clean((win_head_t*) win);
-
   win_border_print((win_t*) win);
 
   win_input_title_print(win);
@@ -324,22 +322,26 @@ int win_input_event(win_head_t* win_head, int key)
       if(win->secret) win->hidden = !win->hidden;
       return 1;
 
+    case KEY_CTRLD:
+      win_input_buffer_clear(win);
+      return 2;
+
     case KEY_RIGHT:
       win_input_scroll_right(win);
-      return 2;
+      return 3;
 
     case KEY_LEFT:
       win_input_scroll_left(win);
-      return 3;
+      return 4;
 
     case KEY_BACKSPACE:
       win_input_symbol_del(win);
-      return 4;
+      return 5;
     
     default:
       int status = win_input_symbol_add(win, key);
 
-      return (status == 0) ? 5 : 0;
+      return (status == 0) ? 6 : 0;
   }
 }
 

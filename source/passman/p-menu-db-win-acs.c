@@ -2,7 +2,7 @@
 
 static void menu_db_win_acs_event_open(menu_db_t* menu, win_list_t* win)
 {
-  char* item = win_list_hover_item_string_get(win);
+  char* item = win_list_item_string_get(win);
 
   if(!item) return;
 
@@ -33,7 +33,7 @@ static void menu_db_win_acs_event_open(menu_db_t* menu, win_list_t* win)
 
 static void menu_db_win_acs_event_delete(menu_db_t* menu, win_list_t* win)
 {
-  if(!win_list_hover_item_exists(win)) return;
+  if(!win_list_item_exists(win)) return;
 
   menu_win_confirm_answer_set((menu_t*) menu, "delete", false);
 
@@ -49,13 +49,13 @@ static void menu_db_win_acs_event_new(menu_db_t* menu, win_list_t* win)
 
 static void menu_db_win_acs_event_rename(menu_db_t* menu, win_list_t* win)
 {
-  if(!win_list_hover_item_exists(win)) return;
+  if(!win_list_item_exists(win)) return;
 
   win_input_t* win_rename = menu_win_input_get((menu_t*) menu, "rename");
 
   if(!win_rename) return;
 
-  char* item = win_list_hover_item_string_get(win);
+  char* item = win_list_item_string_get(win);
 
   win_input_buffer_paste(win_rename, item);
 
@@ -79,21 +79,9 @@ int menu_db_win_acs_event(win_head_t* win_head, int key)
   win_list_t* win = (win_list_t*) win_head;
 
 
-  int last_item_index = win->item_index;
-
   if(win_list_event(win_head, key))
   {
-    char* string = win_list_hover_item_string_get(win);
-
-    char banner[128];
-
-    sprintf(banner, "%s - hover", string);
-
-    win_list_hover_item_banner_set(win, banner);
-
-    char* last_string = win_list_item_string_get(win, last_item_index);
-
-    win_list_item_banner_set(win, last_item_index, last_string);
+    // Change item preivew
 
     return 1;
   }

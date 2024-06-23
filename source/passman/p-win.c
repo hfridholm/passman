@@ -54,19 +54,6 @@ win_head_t win_head_create(win_type_t type, char* name, bool active, bool tab_ab
   return win;
 }
 
-void win_head_clean(win_head_t* win)
-{
-  for(int y = 0; y < win->ymax; y++)
-  {
-    wmove(win->window, y, 0);
-
-    for(int x = 0; x < win->xmax; x++)
-    {
-      waddch(win->window, ' ');
-    }
-  }
-}
-
 void win_head_free(win_head_t win)
 {
   if(win.window != NULL)
@@ -81,6 +68,10 @@ void win_head_free(win_head_t win)
 
 void win_refresh(win_t* win)
 {
+  if(!win || !win->window) return;
+
+  wclear(win->window);
+
   curs_set(0);
 
   switch(win->type)
@@ -256,4 +247,13 @@ void win_border_print(win_t* win)
     wattroff(window, COLOR_PAIR(TEXT_RED_PAIR));
   }
   else box(window, 0, 0);
+}
+
+win_list_t* wins_name_win_list_get(win_t** wins, int count, char* name)
+{
+  win_t* win = wins_name_win_get(wins, count, name);
+
+  if(!win || win->type != WIN_LIST) return NULL;
+
+  return (win_list_t*) win;
 }

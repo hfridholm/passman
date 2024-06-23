@@ -9,7 +9,7 @@ static void menu_db_win_rename_event_enter(menu_db_t* menu, win_input_t* win)
 
   char* new_name = win->buffer;
 
-  win_list_hover_item_set(win_list, new_name, NULL);
+  win_list_item_string_set(win_list, new_name);
 
   win_input_buffer_clear(win);
 

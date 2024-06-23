@@ -121,9 +121,9 @@ void menu_win_text_create(menu_t* menu, char* name, bool active, bool tab_abilit
   menu_win_add(menu, (win_t*) win);
 }
 
-void menu_win_list_create(menu_t* menu, char* name, bool active, bool tab_ability, int x, int y, int w, int h, int max_count, win_event_t* event)
+void menu_win_list_create(menu_t* menu, char* name, bool active, bool tab_ability, int x, int y, int w, int h, int max_item_count, char* buffer_filter, win_event_t* event)
 {
-  win_list_t* win = win_list_create(name, active, tab_ability, x, y, w, h, max_count, event);
+  win_list_t* win = win_list_create(name, active, tab_ability, x, y, w, h, max_item_count, buffer_filter, event);
 
   menu_win_add(menu, (win_t*) win);
 }
@@ -155,16 +155,16 @@ void menu_win_tab(menu_t* menu, bool reverse)
   }
 }
 
-char* menu_win_list_hover_item_string_get(menu_t* menu, char* win_name)
+char* menu_win_list_item_string_get(menu_t* menu, char* win_name)
 {
   win_list_t* win = menu_win_list_get(menu, win_name);
 
-  return win_list_hover_item_string_get(win);
+  return win_list_item_string_get(win);
 }
 
-void menu_win_list_item_add(menu_t* menu, char* win_name, const char* string, const char* banner)
+void menu_win_list_item_add(menu_t* menu, char* win_name, const char* string, const char* preview)
 {
   win_list_t* win = menu_win_list_get(menu, win_name);
 
-  win_list_item_add(win, string, banner);
+  win_list_item_add(win, string, preview);
 }

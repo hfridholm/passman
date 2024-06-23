@@ -41,8 +41,6 @@ extern win_head_t win_head_create(win_type_t type, char* name, bool active, bool
 
 extern void        win_head_free(win_head_t win);
 
-extern void        win_head_clean(win_head_t* win);
-
 extern void        win_head_resize(win_head_t* win, int x, int y, int w, int h);
 
 
@@ -50,14 +48,12 @@ extern void wins_free(win_t** wins, int count);
 
 extern void wins_refresh(win_t** wins, int count);
 
-extern void   wins_rotate(win_t** wins, int win_count, int turns);
+extern void wins_rotate(win_t** wins, int win_count, int turns);
 
 
 extern win_t* wins_active_win_get(win_t** wins, int count);
 
 extern void   wins_name_win_focus_set(win_t** wins, int count, char* name);
-
-extern win_t* wins_name_win_get(win_t** wins, int count, char* name);
 
 
 extern void win_border_print(win_t* win);
@@ -66,5 +62,9 @@ extern void win_border_print(win_t* win);
 #include "p-win-list.h"
 #include "p-win-confirm.h"
 #include "p-win-text.h"
+
+extern win_t*        wins_name_win_get(win_t** wins, int count, char* name);
+
+extern win_list_t*   wins_name_win_list_get(win_t** wins, int count, char* name);
 
 #endif // P_WIN_H

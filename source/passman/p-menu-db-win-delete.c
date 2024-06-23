@@ -7,11 +7,11 @@ static void menu_db_accnt_delete(menu_db_t* menu)
 {
   win_list_t* win_acs = menu_win_list_get((menu_t*) menu, "acs");
 
-  char* item = win_list_hover_item_string_get(win_acs);
+  char* item = win_list_item_string_get(win_acs);
 
   dbase_name_accnt_delete(menu->dbase, item);
 
-  win_list_hover_item_delete(win_acs);
+  win_list_item_delete(win_acs);
 }
 
 /*

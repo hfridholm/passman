@@ -162,8 +162,6 @@ void win_text_refresh(win_text_t* win)
 {
   if(!win->head.active) return;
 
-  win_head_clean((win_head_t*) win);
-
   WINDOW* window = win->head.window;
 
   if(window == NULL) return;

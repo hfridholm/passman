@@ -4,13 +4,13 @@ static void menu_dbs_win_rename_event_enter(menu_dbs_t* menu, win_input_t* win)
 {
   win_list_t* win_list = menu_win_list_get((menu_t*) menu, "dbs");
 
-  char* old_name = win_list_hover_item_string_get(win_list);
+  char* old_name = win_list_item_string_get(win_list);
 
   char* new_name = win->buffer;
 
   dbase_file_rename(old_name, new_name);
 
-  win_list_hover_item_set(win_list, new_name, NULL);
+  win_list_item_string_set(win_list, new_name);
 
   win->head.active = false;
 }

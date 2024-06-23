@@ -4,17 +4,13 @@ static void menu_dbs_dbase_delete(menu_dbs_t* menu)
 {
   win_list_t* win_dbs = menu_win_list_get((menu_t*) menu, "dbs");
 
-  char* item = win_list_hover_item_string_get(win_dbs);
-
-
-  screen_t* screen = menu->head.screen;
-
+  char* item = win_list_item_string_get(win_dbs);
 
   int status = dbase_file_remove(item);
 
   if(status == 0)
   {
-    win_list_hover_item_delete(win_dbs);
+    win_list_item_delete(win_dbs);
   }
   else screen_text_popup(menu->head.screen, "Error", "Could not delete database");
 }

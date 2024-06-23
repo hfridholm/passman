@@ -1,37 +1,37 @@
 #include "../passman.h"
 
-void menu_dbs_win_dbs_event_delete(menu_dbs_t* menu, win_list_t* win)
+static void menu_dbs_win_dbs_event_delete(menu_dbs_t* menu, win_list_t* win)
 {
-  if(!win_list_hover_item_exists(win)) return;
+  if(!win_list_item_exists(win)) return;
 
   menu_win_confirm_answer_set((menu_t*) menu, "delete", false);
 
   menu_win_focus_set((menu_t*) menu, "delete");
 }
 
-void menu_dbs_win_dbs_event_new(menu_dbs_t* menu, win_list_t* win)
+static void menu_dbs_win_dbs_event_new(menu_dbs_t* menu, win_list_t* win)
 {
   menu_win_input_buffer_clear((menu_t*) menu, "new");
 
   menu_win_focus_set((menu_t*) menu, "new");
 }
 
-void menu_dbs_win_dbs_event_open(menu_dbs_t* menu, win_list_t* win)
+static void menu_dbs_win_dbs_event_open(menu_dbs_t* menu, win_list_t* win)
 {
-  if(!win_list_hover_item_exists(win)) return;
+  if(!win_list_item_exists(win)) return;
 
   menu_win_focus_set((menu_t*) menu, "open");
 }
 
-void menu_dbs_win_dbs_event_rename(menu_dbs_t* menu, win_list_t* win)
+static void menu_dbs_win_dbs_event_rename(menu_dbs_t* menu, win_list_t* win)
 {
-  if(!win_list_hover_item_exists(win)) return;
+  if(!win_list_item_exists(win)) return;
 
   win_input_t* win_rename = menu_win_input_get((menu_t*) menu, "rename");
 
   if(!win_rename) return;
 
-  char* item = win_list_hover_item_string_get(win);
+  char* item = win_list_item_string_get(win);
 
   win_input_buffer_paste(win_rename, item);
 
@@ -91,7 +91,7 @@ static void matrix_free(void** matrix, size_t count)
 
 void menu_dbs_win_dbs_create(menu_dbs_t* menu, int x, int y, int w, int h)
 {
-  win_list_t* win = win_list_create("dbs", true, true, x, y + 2, w, h, -1, menu_dbs_win_dbs_event);
+  win_list_t* win = win_list_create("dbs", true, true, x, y + 2, w, h, -1, menu->buffer_search, menu_dbs_win_dbs_event);
 
   char** names = NULL;
   size_t count = 0;

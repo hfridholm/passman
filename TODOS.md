@@ -7,6 +7,7 @@
 - ability to change database password in mendbe
 - add "Press enter to continue..." text to infwin
 - change buffer_size and item_count from int to size_t
+- rename xmax and ymax in win_head to w and h
 
 ## Must
 - BUG: input delete when scroll has occured
@@ -14,9 +15,6 @@
 ## Maybe
 - rename inpwin scroll to shift?
 - create win_head_t (ish) struct to pass to win_***_create
-- send debug messages over socket to console client socket process
-- add "end_string" to win_list_item_t
-- add "active"     to win_list_item_t
 - add hash variable in screen struct of the focus win (for comparison)
 
 ## Future

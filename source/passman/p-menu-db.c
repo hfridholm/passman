@@ -13,6 +13,11 @@ void menu_db_resize(menu_db_t* menu, int xmax, int ymax)
 
   menu_win_input_resize((menu_t*) menu, "email", x, 9, w);
 
+  menu_win_input_resize((menu_t*) menu, "search", x, 13, w);
+
+  menu_win_list_resize((menu_t*) menu, "acs", x, y + 7, w, ymax - 18); 
+
+
   menu_win_input_resize((menu_t*) menu, "save", x, y, 50);
 
   menu_win_input_resize((menu_t*) menu, "rename", x, y, 50);
@@ -20,8 +25,6 @@ void menu_db_resize(menu_db_t* menu, int xmax, int ymax)
   menu_win_input_resize((menu_t*) menu, "new", x, y, 50);
 
   menu_win_confirm_resize((menu_t*) menu, "delete", x, y, 40);
-
-  menu_win_list_resize((menu_t*) menu, "acs", x, y + 5, w, ymax - 14); 
 }
 
 /*
@@ -58,6 +61,8 @@ extern int menu_db_win_delete_event(win_head_t* win_head, int key);
 
 extern int menu_db_win_acs_event(win_head_t* win_head, int key);
 
+extern int menu_db_win_search_event(win_head_t* win_head, int key);
+
 
 /*
  *
@@ -78,11 +83,12 @@ menu_db_t* menu_db_create(char* name, int xmax, int ymax)
   
   menu_win_input_create((menu_t*) menu, "email", true, true, x, 9, w, NULL, 0, "Email", false, win_input_event);
 
+  menu_win_input_create((menu_t*) menu, "search", true, true, x, 13, w, menu->buffer_search, sizeof(menu->buffer_search), "Search", false, menu_db_win_search_event);
+  
+  menu_win_list_create((menu_t*) menu, "acs", true, true, x, y + 7, w, ymax - 18, 120, menu->buffer_search, menu_db_win_acs_event);
+
+
   menu_win_input_create((menu_t*) menu, "save", false, false, x, y, 50, menu->password, sizeof(menu->password), "Password", true, menu_db_win_save_event);
-
-  int h = ymax - 14;
-
-  menu_win_list_create((menu_t*) menu, "acs", true, true, x, (h / 2) + 12, w, h, 120, menu_db_win_acs_event);
 
   menu_win_input_create((menu_t*) menu, "rename", false, false, x, y, 50, menu->buffer_name, sizeof(menu->buffer_name), "Rename", false, menu_db_win_rename_event);
 
@@ -90,7 +96,6 @@ menu_db_t* menu_db_create(char* name, int xmax, int ymax)
 
   menu_win_confirm_create((menu_t*) menu, "delete", false, false, x, y, 40, "Delete?", "Yes", "No", menu_db_win_delete_event);
 
-  
   menu_win_focus_set((menu_t*) menu, "acs");
 
   return menu;
@@ -116,7 +121,7 @@ void menu_db_dbase_set(menu_db_t* menu, dbase_t* dbase)
 
   win_list_t* win_acs = menu_win_list_get((menu_t*) menu, "acs");
 
-  win_list_items_clear(win_acs);
+  win_list_items_empty(win_acs);
 
   for(size_t index = 0; index < dbase->accnt_count; index++)
   {

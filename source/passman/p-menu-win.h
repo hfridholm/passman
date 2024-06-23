@@ -30,7 +30,7 @@ extern void menu_win_input_create(menu_t* menu, char* name, bool ability, bool t
 
 extern void menu_win_text_create(menu_t* menu, char* name, bool ability, bool tab_ability, int x, int y, int w, int h, char* title, char* text, win_event_t* event);
 
-extern void menu_win_list_create(menu_t* menu, char* name, bool ability, bool tab_ability, int x, int y, int w, int h, int max_count, win_event_t* event);
+extern void menu_win_list_create(menu_t* menu, char* name, bool ability, bool tab_ability, int x, int y, int w, int h, int max_item_count, char* buffer_filter, win_event_t* event);
 
 extern void menu_win_confirm_create(menu_t* menu, char* name, bool ability, bool tab_ability, int x, int y, int w, char* prompt, char* text_yes, char* text_no, win_event_t* event);
 
@@ -45,9 +45,9 @@ extern void menu_win_input_buffer_clear(menu_t* menu, char* win_name);
 extern void menu_win_input_buffer_update(menu_t* menu, char* win_name);
 
 
-extern char* menu_win_list_hover_item_string_get(menu_t* menu, char* win_name);
+extern char* menu_win_list_item_string_get(menu_t* menu, char* win_name);
 
-extern void  menu_win_list_item_add(menu_t* menu, char* win_name, const char* string, const char* banner);
+extern void  menu_win_list_item_add(menu_t* menu, char* win_name, const char* string, const char* preview);
 
 
 extern void menu_win_confirm_answer_set(menu_t* menu, char* win_name, bool answer);
