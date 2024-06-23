@@ -7,7 +7,6 @@
 - ability to change database password in mendbe
 - add "Press enter to continue..." text to infwin
 - change buffer_size and item_count from int to size_t
-- rename xmax and ymax in win_head to w and h
 
 ## Must
 - BUG: input delete when scroll has occured

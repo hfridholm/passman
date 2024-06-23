@@ -28,8 +28,8 @@ typedef struct win_head_t
   win_type_t   type;
   char*        name;        // Used to identify window
   WINDOW*      window;
-  int          ymax;
-  int          xmax;
+  int          h;
+  int          w;
   bool         active;
   bool         tab_ability;
   menu_t*      menu;

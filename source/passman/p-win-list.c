@@ -80,8 +80,8 @@ static void win_list_count_print(win_list_t* win)
 
   WINDOW* window = win->head.window;
 
-  int y = win->head.ymax - 1;
-  int x = win->head.xmax - 8;
+  int y = win->head.h - 1;
+  int x = win->head.w - 8;
 
   mvwprintw(window, y, x, "%03d/%03d", win->item_count, win->max_item_count);
 }
@@ -92,10 +92,7 @@ void win_list_refresh(win_list_t* win)
 
   WINDOW* window = win->head.window;
 
-  int ymax = win->head.ymax;
-
-
-  int show_amount = MIN(win->show_item_count, ymax - 2);
+  int show_amount = MIN(win->show_item_count, win->head.h - 2);
 
   for(int index = 0; index < show_amount; index++)
   {
@@ -125,7 +122,7 @@ static void win_list_scroll_down(win_list_t* win)
   // 1. Update selected item (increase item index)
   win->show_item_index = MIN(win->show_item_count - 1, win->show_item_index + 1);
 
-  int visable_items = win->head.ymax - 2;
+  int visable_items = win->head.h - 2;
 
   // 2. Constrain scroll to the floor
   win->scroll = MAX(win->scroll, win->show_item_index - visable_items);

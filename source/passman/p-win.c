@@ -16,8 +16,8 @@ void win_head_resize(win_head_t* win, int x, int y, int w, int h)
 
   mvwin(win->window, y - (h / 2), x - (w / 2));
 
-  win->xmax = w;
-  win->ymax = h;
+  win->w = w;
+  win->h = h;
 }
 
 /*
@@ -38,8 +38,8 @@ win_head_t win_head_create(win_type_t type, char* name, bool active, bool tab_ab
 
   win.window = newwin(h, w, y - (h / 2), x - (w / 2));
   
-  win.xmax = w;
-  win.ymax = h;
+  win.w = w;
+  win.h = h;
 
   keypad(win.window, TRUE);
 

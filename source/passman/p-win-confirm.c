@@ -87,27 +87,24 @@ static void win_confirm_prompt_print(win_confirm_t* win)
 
   if(window == NULL) return;
 
-  int ymax = win->head.ymax;
-  int xmax = win->head.xmax;
-
   int index = 0;
-  for(int height = 0; height < ymax - 4; height++)
+  for(int height = 0; height < win->head.h - 4; height++)
   {
     // 1. Shift prompt to center of window
-    if(height == (ymax - 5))
+    if(height == (win->head.h - 5))
     {
-      int line_len = MIN(xmax - 2, win->prompt_len - index);
+      int line_len = MIN(win->head.w - 2, win->prompt_len - index);
 
-      int xshift = (xmax - line_len) / 2;
+      int xshift = (win->head.w - line_len) / 2;
 
       wmove(window, 1 + height, xshift);
     }
     else wmove(window, 1 + height, 1);
 
     // 2. Print the current line of text
-    for(int width = 0; width < xmax - 2; width++)
+    for(int width = 0; width < win->head.w - 2; width++)
     {
-      index = (height * (xmax - 2) + width);
+      index = (height * (win->head.w - 2) + width);
 
       if(index >= win->prompt_len) break; 
 
@@ -129,16 +126,13 @@ static void win_confirm_yesno_print(win_confirm_t* win)
 
   if(window == NULL) return;
 
-  int ymax = win->head.ymax;
-  int xmax = win->head.xmax;
-
   if(win->answer == true) wattron(window, A_REVERSE);
 
   int lenght = win->text_yes_len + 1 + win->text_no_len;
 
-  int shift = (xmax - lenght) / 2;
+  int shift = (win->head.w - lenght) / 2;
 
-  wmove(window, ymax - 2, shift);
+  wmove(window, win->head.h - 2, shift);
 
   wprintw(window, "%s", win->text_yes);
   

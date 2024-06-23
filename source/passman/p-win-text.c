@@ -97,14 +97,9 @@ static void win_text_text_print(win_text_t* win)
 
   WINDOW* window = win->head.window;
 
-  if(window == NULL) return;
+  int lines = MIN(win->head.h - 2, (win->text_len / (win->head.w - 2)) + 1);
 
-  int ymax = win->head.ymax;
-  int xmax = win->head.xmax;
-
-  int lines = MIN(ymax - 2, (win->text_len / (xmax - 2)) + 1);
-
-  int yshift = MAX(0, ((ymax - 2) - lines) / 2);
+  int yshift = MAX(0, ((win->head.h - 2) - lines) / 2);
 
   int index = 0;
   for(int height = 0; height < lines; height++)
@@ -112,18 +107,18 @@ static void win_text_text_print(win_text_t* win)
     // 1. Shift text to center of window
     if(height == (lines - 1))
     {
-      int line_len = MIN(xmax - 2, win->text_len - index);
+      int line_len = MIN(win->head.w - 2, win->text_len - index);
 
-      int xshift = (xmax - line_len) / 2;
+      int xshift = (win->head.w - line_len) / 2;
       
       wmove(window, yshift + 1 + height, xshift);
     }
     else wmove(window, yshift + 1 + height, 1);
     
     // 2. Print current line of text
-    for(int width = 0; width < xmax - 2; width++)
+    for(int width = 0; width < win->head.w - 2; width++)
     {
-      index = (height * (xmax - 2) + width);
+      index = (height * (win->head.w - 2) + width);
 
       if(index >= win->text_len) break; 
 
@@ -143,11 +138,9 @@ static void win_text_title_print(win_text_t* win)
 
   if(window == NULL) return;
 
-  int xmax = win->head.xmax;
+  int length = MIN(win->head.w - 2, win->title_len);
 
-  int length = MIN(xmax - 2, win->title_len);
-
-  wmove(window, 0, (xmax - length) / 2);
+  wmove(window, 0, (win->head.w - length) / 2);
 
   for(int index = 0; index < length; index++)
   {
@@ -164,7 +157,7 @@ void win_text_refresh(win_text_t* win)
 
   WINDOW* window = win->head.window;
 
-  if(window == NULL) return;
+  if(!window) return;
 
   win_border_print((win_t*) win);
 
