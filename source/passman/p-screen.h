@@ -13,13 +13,15 @@ typedef struct screen_t
   int      win_count;
   bool     running;
   dbase_t* dbase;
+  int      xmax;
+  int      ymax;
 } screen_t;
 
 #define TEXT_RED_PAIR 1
 
 extern screen_t* screen_create(void);
 
-extern void      screen_resize(screen_t* screen);
+extern int       screen_resize(screen_t* screen);
 
 extern void      screen_refresh(screen_t* screen);
 
@@ -33,7 +35,7 @@ extern win_t* active_win_get(screen_t* screen);
 extern bool   win_is_active_win(win_t* win);
 
 
-extern void screen_text_popup(screen_t* screen, char* title, char* text);
+extern int screen_text_popup(screen_t* screen, char* title, char* text);
 
 #include "p-screen-menu.h"
 #include "p-screen-win.h"

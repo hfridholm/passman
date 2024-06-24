@@ -41,8 +41,6 @@ void screen_menu_dbs_create(screen_t* screen, char* name, int xmax, int ymax)
 {
   menu_dbs_t* menu = menu_dbs_create(name, xmax, ymax);
 
-  menu->dbase = screen->dbase;
-
   screen_menu_add(screen, (menu_t*) menu);
 }
 
@@ -56,8 +54,6 @@ void screen_menu_act_create(screen_t* screen, char* name, int xmax, int ymax)
 void screen_menu_db_create(screen_t* screen, char* name, int xmax, int ymax)
 {
   menu_db_t* menu = menu_db_create(name, xmax, ymax);
-
-  menu->dbase = screen->dbase;
 
   screen_menu_add(screen, (menu_t*) menu);
 }
@@ -103,11 +99,24 @@ menu_act_t* screen_menu_act_get(screen_t* screen, char* menu_name)
   return (menu_act_t*) menu;
 }
 
-void screen_menu_db_dbase_set(screen_t* screen, char* menu_name, dbase_t* dbase)
+/*
+ *
+ */
+int screen_menu_db_dbase_fill(screen_t* screen, char* menu_name, dbase_t* dbase)
 {
   menu_db_t* menu = screen_menu_db_get(screen, menu_name);
 
-  menu_db_dbase_set(menu, dbase);
+  return menu_db_dbase_fill(menu, dbase);
+}
+
+/*
+ *
+ */
+int screen_menu_act_accnt_fill(screen_t* screen, char* menu_name, accnt_t* accnt)
+{
+  menu_act_t* menu = screen_menu_act_get(screen, menu_name);
+
+  return menu_act_accnt_fill(menu, accnt);
 }
 
 win_list_t* screen_menu_win_list_get(screen_t* screen, char* menu_name, char* win_name)

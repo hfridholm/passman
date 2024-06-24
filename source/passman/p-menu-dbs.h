@@ -9,7 +9,6 @@ typedef struct
   char        buffer_search[64];
   char        buffer_name[64];
   char        password[64];
-  dbase_t*    dbase;
 } menu_dbs_t;
 
 extern menu_dbs_t* menu_dbs_create(char* name, int xmax, int ymax);

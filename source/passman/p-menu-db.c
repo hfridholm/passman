@@ -113,8 +113,17 @@ void menu_db_free(menu_db_t* menu)
   free(menu);
 }
 
-void menu_db_dbase_set(menu_db_t* menu, dbase_t* dbase)
+/*
+ * RETURN (int status)
+ * - 0 | Success!
+ * - 1 | Bad input
+ */
+int menu_db_dbase_fill(menu_db_t* menu, dbase_t* dbase)
 {
+  if(!menu || !dbase) return 1;
+
+  menu->dbase = dbase;
+
   menu_win_input_buffer_set((menu_t*) menu, "name", dbase->name, sizeof(dbase->name));
 
   menu_win_input_buffer_set((menu_t*) menu, "email", dbase->email, sizeof(dbase->email));
@@ -125,6 +134,9 @@ void menu_db_dbase_set(menu_db_t* menu, dbase_t* dbase)
 
   for(size_t index = 0; index < dbase->accnt_count; index++)
   {
-    win_list_item_add(win_acs, dbase->accnts[index].name, NULL);
+    accnt_t accnt = dbase->accnts[index];
+
+    win_list_item_add(win_acs, accnt.name, NULL);
   }
+  return 0;
 }

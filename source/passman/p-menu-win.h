@@ -49,6 +49,8 @@ extern char* menu_win_list_item_string_get(menu_t* menu, char* win_name);
 
 extern void  menu_win_list_item_add(menu_t* menu, char* win_name, const char* string, const char* preview);
 
+extern bool  menu_win_list_string_item_exists(menu_t* menu, char* win_name, const char* string);
+
 
 extern void menu_win_confirm_answer_set(menu_t* menu, char* win_name, bool answer);
 

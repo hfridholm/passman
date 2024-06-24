@@ -33,21 +33,43 @@ void win_text_resize(win_text_t* win, int x, int y, int w, int h)
 /*
  * Note: After you change the title, you have to resize the window
  */
-void win_text_title_set(win_text_t* win, char* title)
+int win_text_title_set(win_text_t* win, char* title)
 {
-  win->title = title;
+  if(!win) return 1;
 
+  win->title     = title;
   win->title_len = (title ? strlen(title) : 0);
+
+  return 0;
 }
 
 /*
  * Note: After you change the text, you have to resize the window
  */
-void win_text_text_set(win_text_t* win, char* text)
+int win_text_text_set(win_text_t* win, char* text)
 {
-  win->text = text;
+  if(!win) return 1;
 
+  win->text     = text;
   win->text_len = (text ? strlen(text) : 0);
+
+  return 0;
+}
+
+/*
+ * Note: After you change the title and text, you have to resize the window
+ */
+int win_text_title_text_set(win_text_t* win, char* title, char* text)
+{
+  if(!win) return 1;
+
+  win->text     = text;
+  win->text_len = (text ? strlen(text) : 0);
+
+  win->title     = title;
+  win->title_len = (title ? strlen(title) : 0);
+
+  return 0;
 }
 
 /*

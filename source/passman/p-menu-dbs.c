@@ -63,9 +63,6 @@ menu_dbs_t* menu_dbs_create(char* name, int xmax, int ymax)
 
   memset(menu->buffer_name, '\0', sizeof(menu->buffer_name));
 
-  menu->dbase = NULL;
-
-
   int x = xmax / 2;
   int y = ymax / 2;
   int w = xmax - 12;

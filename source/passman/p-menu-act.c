@@ -61,11 +61,11 @@ void menu_act_resize(menu_act_t* menu, int xmax, int ymax)
   menu_win_input_resize((menu_t*) menu, "password", x, 21, w);
 }
 
-void menu_act_accnt_fill(menu_act_t* menu)
+int menu_act_accnt_fill(menu_act_t* menu, accnt_t* accnt)
 {
-  if(!menu || !menu->accnt) return;
+  if(!menu || !accnt) return 1;
 
-  accnt_t* accnt = menu->accnt;
+  menu->accnt = accnt;
 
   menu_win_input_buffer_set((menu_t*) menu, "account",  accnt->account,  sizeof(accnt->account));
 
@@ -76,6 +76,8 @@ void menu_act_accnt_fill(menu_act_t* menu)
   menu_win_input_buffer_set((menu_t*) menu, "email",    accnt->email,    sizeof(accnt->email));
 
   menu_win_input_buffer_set((menu_t*) menu, "password", accnt->password, sizeof(accnt->password));
+
+  return 0;
 }
 
 void menu_act_free(menu_act_t* menu)

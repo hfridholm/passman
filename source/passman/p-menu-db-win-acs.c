@@ -24,9 +24,7 @@ static void menu_db_win_acs_event_open(menu_db_t* menu, win_list_t* win)
   if(!menu_act) return;
 
 
-  menu_act->accnt = &dbase->accnts[accnt_index];
-
-  menu_act_accnt_fill(menu_act);
+  menu_act_accnt_fill(menu_act, &dbase->accnts[accnt_index]);
 
   screen_menu_focus_set(menu->head.screen, "act");
 }

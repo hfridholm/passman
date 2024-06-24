@@ -8,11 +8,11 @@ static void menu_dbs_win_open_event_enter(menu_dbs_t* menu, win_input_t* win)
   screen_t* screen = menu->head.screen;
 
 
-  int status = dbase_read(menu->dbase, item, menu->password);
+  int status = dbase_read(screen->dbase, item, menu->password);
 
   if(status == 0)
   {
-    screen_menu_db_dbase_set(screen, "db", menu->dbase);
+    screen_menu_db_dbase_fill(screen, "db", screen->dbase);
 
     screen_menu_focus_set(screen, "db");
   }

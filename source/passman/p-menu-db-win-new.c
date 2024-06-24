@@ -5,21 +5,32 @@
  */
 static void menu_db_win_new_event_enter(menu_db_t* menu, win_input_t* win)
 {
-  dbase_t* dbase = menu->dbase;
+  if(!menu->head.screen || !win->buffer || !menu->dbase) return;
 
-  if(!dbase) return;
+  screen_t* screen = menu->head.screen;
+
+  if(menu_win_list_string_item_exists((menu_t*) menu, "acs", win->buffer))
+  {
+    screen_text_popup(screen, "Fail", "An account with the same name already exists");
+
+    return;
+  }
+
+  dbase_t* dbase = menu->dbase;
 
   if(dbase->accnt_count >= DBASE_ACCNTS_SIZE) return;
 
-  accnt_t* accnt = &dbase->accnts[dbase->accnt_count];
+  // 2. Add new account and add it to the account list
+  accnt_t* accnt = &dbase->accnts[dbase->accnt_count++];
 
   strncpy(accnt->name, win->buffer, sizeof(accnt->name));
 
-  dbase->accnt_count++;
-
   menu_win_list_item_add((menu_t*) menu, "acs", accnt->name, NULL);
 
-  win_input_buffer_clear(win);
+  // 3. Fill out the fields in account menu and switch to it
+  screen_menu_act_accnt_fill(screen, "act", accnt);
+
+  screen_menu_focus_set(screen, "act");
 
   win->head.active = false;
 }

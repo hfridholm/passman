@@ -21,9 +21,11 @@ extern void        win_text_resize(win_text_t* win, int x, int y, int w, int h);
 extern int         pop_text_event(win_head_t* win_head, int key);
 
 
-extern void win_text_title_set(win_text_t* win, char* title);
+extern int win_text_title_set(win_text_t* win, char* title);
 
-extern void win_text_text_set(win_text_t* win, char* text);
+extern int win_text_text_set(win_text_t* win, char* text);
+
+extern int win_text_title_text_set(win_text_t* win, char* title, char* text);
 
 
 extern win_text_t* wins_name_win_text_get(win_t** wins, int count, char* name);

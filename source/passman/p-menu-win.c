@@ -168,3 +168,10 @@ void menu_win_list_item_add(menu_t* menu, char* win_name, const char* string, co
 
   win_list_item_add(win, string, preview);
 }
+
+bool menu_win_list_string_item_exists(menu_t* menu, char* win_name, const char* string)
+{
+  win_list_t* win = menu_win_list_get(menu, win_name);
+
+  return win_list_string_item_exists(win, string);
+}
