@@ -1,24 +1,25 @@
 #include "../passman.h"
 
 /*
- *
+ * EXPECT:
+ * - menu and win are allocated
  */
 static void menu_db_win_save_event_enter(menu_db_t* menu, win_input_t* win)
 {
+  if(!menu->head.screen || !menu->dbase) return;
+
   screen_t* screen = menu->head.screen;
 
-  char* name = menu->dbase->name;
-
-  win_list_t* win_dbs = screen_menu_win_list_get(screen, "dbs", "dbs");
-
-  if(!win_list_string_item_exists(win_dbs, name))
+  if(strlen(menu->password) == 0)
   {
-    win_list_item_add(win_dbs, name, NULL);
+    screen_text_popup(screen, "Fail", "You must input a password");
+
+    return;
   }
 
-  dbase_write(menu->dbase, name, menu->password);
+  dbase_save(menu->dbase, menu->dbase->name, menu->password);
 
-  screen_text_popup(screen, "Save", "Saved dbase");
+  screen_text_popup(screen, "Info", "Saved database");
 
   win->head.active = false;
 }

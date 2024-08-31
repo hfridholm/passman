@@ -2,15 +2,38 @@
 
 static void menu_dbs_win_rename_event_enter(menu_dbs_t* menu, win_input_t* win)
 {
-  win_list_t* win_list = menu_win_list_get((menu_t*) menu, "dbs");
+  if(!menu->head.screen || !win->buffer) return;
 
-  char* old_name = win_list_item_string_get(win_list);
+  screen_t* screen = menu->head.screen;
+
+
+  win_list_t* win_dbs = menu_win_list_get((menu_t*) menu, "dbs");
+
+  char* old_name = win_list_item_string_get(win_dbs);
 
   char* new_name = win->buffer;
 
+  // This following code with Fail popups is the same as for "new". Reuse it!
+  if(strlen(new_name) == 0)
+  {
+    screen_text_popup(screen, "Fail", "The database must have a name");
+
+    return;
+  }
+
+
+  if(win_list_string_item_exists(win_dbs, win->buffer))
+  {
+    screen_text_popup(screen, "Fail", "A database with the same name already exists");
+
+    return;
+  }
+
+
   dbase_file_rename(old_name, new_name);
 
-  win_list_item_string_set(win_list, new_name);
+
+  win_list_item_string_set(win_dbs, new_name);
 
   win->head.active = false;
 }

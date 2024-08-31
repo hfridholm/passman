@@ -1,3 +1,11 @@
+#
+# Written by Hampus Fridholm
+#
+# Last updated: 2024-08-31
+#
+
+PROGRAM := passman
+
 # These are the names of the targets
 CLEAN_TARGET := clean
 HELP_TARGET := help
@@ -34,7 +42,7 @@ PASSMAN_DIR := $(SOURCE_DIR)/passman
 PASSMAN_SOURCE_FILES := $(wildcard $(PASSMAN_DIR)/*.c)
 PASSMAN_OBJECT_FILES := $(addprefix $(OBJECT_DIR)/, $(notdir $(PASSMAN_SOURCE_FILES:.c=.o)))
 
-all: passman
+all: $(PROGRAM)
 
 passman: %: $(OBJECT_DIR)/%.o $(SOURCE_DIR)/%.c $(AES_OBJECT_FILES) $(AES_SOURCE_FILES) $(FILE_OBJECT_FILES) $(FILE_SOURCE_FILES) $(HASH_OBJECT_FILES) $(HASH_SOURCE_FILES) $(PASSMAN_OBJECT_FILES) $(PASSMAN_SOURCE_FILES)
 	$(COMPILER) $(OBJECT_DIR)/$@.o $(AES_OBJECT_FILES) $(FILE_OBJECT_FILES) $(HASH_OBJECT_FILES) $(PASSMAN_OBJECT_FILES) $(LINKER_FLAGS) -o $(BINARY_DIR)/$@
@@ -46,17 +54,14 @@ $(OBJECT_DIR)/%.o: $(SOURCE_DIR)/*/%.c
 $(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.c 
 	$(COMPILER) $< -c $(COMPILE_FLAGS) -o $@
 
-# These are the executable programs that you can create
-PROGRAMS := $(patsubst %.c, %, $(notdir $(wildcard $(SOURCE_DIR)/*.c)))
-
 # These are the files that should be cleaned
-DELETE_FILES := $(OBJECT_DIR)/*.o $(PROGRAMS)
+DELETE_FILES := $(OBJECT_DIR)/*.o $(PROGRAM)
 
 # These are the files that should be kept (not automatically deleted)
-.PRECIOUS: $(OBJECT_DIR)/%.o $(PROGRAMS)
+.PRECIOUS: $(OBJECT_DIR)/%.o $(PROGRAM)
 
 $(CLEAN_TARGET):
 	$(DELETE_CMD) $(DELETE_FILES)
 
 $(HELP_TARGET):
-	@echo $(PROGRAMS) $(CLEAN_TARGET)
+	@echo $(PROGRAM) $(CLEAN_TARGET)

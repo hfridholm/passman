@@ -29,9 +29,9 @@ typedef struct
 
 #define DBASE_ACCNTS_SIZE (sizeof(((dbase_t*)0)->accnts) / sizeof(accnt_t))
 
-extern int dbase_read(dbase_t* dbase, const char* name, const char* password);
+extern int dbase_load(dbase_t* dbase, const char* name, const char* password);
 
-extern int dbase_write(dbase_t* dbase, const char* name, const char* password);
+extern int dbase_save(dbase_t* dbase, const char* name, const char* password);
 
 
 extern int    dbase_file_remove(const char* name);

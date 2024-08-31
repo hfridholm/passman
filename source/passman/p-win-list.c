@@ -105,7 +105,7 @@ void win_list_refresh(win_list_t* win)
 
     win_list_item_t* item = win->show_items[print_index];
 
-    mvwprintw(window, index + 1, 1, "#%02d: %s", index + 1, item->string);
+    mvwprintw(window, index + 1, 1, "#%02d: %s", print_index + 1, item->string);
 
     wattroff(window, A_REVERSE);
   }
@@ -125,7 +125,7 @@ static void win_list_scroll_down(win_list_t* win)
   int visable_items = win->head.h - 2;
 
   // 2. Constrain scroll to the floor
-  win->scroll = MAX(win->scroll, win->show_item_index - visable_items);
+  win->scroll = MAX(win->scroll, win->show_item_index + 1 - visable_items);
 }
 
 static void win_list_scroll_up(win_list_t* win)

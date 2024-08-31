@@ -15,7 +15,18 @@ static void menu_dbs_win_new_event_enter(menu_dbs_t* menu, win_input_t* win)
   if(!screen || !screen->dbase) return;
 
 
-  if(menu_win_list_string_item_exists((menu_t*) menu, "dbs", win->buffer))
+  if(strlen(win->buffer) == 0)
+  {
+    screen_text_popup(screen, "Fail", "The database must have a name");
+
+    return;
+  }
+
+
+  win_list_t* win_dbs = menu_win_list_get((menu_t*) menu, "dbs");
+
+
+  if(win_list_string_item_exists(win_dbs, win->buffer))
   {
     screen_text_popup(screen, "Fail", "A database with the same name already exists");
 
@@ -23,9 +34,13 @@ static void menu_dbs_win_new_event_enter(menu_dbs_t* menu, win_input_t* win)
   }
 
   // 1. Create new database and allocate new name
-  *screen->dbase = DBASE_EMPTY;
+  dbase_t* dbase = screen->dbase;
 
-  strncpy(screen->dbase->name, win->buffer, sizeof(screen->dbase->name));
+  *dbase = DBASE_EMPTY;
+
+  strncpy(dbase->name, win->buffer, sizeof(dbase->name));
+
+  win_list_item_add(win_dbs, dbase->name, NULL);
 
   // 2. Open the database menu with the newly created database
   screen_menu_db_dbase_fill(screen, "db", screen->dbase);

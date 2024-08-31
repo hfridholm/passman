@@ -31,7 +31,7 @@ size_t dbase_file_size(const char* name)
  * - 1 | Database file is empty
  * - 2 | Wrong password
  */
-int dbase_read(dbase_t* dbase, const char* name, const char* password)
+int dbase_load(dbase_t* dbase, const char* name, const char* password)
 {
   if(!dbase || !name || !password) return 1;
 
@@ -66,7 +66,7 @@ int dbase_read(dbase_t* dbase, const char* name, const char* password)
  * RETURN (int status)
  * - 0 | Success!
  */
-int dbase_write(dbase_t* dbase, const char* name, const char* password)
+int dbase_save(dbase_t* dbase, const char* name, const char* password)
 {
   if(!dbase || !name || !password) return 1;
 

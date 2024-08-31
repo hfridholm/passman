@@ -1,7 +1,7 @@
 #include "../passman.h"
 
 /*
- *
+ * Note: Implement return status (fail or success i alla fall), for all event_enter functions
  */
 static void menu_db_win_new_event_enter(menu_db_t* menu, win_input_t* win)
 {
@@ -9,7 +9,18 @@ static void menu_db_win_new_event_enter(menu_db_t* menu, win_input_t* win)
 
   screen_t* screen = menu->head.screen;
 
-  if(menu_win_list_string_item_exists((menu_t*) menu, "acs", win->buffer))
+
+  if(strlen(win->buffer) == 0)
+  {
+    screen_text_popup(screen, "Fail", "The account must have a name");
+
+    return;
+  }
+
+
+  win_list_t* win_acs = menu_win_list_get((menu_t*) menu, "acs");
+
+  if(win_list_string_item_exists(win_acs, win->buffer))
   {
     screen_text_popup(screen, "Fail", "An account with the same name already exists");
 
@@ -25,7 +36,7 @@ static void menu_db_win_new_event_enter(menu_db_t* menu, win_input_t* win)
 
   strncpy(accnt->name, win->buffer, sizeof(accnt->name));
 
-  menu_win_list_item_add((menu_t*) menu, "acs", accnt->name, NULL);
+  win_list_item_add(win_acs, accnt->name, NULL);
 
   // 3. Fill out the fields in account menu and switch to it
   screen_menu_act_accnt_fill(screen, "act", accnt);

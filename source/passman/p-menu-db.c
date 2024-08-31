@@ -43,6 +43,17 @@ int menu_db_event(menu_head_t* menu_head, int key)
       return 1;
 
     case KEY_CTRLZ:
+      if(strlen(menu->password) == 0)
+      {
+        menu_win_focus_set((menu_t*) menu, "save");
+        return 2;
+      }
+
+      dbase_save(menu->dbase, menu->dbase->name, menu->password);
+
+      // Clear the password, so no one gets access to it
+      memset(menu->password, '\0', sizeof(menu->password));
+
       screen_menu_focus_set(menu->head.screen, "dbs");
       return 2;
 

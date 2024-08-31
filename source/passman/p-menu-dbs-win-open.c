@@ -8,7 +8,7 @@ static void menu_dbs_win_open_event_enter(menu_dbs_t* menu, win_input_t* win)
   screen_t* screen = menu->head.screen;
 
 
-  int status = dbase_read(screen->dbase, item, menu->password);
+  int status = dbase_load(screen->dbase, item, menu->password);
 
   if(status == 0)
   {

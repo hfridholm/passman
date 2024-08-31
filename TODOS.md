@@ -4,12 +4,20 @@
 - implement status codes for _refresh and _input
 - check if database name is valid after rename, if not,
   change back to previous name
-- ability to change database password in mendbe
 - add "Press enter to continue..." text to infwin
 - change buffer_size and item_count from int to size_t
+- require password to rename database. Use password to load and change name in struct.
+- add "example" field to win_input_t (gray overwritable text)
+- strip string when creating database and account
+- add more text windows in menus to give information
+- create text box that describes keys in the bottom of every menu
+- create grid system for windows, instead of manually set x, y, w, h pixels
+- new input win field "allow_spaces" for ex password
+- add "locked" field to win_head_t, like "active". Can't interact with. Is rendered grayed out
 
 ## Must
 - BUG: input delete when scroll has occured
+- password input does not get cleared properly
 
 ## Maybe
 - rename inpwin scroll to shift?
