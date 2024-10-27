@@ -76,14 +76,16 @@ void win_list_free(win_list_t* win)
  */
 static void win_list_count_print(win_list_t* win)
 {
-  // if(win->max_item_count < 0) return;
-
   WINDOW* window = win->head.window;
 
   int y = win->head.h - 1;
-  int x = win->head.w - 8;
 
-  mvwprintw(window, y, x, "%03d/%03d", win->item_count, win->max_item_count);
+  if(win->show_item_count > 0)
+  {
+    int x = win->head.w - 8;
+
+    mvwprintw(window, y, x, "%03d/%03d", win->show_item_index + 1, win->show_item_count);
+  }
 }
 
 void win_list_refresh(win_list_t* win)

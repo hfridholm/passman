@@ -7,6 +7,7 @@
 - add "Press enter to continue..." text to infwin
 - change buffer_size and item_count from int to size_t
 - require password to rename database. Use password to load and change name in struct.
+- require password to delete database.
 - add "example" field to win_input_t (gray overwritable text)
 - strip string when creating database and account
 - add more text windows in menus to give information
@@ -14,6 +15,7 @@
 - create grid system for windows, instead of manually set x, y, w, h pixels
 - new input win field "allow_spaces" for ex password
 - add "locked" field to win_head_t, like "active". Can't interact with. Is rendered grayed out
+- change exit keybind to ctrl-x and let ctrl-c be copy.
 
 ## Must
 - BUG: input delete when scroll has occured
