@@ -1,7 +1,3 @@
-/*
- * Last Updated: 2024-04-20
- */
-
 #ifndef AES_H
 #define AES_H
 
