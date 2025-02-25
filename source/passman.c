@@ -1,13 +1,12 @@
-#include "passman.h"
+/*
+ * passman.c
+ */
 
 #define SHA256_IMPLEMENT
-#include "sha256.h"
-
 #define FILE_IMPLEMENT
-#include "file.h"
-
 #define AES_IMPLEMENT
-#include "aes.h"
+
+#include "passman.h"
 
 /*
  * RETURN (int status)
@@ -34,6 +33,13 @@ int stream_string(char* string, FILE* stream)
 int main(int argc, char* argv[])
 {
   screen_t* screen = screen_create();
+
+  if (!screen)
+  {
+    perror("screen_create");
+
+    return 1;
+  }
 
   screen->menu_index = 0;
 

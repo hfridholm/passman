@@ -136,6 +136,21 @@ static void screen_wins_create(screen_t* screen)
 
 screen_t* screen_create(void)
 {
+  initscr();
+  noecho();
+  raw();
+  keypad(stdscr, TRUE);
+
+  if (start_color() == ERR || !has_colors())
+  {
+    endwin();
+  
+    return NULL;
+  }
+  
+  init_pair(TEXT_RED_PAIR, COLOR_RED, 0);
+
+
   screen_t* screen = malloc(sizeof(screen_t));
 
   screen->wins = NULL;
@@ -144,20 +159,6 @@ screen_t* screen_create(void)
   screen->menus = NULL;
   screen->menu_count = 0;
   screen->menu_index = -1;
-
-  initscr();
-  noecho();
-  raw();
-  keypad(stdscr, TRUE);
-
-  if(start_color() == ERR || !has_colors() || !can_change_color())
-  {
-    endwin();
-  
-    return NULL;
-  }
-  
-  init_pair(TEXT_RED_PAIR, COLOR_RED, 0);
 
   screen->dbase = malloc(sizeof(dbase_t));
 
