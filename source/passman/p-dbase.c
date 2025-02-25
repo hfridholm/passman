@@ -87,7 +87,7 @@ int dbase_save(dbase_t* dbase, const char* name, const char* password)
 
 static void dbase_accnt_delete(dbase_t* dbase, int accnt_index)
 {
-  if(!dbase || !dbase->accnts) return;
+  if(!dbase) return;
 
   if(accnt_index < 0 || accnt_index >= dbase->accnt_count) return;
 

@@ -1,5 +1,8 @@
 #include "passman.h"
 
+#define SHA256_IMPLEMENT
+#include "sha256.h"
+
 /*
  * RETURN (int status)
  * - 0 | Success!
