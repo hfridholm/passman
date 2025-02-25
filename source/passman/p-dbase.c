@@ -10,19 +10,19 @@ int dbase_file_remove(const char* name)
   return dir_file_remove(DBASE_DIR, name);
 }
 
-int dbase_file_read(void* pointer, size_t size, size_t nmemb, const char* name)
+int dbase_file_read(void* pointer, size_t size, const char* name)
 {
-  return dir_file_read(pointer, size, nmemb, DBASE_DIR, name);
+  return dir_file_read(pointer, size, DBASE_DIR, name);
 }
 
-int dbase_file_write(const void* pointer, size_t size, size_t nmemb, const char* name)
+int dbase_file_write(const void* pointer, size_t size, const char* name)
 {
-  return dir_file_write(pointer, size, nmemb, DBASE_DIR, name);
+  return dir_file_write(pointer, size, DBASE_DIR, name);
 }
 
-size_t dbase_file_size(const char* name)
+size_t dbase_file_size_get(const char* name)
 {
-  return dir_file_size(DBASE_DIR, name);
+  return dir_file_size_get(DBASE_DIR, name);
 }
 
 /*
@@ -35,14 +35,14 @@ int dbase_load(dbase_t* dbase, const char* name, const char* password)
 {
   if(!dbase || !name || !password) return 1;
 
-  size_t size = dbase_file_size(name);
+  size_t size = dbase_file_size_get(name);
 
   if(size != DBASE_ENCRYPT_SIZE) return 1;
 
   char buffer[DBASE_ENCRYPT_SIZE];
   memset(buffer, '\0', sizeof(buffer));
 
-  dbase_file_read(buffer, size, sizeof(char), name);
+  dbase_file_read(buffer, size, name);
 
   // First, decrypt file to string. Then compare just psw hash
   char decrypt[sizeof(dbase_t)];
@@ -80,7 +80,7 @@ int dbase_save(dbase_t* dbase, const char* name, const char* password)
 
   aes_encrypt(buffer, dbase, sizeof(buffer), password, AES_256);
 
-  dbase_file_write(buffer, sizeof(buffer), sizeof(char), name);
+  dbase_file_write(buffer, sizeof(buffer), name);
 
   return 0; // Success!
 }

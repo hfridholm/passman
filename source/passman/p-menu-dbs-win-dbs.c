@@ -96,11 +96,11 @@ void menu_dbs_win_dbs_create(menu_dbs_t* menu, int x, int y, int w, int h)
   char** names = NULL;
   size_t count = 0;
 
-  dir_file_names(&names, &count, DBASE_DIR);
+  dir_file_names_get(&names, &count, DBASE_DIR);
 
   for(size_t index = 0; index < count; index++)
   {
-    size_t size = dbase_file_size(names[index]);
+    size_t size = dbase_file_size_get(names[index]);
 
     if(size != DBASE_ENCRYPT_SIZE) continue;
 

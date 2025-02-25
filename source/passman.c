@@ -3,6 +3,9 @@
 #define SHA256_IMPLEMENT
 #include "sha256.h"
 
+#define FILE_IMPLEMENT
+#include "file.h"
+
 /*
  * RETURN (int status)
  * - 0 | Success!

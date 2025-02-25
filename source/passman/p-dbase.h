@@ -38,7 +38,7 @@ extern int    dbase_file_remove(const char* name);
 
 extern int    dbase_file_rename(const char* old_name, const char* new_name);
 
-extern size_t dbase_file_size(const char* name);
+extern size_t dbase_file_size_get(const char* name);
 
 
 extern int  dbase_name_accnt_index_get(dbase_t* dbase, const char* name);
