@@ -45,21 +45,30 @@ int dbase_load(dbase_t* dbase, const char* name, const char* password)
   dbase_file_read(buffer, size, name);
 
   // First, decrypt file to string. Then compare just psw hash
-  char decrypt[sizeof(dbase_t)];
+  uint8_t* decrypt;
+  size_t   decrypt_size;
 
-  memset(decrypt, '\0', sizeof(decrypt));
-
-  aes_decrypt(decrypt, buffer, sizeof(buffer), password, AES_256);
+  if (aes_decrypt(&decrypt, &decrypt_size, buffer, sizeof(buffer), password, AES_256) != 0)
+  {
+    return 3;
+  }
 
   char hash[64];
   sha256(hash, password, strlen(password));
 
   // If the hashes don't match, the password was wrong
-  if(memcmp(hash, decrypt, sizeof(char) * 64) != 0) return 2;
+  if (memcmp(hash, decrypt, sizeof(uint8_t) * 64) != 0)
+  {
+    free(decrypt);
+
+    return 4;
+  }
 
   memcpy(dbase, decrypt, sizeof(dbase_t));
 
-  return 0; // Success!
+  free(decrypt);
+
+  return 0;
 }
 
 /*
@@ -68,21 +77,29 @@ int dbase_load(dbase_t* dbase, const char* name, const char* password)
  */
 int dbase_save(dbase_t* dbase, const char* name, const char* password)
 {
-  if(!dbase || !name || !password) return 1;
+  if (!dbase || !name || !password)
+  {
+    return 1;
+  }
 
-  char buffer[DBASE_ENCRYPT_SIZE];
-  memset(buffer, '\0', sizeof(buffer));
+  uint8_t* buffer;
+  size_t   size;
 
   char hash[64];
   sha256(hash, password, strlen(password));
 
   memcpy(dbase->psw_hash, hash, 64);
 
-  aes_encrypt(buffer, dbase, sizeof(buffer), password, AES_256);
+  if (aes_encrypt(&buffer, &size, dbase, sizeof(dbase_t), password, AES_256) != 0)
+  {
+    return 2;
+  }
 
-  dbase_file_write(buffer, sizeof(buffer), name);
+  dbase_file_write(buffer, size, name);
 
-  return 0; // Success!
+  free(buffer);
+
+  return 0;
 }
 
 static void dbase_accnt_delete(dbase_t* dbase, int accnt_index)

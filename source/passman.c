@@ -6,6 +6,9 @@
 #define FILE_IMPLEMENT
 #include "file.h"
 
+#define AES_IMPLEMENT
+#include "aes.h"
+
 /*
  * RETURN (int status)
  * - 0 | Success!
